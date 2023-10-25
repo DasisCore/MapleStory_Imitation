@@ -42,6 +42,9 @@
     <Filter Include="Engine\09. Factory">
       <UniqueIdentifier>{dae3cec4-4974-4642-bc7b-f8ac7394ebd3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\03. Manager\KeyMgr">
+      <UniqueIdentifier>{ba05ed1c-478a-4e32-a67a-489b21b66044}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -66,6 +69,9 @@
     <ClInclude Include="struct.h">
       <Filter>Engine\01. Header</Filter>
     </ClInclude>
+    <ClInclude Include="CKeyMgr.h">
+      <Filter>Engine\03. Manager\KeyMgr</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -73,6 +79,9 @@
     </ClCompile>
     <ClCompile Include="CCore.cpp">
       <Filter>Engine\02. Core</Filter>
+    </ClCompile>
+    <ClCompile Include="CKeyMgr.cpp">
+      <Filter>Engine\03. Manager\KeyMgr</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
