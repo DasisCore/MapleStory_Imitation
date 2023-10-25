@@ -1,13 +1,16 @@
 // MSI.cpp : Defines the entry point for the application.
 //
 
+#include "global.h"
 #include "framework.h"
-#include "MSI.h"
+#include "main.h"
+#include "CCore.h"
 
 #define MAX_LOADSTRING 100
 
 // Global Variables:
 HINSTANCE hInst;                                // current instance
+HWND g_hWnd;
 WCHAR szTitle[MAX_LOADSTRING];                  // The title bar text
 WCHAR szWindowClass[MAX_LOADSTRING];            // the main window class name
 
@@ -38,17 +41,38 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         return FALSE;
     }
 
+    // 단축키 테이블 정보 로딩
     HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_MSI));
 
     MSG msg;
 
-    // Main message loop:
-    while (GetMessage(&msg, nullptr, 0, 0))
+    // Core객체 초기화에 실패했을 경우, 실패를 알려준다.
+    if (FAILED(CCore::GetInst()->init(g_hWnd, POINT{ 1280, 720 })))
     {
-        if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
+        MessageBox(nullptr, L"Core 객체 초기화 실패", L"Error", MB_OK);
+        return FALSE;
+    }
+    
+
+    while (1)
+    {
+        if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
         {
-            TranslateMessage(&msg);
-            DispatchMessage(&msg);
+            if (WM_QUIT == msg.message)
+            {
+                break;
+            }
+
+            // 단축키 정보 확인
+            if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
+            {
+                TranslateMessage(&msg);
+                DispatchMessage(&msg);
+            }
+        }
+        else
+        {
+            CCore::GetInst()->progress();
         }
     }
 
@@ -97,16 +121,16 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
    hInst = hInstance; // Store instance handle in our global variable
 
-   HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
+   g_hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
       CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
 
-   if (!hWnd)
+   if (!g_hWnd)
    {
       return FALSE;
    }
 
-   ShowWindow(hWnd, nCmdShow);
-   UpdateWindow(hWnd);
+   ShowWindow(g_hWnd, nCmdShow);
+   UpdateWindow(g_hWnd);
 
    return TRUE;
 }
