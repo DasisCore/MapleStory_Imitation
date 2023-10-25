@@ -6,6 +6,9 @@ CCore::CCore()
 	: m_hWnd{0}
 	, m_ptResolution{0}
 	, m_hDC{0}
+	, m_hBit{0}
+	, m_memDC{0}
+
 {
 
 }
@@ -27,6 +30,16 @@ int CCore::init(HWND _hWnd, POINT _ptResolution)
 	// 메뉴바 삭제
 	SetMenu(m_hWnd, nullptr);
 
+	///////////////////////////////////////////////
+	// 더블 버퍼링을 위한 멤버 변수 초기화
+	///////////////////////////////////////////////
+	m_hBit = CreateCompatibleBitmap(m_hDC, m_ptResolution.x, m_ptResolution.y);
+	m_memDC = CreateCompatibleDC(m_hDC);
+
+	HBITMAP hOldBit = (HBITMAP)SelectObject(m_memDC, m_hBit);
+	DeleteObject(hOldBit);
+
+
 
 	///////////////////////////////////////////////
 	// 매니저 초기화
@@ -38,16 +51,9 @@ int CCore::init(HWND _hWnd, POINT _ptResolution)
 
 void CCore::progress()
 {
-	Rectangle(m_hDC, -1, -1, m_ptResolution.x + 10, m_ptResolution.y + 10);
+	Rectangle(m_memDC, -1, -1, m_ptResolution.x + 10, m_ptResolution.y + 10);
 
-	//////////////////////////////////////////////
-	// 매 프레임 각 매니저 업데이트
-	//////////////////////////////////////////////
-	CKeyMgr::GetInst()->update();
-
-
-
-
+	// 임시로 누르는 키 화면에 나오게 함.
 	KEY temp = CKeyMgr::GetInst()->GetInput();
 	int a = (int)temp;
 	string t = std::to_string(a);
@@ -58,14 +64,25 @@ void CCore::progress()
 	const wchar_t* myWchar = myWString.c_str();
 
 	RECT rt = { 10, 10, 200, 100 };
-	DrawText(m_hDC, myWchar, -1, &rt, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
-	//DrawText(m_hDC, TEXT("Hello, world"), -1, &rt, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
+	DrawText(m_memDC, myWchar, -1, &rt, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
+
+	// BitBlt 이용 m_hDC와 m_memDC를 서로 바꾸어준다.
+	BitBlt(m_hDC, 0, 0, m_ptResolution.x, m_ptResolution.y, m_memDC, 0, 0, SRCCOPY);
+
+	//////////////////////////////////////////////
+	// 매 프레임 각 매니저 업데이트
+	//////////////////////////////////////////////
+	CKeyMgr::GetInst()->update();
 }
 
 void CCore::ChangeWindowSize(Vec2 _vResolution, bool _bMenu)
 {
-	// 사각형을 나타내는 구조체
+	// 사각형을 나타내는 구조체 RECT
 	RECT rt = { 0, 0, (long)_vResolution.x, (long)_vResolution.y };
+	
+	// 메뉴바 유무에 맞추어 window의 크기를 조정한다.
 	AdjustWindowRect(&rt, WS_OVERLAPPEDWINDOW, _bMenu);
+	
+	// 윈도우의 위치와 크기를 조정
 	SetWindowPos(m_hWnd, nullptr, 100, 100, rt.right - rt.left, rt.bottom - rt.top, 0);
 }
