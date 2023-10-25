@@ -98,16 +98,3 @@ void CKeyMgr::update()
 
 	}
 }
-
-KEY CKeyMgr::GetInput()
-{
-	for (int i = 0; i < (int)KEY::LAST; i++)
-	{
-		if (m_vecKey[i].eState == KEY_STATE::HOLD)
-		{
-			return (KEY)i;
-		}
-	}
-
-	return KEY::A;
-}

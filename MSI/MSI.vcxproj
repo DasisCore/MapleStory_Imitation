@@ -130,6 +130,7 @@
   <ItemGroup>
     <ClInclude Include="CCore.h" />
     <ClInclude Include="CKeyMgr.h" />
+    <ClInclude Include="CTimeMgr.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="define.h" />
     <ClInclude Include="global.h" />
@@ -141,6 +142,7 @@
   <ItemGroup>
     <ClCompile Include="CCore.cpp" />
     <ClCompile Include="CKeyMgr.cpp" />
+    <ClCompile Include="CTimeMgr.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
