@@ -17,8 +17,8 @@ public:
 	void SetScale(Vec2 _vScale) { m_vScale = _vScale; }
 
 public:
-	void update();
-	void render(HDC _dc);
+	virtual void update() = 0;
+	virtual void render(HDC _dc);
 
 public:
 	CObject();

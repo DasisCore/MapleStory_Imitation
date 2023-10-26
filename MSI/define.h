@@ -34,9 +34,9 @@ enum class SCENE_TYPE
 enum class GROUP_TYPE
 {
 	DEFAULT, 
-	PLAYER,
-	MISSILE,
 	MONSTER,
+	MISSILE,
+	PLAYER,
 
 
 	END,

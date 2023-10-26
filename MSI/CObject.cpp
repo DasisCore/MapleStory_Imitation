@@ -12,32 +12,6 @@ CObject::~CObject()
 {
 }
 
-void CObject::update()
-{
-	
-
-
-	if (KEY_HOLD(KEY::W))
-	{
-		m_vPos.y -= 200.f * DT;
-	}
-
-	if (KEY_HOLD(KEY::A))
-	{
-		m_vPos.x -= 200.f * DT;
-	}
-
-	if (KEY_HOLD(KEY::S))
-	{
-		m_vPos.y += 200.f * DT;
-	}
-
-	if (KEY_HOLD(KEY::D))
-	{
-		m_vPos.x += 200.f * DT;
-	}
-}
-
 void CObject::render(HDC _dc)
 {
 	RECT rc = {
