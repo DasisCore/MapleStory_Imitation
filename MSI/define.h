@@ -19,3 +19,25 @@
 #define KEY_TAP(key) KEY_CHECK(key, KEY_STATE::TAP)
 #define KEY_HOLD(key) KEY_CHECK(key, KEY_STATE::HOLD)
 #define KEY_AWAY(key) KEY_CHECK(key, KEY_STATE::AWAY)
+
+
+enum class SCENE_TYPE
+{
+	START,
+	TOOL,
+
+
+	END,
+};
+
+
+enum class GROUP_TYPE
+{
+	DEFAULT, 
+	PLAYER,
+	MISSILE,
+	MONSTER,
+
+
+	END,
+};
