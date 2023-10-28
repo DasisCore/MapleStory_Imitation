@@ -35,6 +35,9 @@ public:
     virtual void update() override;
     //virtual void render(HDC _dc) override;
 
+public:
+    void CreateMissile();
+
 
 
 public:
