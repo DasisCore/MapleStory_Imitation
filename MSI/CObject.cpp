@@ -1,10 +1,13 @@
 #include "global.h"
+
 #include "CObject.h"
 
 #include "CKeyMgr.h"
 #include "CTimeMgr.h"
 
 CObject::CObject()
+	: m_vPos{}
+	, m_vScale{}
 {
 }
 
@@ -16,7 +19,7 @@ void CObject::render(HDC _dc)
 {
 	RECT rc = {
 	  (int)(m_vPos.x - m_vScale.x / 2.f)
-	, (int)(m_vPos.y - m_vScale.y / 2.f) - 125.f
+	, (int)((m_vPos.y - m_vScale.y / 2.f) - 125.f)
 	, (int)(m_vPos.x + m_vScale.x / 2.f)
 	, (int)(m_vPos.y + m_vScale.y / 2.f) };
 

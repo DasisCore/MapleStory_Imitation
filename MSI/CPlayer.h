@@ -21,6 +21,9 @@ enum class PLAYER_ATTACK_STATE
 };
 
 
+class CTexture;
+
+
 class CPlayer :
     public CObject
 {
@@ -31,6 +34,8 @@ private:
     int m_iDir;
     int m_iPrevDir;
 
+    CTexture* m_pTex;
+
 public:
     virtual void update() override;
     //virtual void render(HDC _dc) override;
@@ -38,6 +43,9 @@ public:
 public:
     void CreateMissile();
 
+// юс╫ц
+public:
+    virtual void render(HDC _dc);
 
 
 public:

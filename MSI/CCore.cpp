@@ -4,6 +4,7 @@
 #include "CKeyMgr.h"
 #include "CTimeMgr.h"
 #include "CSceneMgr.h"
+#include "CPathMgr.h"
 
 CCore::CCore()
 	: m_hWnd{0}
@@ -45,10 +46,10 @@ int CCore::init(HWND _hWnd, POINT _ptResolution)
 	// =======================================
 	// 매니저 초기화
 	// =======================================
+	CPathMgr::GetInst()->init();
 	CTimeMgr::GetInst()->init();
 	CKeyMgr::GetInst()->init();
 	CSceneMgr::GetInst()->init();
-
 
 	return S_OK;
 }

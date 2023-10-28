@@ -5,6 +5,11 @@
 #include "CPlayer.h"
 #include "CMonster.h"
 
+#include "CTexture.h"
+#include "CPathMgr.h"
+
+
+
 CScene_Start::CScene_Start()
 {
 }
@@ -15,6 +20,8 @@ CScene_Start::~CScene_Start()
 
 void CScene_Start::Enter()
 {
+
+
 	// 진입시 오브젝트 추가
 	CObject* pPlayer = new CPlayer;
 	pPlayer->SetName(L"First Player");
