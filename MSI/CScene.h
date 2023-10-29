@@ -14,8 +14,10 @@ public:
 	const wstring& GetName() { return m_strName; }
 
 	void update();
+	void finalupdate();		// 작업을 마무리해주는 업데이트
 	void render(HDC _dc);
-
+	
+	const vector<CObject*>& GetGroupObject(GROUP_TYPE _eType) { return m_vecObj[(UINT)_eType]; }
 
 	virtual void Enter() = 0;	// 해당 Scene에 진입시 호출
 	virtual void Exit() = 0;	// 해당 Scene에서 탈출시 호출

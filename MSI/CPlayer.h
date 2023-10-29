@@ -42,6 +42,9 @@ public:
 
 public:
     void CreateMissile();
+    
+    virtual void OnCollisionEnter(CCollider* _pOther) override;
+
 
 // юс╫ц
 public:

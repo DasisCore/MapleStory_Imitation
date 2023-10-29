@@ -6,7 +6,6 @@ struct Vec2
 	float x;
 	float y;
 
-
 public:
 
 	Vec2& operator = (POINT _pt)

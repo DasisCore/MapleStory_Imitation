@@ -8,6 +8,8 @@
 #include "CTexture.h"
 #include "CPathMgr.h"
 
+#include "CCollisionMgr.h"
+
 
 
 CScene_Start::CScene_Start()
@@ -20,8 +22,6 @@ CScene_Start::~CScene_Start()
 
 void CScene_Start::Enter()
 {
-
-
 	// 진입시 오브젝트 추가
 	CObject* pPlayer = new CPlayer;
 	pPlayer->SetName(L"First Player");
@@ -38,10 +38,15 @@ void CScene_Start::Enter()
 
 	AddObject(pMonster, GROUP_TYPE::MONSTER);
 
+
+	// 충돌 지정
+	CCollisionMgr::GetInst()->CheckGroup(GROUP_TYPE::PLAYER, GROUP_TYPE::MONSTER);
+
 }
 
 void CScene_Start::Exit()
 {
+	CCollisionMgr::GetInst()->Reset();
 }
 
 

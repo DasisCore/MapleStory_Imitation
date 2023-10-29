@@ -5,6 +5,7 @@
 #include "CTimeMgr.h"
 #include "CSceneMgr.h"
 #include "CPathMgr.h"
+#include "CCollisionMgr.h"
 
 CCore::CCore()
 	: m_hWnd{0}
@@ -12,12 +13,22 @@ CCore::CCore()
 	, m_hDC{0}
 	, m_hBit{0}
 	, m_memDC{0}
-
+	, m_arrBrush{}
+	, m_arrPen{}
 {
 
 }
 CCore::~CCore()
 {
+	ReleaseDC(m_hWnd, m_hDC);
+
+	DeleteDC(m_memDC);
+	DeleteObject(m_hBit);
+
+	for (int i = 0; i < (UINT)PEN_TYPE::END; i++)
+	{
+		DeleteObject(m_arrPen[i]);
+	}
 
 }
 
@@ -43,6 +54,11 @@ int CCore::init(HWND _hWnd, POINT _ptResolution)
 	HBITMAP hOldBit = (HBITMAP)SelectObject(m_memDC, m_hBit);
 	DeleteObject(hOldBit);
 
+
+	// 자주 사용할 펜 및 브러쉬 초기화
+	CreateBrushPen();
+
+
 	// =======================================
 	// 매니저 초기화
 	// =======================================
@@ -62,6 +78,8 @@ void CCore::progress()
 	CTimeMgr::GetInst()->update();
 	CKeyMgr::GetInst()->update();
 	CSceneMgr::GetInst()->update();
+	CCollisionMgr::GetInst()->update();
+	
 
 	// =======================================
 	// 렌더링 작업
@@ -71,6 +89,17 @@ void CCore::progress()
 	CSceneMgr::GetInst()->render(m_memDC);
 
 	BitBlt(m_hDC, 0, 0, m_ptResolution.x, m_ptResolution.y, m_memDC, 0, 0, SRCCOPY);
+}
+
+void CCore::CreateBrushPen()
+{
+	m_arrBrush[(UINT)BRUSH_TYPE::HOLLOW] = (HBRUSH)GetStockObject(HOLLOW_BRUSH);
+
+	m_arrPen[(UINT)PEN_TYPE::RED] = CreatePen(PS_SOLID, 1, RGB(255, 0, 0));
+	m_arrPen[(UINT)PEN_TYPE::BLUE] = CreatePen(PS_SOLID, 1, RGB(0, 0, 255));
+	m_arrPen[(UINT)PEN_TYPE::GREEN] = CreatePen(PS_SOLID, 1, RGB(0, 255, 0));
+
+
 }
 
 void CCore::ChangeWindowSize(Vec2 _vResolution, bool _bMenu)

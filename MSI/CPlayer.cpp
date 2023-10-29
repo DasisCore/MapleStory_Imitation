@@ -13,6 +13,8 @@
 #include "CPathMgr.h"
 #include "CTexture.h"
 
+#include "CCollider.h"
+
 CPlayer::CPlayer()
 	: m_eCurState(PLAYER_STATE::IDLE)
 	, m_ePrevState(PLAYER_STATE::WALK)
@@ -28,14 +30,15 @@ CPlayer::CPlayer()
 
 	// 위 작업을 CResMgr를 이용
 	m_pTex = CResMgr::GetInst()->LoadTexture(L"PlayerTex", L"texture\\player.bmp");
+
+	CreateCollider();
+
+	GetCollider()->SetScale(Vec2(700.f, 550.f));
+	GetCollider()->SetOffsetPos(Vec2(0.f, -85.f));
 }
 
 CPlayer::~CPlayer()
 {
-	//if (nullptr != m_pTex)
-	//{
-	//	delete m_pTex;
-	//}
 }
 
 void CPlayer::update()
@@ -79,6 +82,10 @@ void CPlayer::CreateMissile()
 	pCurScene->AddObject(pMissile, GROUP_TYPE::MISSILE);
 }
 
+void CPlayer::OnCollisionEnter(CCollider* _pOther)
+{
+}
+
 void CPlayer::render(HDC _dc)
 {
 	int iWidth = m_pTex->Width();
@@ -102,4 +109,7 @@ void CPlayer::render(HDC _dc)
 		, 0, 0, iWidth, iHeight
 		, RGB(255, 0, 255)
 	);
+
+	// 컴포넌트 충돌체 등등 렌터링
+	component_render(_dc);
 }

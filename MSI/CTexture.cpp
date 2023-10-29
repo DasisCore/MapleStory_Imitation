@@ -36,7 +36,7 @@ void CTexture::Load(const wstring& _strFilePath)
 
 void CTexture::Create(UINT _iWidth, UINT _iHeight)
 {
-	HDC  mainDC = CCore::GetInst()->GetMainDC();
+	HDC mainDC = CCore::GetInst()->GetMainDC();
 
 	m_hBit = CreateCompatibleBitmap(mainDC, _iWidth, _iHeight);
 	m_dc = CreateCompatibleDC(mainDC);
