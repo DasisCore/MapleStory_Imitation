@@ -36,7 +36,11 @@ void CScene_Start::Enter()
 	pMonster->SetPos(Vec2(640.f, 100.f));
 	pMonster->SetScale(Vec2(100.f, 50.f));
 
-	AddObject(pMonster, GROUP_TYPE::MONSTER);
+	//AddObject(pMonster, GROUP_TYPE::MONSTER);
+
+
+	// 오브젝트 추가하는 이벤트
+	CreateObject(pMonster, GROUP_TYPE::MONSTER);
 
 
 	// 충돌 지정

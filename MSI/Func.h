@@ -1,5 +1,11 @@
 #pragma once
 
+class CObject;
+
+void CreateObject(CObject* _pObj, GROUP_TYPE _eGroup);
+void DeleteObject(CObject* _pObj);
+void ChangeScene(SCENE_TYPE _eNext);
+
 
 template<typename T1, typename T2>
 void Safe_Delete_Map(map<T1, T2>& _map)

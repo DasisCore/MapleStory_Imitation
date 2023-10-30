@@ -47,9 +47,19 @@ void CScene::render(HDC _dc)
 {
 	for (UINT i = 0; i < (UINT)GROUP_TYPE::END; i++)
 	{
-		for (size_t j = 0; j < m_vecObj[i].size(); j++)
+		vector<CObject*>::iterator iter = m_vecObj[i].begin();
+
+		for (; iter != m_vecObj[i].end();)
 		{
-			m_vecObj[i][j]->render(_dc);
+			if (!(*iter)->IsDead())
+			{
+				(*iter)->render(_dc);
+				iter++;
+			}
+			else
+			{
+				iter = m_vecObj[i].erase(iter);
+			}
 		}
 	}
 

@@ -33,13 +33,14 @@ enum class SCENE_TYPE
 
 enum class GROUP_TYPE
 {
-	DEFAULT, 
-	MONSTER,
-	MISSILE,
+	DEFAULT,
 	PLAYER,
+	MONSTER,
+	PROJ_PLAYER,
+	PROJ_MONSTER,
+	MISSILE,
 
-
-	END,
+	END = 32,
 };
 
 enum class BRUSH_TYPE

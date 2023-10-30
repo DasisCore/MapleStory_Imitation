@@ -25,8 +25,14 @@ public:
 	void SetPos(Vec2 _vPos) { m_vPos = _vPos; }
 	void SetScale(Vec2 _vScale) { m_vScale = _vScale; }
 
+
 	bool IsDead() { return !m_bAlive; }
 
+private:
+	void SetDead() { m_bAlive = false; }
+
+
+public:
 	void CreateCollider();
 
 	virtual void OnCollision(CCollider* _pOther) {};
@@ -45,5 +51,9 @@ public:
 public:
 	CObject();
 	virtual ~CObject();
+
+
+
+	friend class CEventMgr;
 };
 
