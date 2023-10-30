@@ -4,6 +4,8 @@
 #include "CObject.h"
 
 
+
+
 CScene::CScene()
 {
 }
@@ -65,4 +67,18 @@ void CScene::render(HDC _dc)
 
 	RECT rc = { 0, 0, 100, 50 };
 	DrawText(_dc, m_strName.c_str(), -1, &rc, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
+}
+
+
+void CScene::DeleteGroup(GROUP_TYPE _eTarget)
+{
+	Safe_Delete_Vector<CObject*>(m_vecObj[(UINT)_eTarget]);
+}
+
+void CScene::DeleteAll()
+{
+	for(UINT i = 0; i < (UINT)GROUP_TYPE::END; i++)
+	{
+		DeleteGroup((GROUP_TYPE)i);
+	}
 }

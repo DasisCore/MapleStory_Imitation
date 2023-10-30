@@ -21,3 +21,13 @@ void Safe_Delete_Map(map<T1, T2>& _map)
 	}
 	_map.clear();
 }
+
+template<typename T>
+void Safe_Delete_Vector(vector<T>& _vec)
+{
+	for (size_t i = 0; i < _vec.size(); i++)
+	{
+		if (_vec[i] != nullptr) delete _vec[i];
+	}
+	_vec.clear();
+}

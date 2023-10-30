@@ -10,7 +10,8 @@
 
 #include "CCollisionMgr.h"
 
-
+#include "CSceneMgr.h"
+#include "CKeyMgr.h"
 
 CScene_Start::CScene_Start()
 {
@@ -18,6 +19,17 @@ CScene_Start::CScene_Start()
 
 CScene_Start::~CScene_Start()
 {
+}
+
+void CScene_Start::update()
+{
+	// 부모가 가지고 있는 update() 먼저 호출
+	CScene::update();
+
+	if (KEY_TAP(KEY::ENTER))
+	{
+		ChangeScene(SCENE_TYPE::TOOL);
+	}
 }
 
 void CScene_Start::Enter()
@@ -50,6 +62,8 @@ void CScene_Start::Enter()
 
 void CScene_Start::Exit()
 {
+	DeleteAll();
+
 	CCollisionMgr::GetInst()->Reset();
 }
 

@@ -1,8 +1,9 @@
 #pragma once
 #include "CScene.h"
-class CScene_Start :
+class CScene_Tool :
     public CScene
 {
+private:
 
 
 public:
@@ -11,7 +12,8 @@ public:
     virtual void Exit() override;
 
 public:
-    CScene_Start();
-    ~CScene_Start();
+    CScene_Tool();
+    ~CScene_Tool();
+
 };
 

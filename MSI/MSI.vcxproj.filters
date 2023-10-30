@@ -77,6 +77,9 @@
     <Filter Include="Engine\03. Manager\EventMgr">
       <UniqueIdentifier>{7fca681f-3c0f-4ed9-ade4-31df4d669ad3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\05. Scene\Scene_Tool">
+      <UniqueIdentifier>{f9e1b2af-4515-4e48-8ddf-7b3d72bde5fc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -155,6 +158,9 @@
     <ClInclude Include="CEventMgr.h">
       <Filter>Engine\03. Manager\EventMgr</Filter>
     </ClInclude>
+    <ClInclude Include="CScene_Tool.h">
+      <Filter>Engine\05. Scene\Scene_Tool</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CCore.cpp">
@@ -214,6 +220,9 @@
     </ClCompile>
     <ClCompile Include="CEventMgr.cpp">
       <Filter>Engine\03. Manager\EventMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="CScene_Tool.cpp">
+      <Filter>Engine\05. Scene\Scene_Tool</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
