@@ -1,6 +1,7 @@
 #include "global.h"
 #include "CMonster.h"
 
+#include "CComponent.h"
 #include "CCollider.h"
 
 CMonster::CMonster()
@@ -10,8 +11,9 @@ CMonster::CMonster()
 	, m_fAttRange(0.f)
 	, m_fAtt(0.f)
 {
+	CreateComponent();
 	CreateCollider();
-	GetCollider()->SetScale(Vec2(110.f, 60.f));
+	GetComponent()->GetCollider()->SetScale(Vec2(110.f, 60.f));
 }
 
 CMonster::~CMonster()

@@ -8,6 +8,7 @@
 #include "CTexture.h"
 #include "CPathMgr.h"
 
+#include "CComponent.h"
 #include "CCollisionMgr.h"
 
 #include "CSceneMgr.h"
@@ -38,9 +39,11 @@ void CScene_Start::Enter()
 	CObject* pPlayer = new CPlayer;
 	pPlayer->SetName(L"First Player");
 	pPlayer->SetPos(Vec2(640.f, 384.f));
-	pPlayer->SetScale(Vec2(100.f, 100.f));
+	pPlayer->SetScale(Vec2(100.f, 100.f)); 
 
-	AddObject(pPlayer, GROUP_TYPE::PLAYER);
+	//AddObject(pPlayer, GROUP_TYPE::PLAYER);
+	CreateObject(pPlayer, GROUP_TYPE::PLAYER);
+
 
 	// 진입시 오브젝트 추가
 	CObject* pMonster = new CMonster;
@@ -48,10 +51,10 @@ void CScene_Start::Enter()
 	pMonster->SetPos(Vec2(640.f, 100.f));
 	pMonster->SetScale(Vec2(100.f, 50.f));
 
-	//AddObject(pMonster, GROUP_TYPE::MONSTER);
+	////AddObject(pMonster, GROUP_TYPE::MONSTER);
 
 
-	// 오브젝트 추가하는 이벤트
+	//// 오브젝트 추가하는 이벤트
 	CreateObject(pMonster, GROUP_TYPE::MONSTER);
 
 

@@ -161,6 +161,9 @@
     <ClInclude Include="CScene_Tool.h">
       <Filter>Engine\05. Scene\Scene_Tool</Filter>
     </ClInclude>
+    <ClInclude Include="CComponent.h">
+      <Filter>Engine\07. Component</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CCore.cpp">
@@ -223,6 +226,9 @@
     </ClCompile>
     <ClCompile Include="CScene_Tool.cpp">
       <Filter>Engine\05. Scene\Scene_Tool</Filter>
+    </ClCompile>
+    <ClCompile Include="CComponent.cpp">
+      <Filter>Engine\07. Component</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

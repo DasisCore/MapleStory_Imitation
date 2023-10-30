@@ -5,12 +5,13 @@
 #include "CKeyMgr.h"
 #include "CTimeMgr.h"
 
+#include "CComponent.h"
 #include "CCollider.h"
 
 CObject::CObject()
 	: m_vPos{}
 	, m_vScale{}
-	, m_pCollider(nullptr)
+	, m_pComponent(nullptr)
 	, m_bAlive(true)
 {
 }
@@ -19,26 +20,30 @@ CObject::CObject(const CObject& _origin)
 	: m_strName(_origin.m_strName)
 	, m_vPos(_origin.m_vPos)
 	, m_vScale(_origin.m_vScale)
-	, m_pCollider(nullptr)
+	, m_pComponent(nullptr)
 	, m_bAlive(true)
 {
-	m_pCollider = new CCollider(*_origin.m_pCollider);
-	m_pCollider->m_pOwner = this;
+	m_pComponent = new CComponent(*_origin.m_pComponent);
+	m_pComponent->m_pOwner = this;
+
+	//m_pCollider = new CCollider(*_origin.m_pCollider);
+	//m_pCollider->m_pOwner = this;
 
 }
 
 CObject::~CObject()
 {
-	if (m_pCollider != nullptr)
-	{
-		delete m_pCollider;
-	}
+	if (m_pComponent->GetCollider() != nullptr) delete m_pComponent->GetCollider();
+
+
+
+	if (m_pComponent != nullptr) delete m_pComponent;
 }
 
 
 void CObject::finalupdate()
 {
-	if (m_pCollider) m_pCollider->finalupdate();
+	if (m_pComponent) m_pComponent->finalupdate();
 }
 
 void CObject::render(HDC _dc)
@@ -62,12 +67,18 @@ void CObject::render(HDC _dc)
 
 void CObject::component_render(HDC _dc)
 {
-	if (m_pCollider != nullptr) m_pCollider->render(_dc);
+	if (m_pComponent->GetCollider() != nullptr) m_pComponent->GetCollider()->render(_dc);
 }
 
 
+void CObject::CreateComponent()
+{
+	m_pComponent = new CComponent;
+	m_pComponent->m_pOwner = this;
+}
+
 void CObject::CreateCollider()
 {
-	m_pCollider = new CCollider;
-	m_pCollider->m_pOwner = this;
+	m_pComponent->m_pCollider = new CCollider;
+	m_pComponent->m_pCollider->m_pOwner = m_pComponent->m_pOwner;
 }

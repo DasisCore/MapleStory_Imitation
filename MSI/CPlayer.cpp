@@ -13,6 +13,7 @@
 #include "CPathMgr.h"
 #include "CTexture.h"
 
+#include "CComponent.h"
 #include "CCollider.h"
 
 CPlayer::CPlayer()
@@ -31,10 +32,11 @@ CPlayer::CPlayer()
 	// 위 작업을 CResMgr를 이용
 	m_pTex = CResMgr::GetInst()->LoadTexture(L"PlayerTex", L"texture\\player.bmp");
 
+	CreateComponent();
 	CreateCollider();
 
-	GetCollider()->SetScale(Vec2(700.f, 550.f));
-	GetCollider()->SetOffsetPos(Vec2(0.f, -85.f));
+	GetComponent()->GetCollider()->SetScale(Vec2(700.f, 550.f));
+	GetComponent()->GetCollider()->SetOffsetPos(Vec2(0.f, -85.f));
 }
 
 CPlayer::~CPlayer()

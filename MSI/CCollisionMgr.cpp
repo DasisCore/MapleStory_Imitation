@@ -6,6 +6,7 @@
 #include "CScene.h"
 #include "CObject.h"
 
+#include "CComponent.h"
 #include "CCollider.h"
 
 CCollisionMgr::CCollisionMgr()
@@ -47,16 +48,16 @@ void CCollisionMgr::CollisionGroupUpdate(GROUP_TYPE _eLeft, GROUP_TYPE _eRight)
 	for (size_t i = 0; i < vecLeft.size(); i++)
 	{
 		// 충돌체를 보유하지 않았을 경우
-		if (vecLeft[i]->GetCollider() == nullptr) continue;
+		if (vecLeft[i]->GetComponent()->GetCollider() == nullptr) continue;
 
 		for (size_t j = 0; j < vecRight.size(); j++)
 		{
 			// 충돌체가 없거나 자기 자신일 경우
-			if (vecRight[j]->GetCollider() == nullptr
+			if (vecRight[j]->GetComponent()->GetCollider() == nullptr
 				|| vecLeft[i] == vecRight[j]) continue;
 
-			CCollider* pLeftCol = vecLeft[i]->GetCollider();
-			CCollider* pRightCol = vecRight[j]->GetCollider();
+			CCollider* pLeftCol = vecLeft[i]->GetComponent()->GetCollider();
+			CCollider* pRightCol = vecRight[j]->GetComponent()->GetCollider();
 
 			// 두 충돌체 조합 아이디 생성
 			COLLIDER_ID ID;

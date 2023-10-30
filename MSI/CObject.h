@@ -2,6 +2,7 @@
 
 #include "global.h"
 
+class CComponent;
 class CCollider;
 
 class CObject
@@ -11,7 +12,7 @@ private:
 	Vec2 m_vPos;		// 오브젝트의 위치
 	Vec2 m_vScale;		// 오브젝트의 크기
 
-	CCollider* m_pCollider;
+	CComponent* m_pComponent;
 
 	bool m_bAlive;
 
@@ -32,6 +33,7 @@ private:
 
 
 public:
+	void CreateComponent();
 	void CreateCollider();
 
 	virtual void OnCollision(CCollider* _pOther) {};
@@ -44,7 +46,7 @@ public:
 	virtual void finalupdate() final;	// 더 이상 오버라이딩을 할 수 없음
 	virtual void render(HDC _dc);
 
-	CCollider* GetCollider() { return m_pCollider; }
+	CComponent* GetComponent() { return m_pComponent; }
 	void component_render(HDC _dc);
 
 	// 자기 자신의 복제 버전을 리턴하는 함수
