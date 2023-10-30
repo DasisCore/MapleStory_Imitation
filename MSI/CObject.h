@@ -25,7 +25,6 @@ public:
 	void SetPos(Vec2 _vPos) { m_vPos = _vPos; }
 	void SetScale(Vec2 _vScale) { m_vScale = _vScale; }
 
-
 	bool IsDead() { return !m_bAlive; }
 
 private:
@@ -48,11 +47,13 @@ public:
 	CCollider* GetCollider() { return m_pCollider; }
 	void component_render(HDC _dc);
 
+	// 자기 자신의 복제 버전을 리턴하는 함수
+	virtual CObject* Clone() = 0;
+
 public:
 	CObject();
+	CObject(const CObject& _origin);
 	virtual ~CObject();
-
-
 
 	friend class CEventMgr;
 };

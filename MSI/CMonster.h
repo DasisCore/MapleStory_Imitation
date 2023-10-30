@@ -13,6 +13,7 @@ private:
 
 public:
     virtual void update() override;
+    CMonster* Clone() { return new CMonster(*this); }
 
 public:
     CMonster();

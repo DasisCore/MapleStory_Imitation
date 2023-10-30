@@ -8,7 +8,7 @@ private:
 
 public:
     virtual void update() override;
-
+    CMissile* Clone() { return new CMissile(*this); }
 
 public:
     CMissile();

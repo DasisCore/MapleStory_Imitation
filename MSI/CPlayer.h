@@ -45,6 +45,7 @@ public:
     
     virtual void OnCollisionEnter(CCollider* _pOther) override;
 
+    CPlayer* Clone() { return new CPlayer(*this); }
 
 // юс╫ц
 public:
