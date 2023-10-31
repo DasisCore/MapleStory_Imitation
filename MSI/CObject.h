@@ -1,6 +1,7 @@
 #pragma once
 
 #include "global.h"
+#include "CCamera.h"
 
 class CComponent;
 class CCollider;

@@ -6,10 +6,12 @@
 #include <Windows.h>
 #include <iostream>
 
+#include <math.h>
+#include <assert.h>
+
 #include "define.h"
 #include "struct.h"
 
-#include <assert.h>
 
 // for TransparentBlt
 #pragma comment(lib, "Msimg32.lib")

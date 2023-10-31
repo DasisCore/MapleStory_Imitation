@@ -1,5 +1,6 @@
 #include "global.h"
 #include "CKeyMgr.h"
+#include "CCore.h"
 
 // KEY와 같은 순서로 만들어진 배열
 int g_arrVK[int(KEY::LAST)] =
@@ -79,6 +80,14 @@ void CKeyMgr::update()
 				m_vecKey[i].bPrevPush = false;
 			}
 		}
+
+		// Mouse 위치 계산
+		POINT ptPos = {};
+		GetCursorPos(&ptPos);
+
+		ScreenToClient(CCore::GetInst()->GetMainHwnd(), &ptPos);
+
+		m_vCurMousePos = Vec2(ptPos);
 	}
 	// 윈도우 포커싱 해제 상태
 	else

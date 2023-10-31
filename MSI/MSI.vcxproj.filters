@@ -86,6 +86,9 @@
     <Filter Include="Engine\07. Component\Animator\Animation">
       <UniqueIdentifier>{b9e1bbf3-8af5-4eb6-aab4-f1a4d45d09d0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\03. Manager\Camera">
+      <UniqueIdentifier>{280e9e71-e019-4288-9415-2753070a9e71}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -176,6 +179,9 @@
     <ClInclude Include="CAnimation.h">
       <Filter>Engine\07. Component\Animator\Animation</Filter>
     </ClInclude>
+    <ClInclude Include="CCamera.h">
+      <Filter>Engine\03. Manager\Camera</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CCore.cpp">
@@ -247,6 +253,9 @@
     </ClCompile>
     <ClCompile Include="CAnimation.cpp">
       <Filter>Engine\07. Component\Animator\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="CCamera.cpp">
+      <Filter>Engine\03. Manager\Camera</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

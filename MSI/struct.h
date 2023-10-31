@@ -1,10 +1,28 @@
 #pragma once
 
-
 struct Vec2
 {
 	float x;
 	float y;
+
+public:
+
+	float Length()
+	{
+		return sqrt(x * x + y * y);
+	}
+
+	Vec2& Normalize()
+	{
+		float fLen = Length();
+
+		assert(fLen != 0.f);
+
+		x /= fLen;
+		y /= fLen;
+
+		return *this;
+	}
 
 public:
 
@@ -58,6 +76,23 @@ public:
 	Vec2 operator * (int _i)
 	{
 		return Vec2(x * (float)_i, y * (float)_i);
+	}
+
+	Vec2 operator * (float _f)
+	{
+		return Vec2(x * _f, y * _f);
+	}
+
+	Vec2 operator / (Vec2 _vOther)
+	{
+		assert(!(0.f == _vOther.x || 0.f == _vOther.y));
+		return Vec2(x / _vOther.x, y / _vOther.y);
+	}
+
+	Vec2 operator / (float _f)
+	{
+		assert(!(0.f == _f));
+		return Vec2(x / _f, y / _f);
 	}
 
 public:

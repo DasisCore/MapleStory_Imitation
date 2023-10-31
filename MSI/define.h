@@ -20,6 +20,8 @@
 #define KEY_HOLD(key) KEY_CHECK(key, KEY_STATE::HOLD)
 #define KEY_AWAY(key) KEY_CHECK(key, KEY_STATE::AWAY)
 
+#define MOUSE_POS CKeyMgr::GetInst()->GetMousePos()
+
 
 enum class SCENE_TYPE
 {

@@ -42,6 +42,7 @@ class CKeyMgr
 
 private:
 	vector<tKeyInfo> m_vecKey;
+	Vec2 m_vCurMousePos;
 
 public:
 	void init();
@@ -50,5 +51,7 @@ public:
 public:
 	// 해당 키가 무슨 상태인지 체크하여 리턴해준다.
 	KEY_STATE GetKeyState(KEY _eKey) { return m_vecKey[(int)_eKey].eState; }
+	// 마우스의 현재 위치
+	Vec2 GetMousePos() { return m_vCurMousePos;	}
 };
 
