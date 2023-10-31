@@ -34,7 +34,7 @@ private:
     int m_iDir;
     int m_iPrevDir;
 
-    CTexture* m_pTex;
+    //CTexture* m_pTex;
 
 public:
     virtual void update() override;
@@ -45,7 +45,7 @@ public:
     
     virtual void OnCollisionEnter(CCollider* _pOther) override;
 
-    CPlayer* Clone() { return new CPlayer(*this); }
+    virtual CPlayer* Clone() override { return new CPlayer(*this); }
 
 // юс╫ц
 public:

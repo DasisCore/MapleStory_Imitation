@@ -80,6 +80,12 @@
     <Filter Include="Engine\05. Scene\Scene_Tool">
       <UniqueIdentifier>{f9e1b2af-4515-4e48-8ddf-7b3d72bde5fc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\07. Component\Animator">
+      <UniqueIdentifier>{aa14d675-db42-4c24-9a37-c94847e636aa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\07. Component\Animator\Animation">
+      <UniqueIdentifier>{b9e1bbf3-8af5-4eb6-aab4-f1a4d45d09d0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -164,6 +170,12 @@
     <ClInclude Include="CComponent.h">
       <Filter>Engine\07. Component</Filter>
     </ClInclude>
+    <ClInclude Include="CAnimator.h">
+      <Filter>Engine\07. Component\Animator</Filter>
+    </ClInclude>
+    <ClInclude Include="CAnimation.h">
+      <Filter>Engine\07. Component\Animator\Animation</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CCore.cpp">
@@ -229,6 +241,12 @@
     </ClCompile>
     <ClCompile Include="CComponent.cpp">
       <Filter>Engine\07. Component</Filter>
+    </ClCompile>
+    <ClCompile Include="CAnimator.cpp">
+      <Filter>Engine\07. Component\Animator</Filter>
+    </ClCompile>
+    <ClCompile Include="CAnimation.cpp">
+      <Filter>Engine\07. Component\Animator\Animation</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

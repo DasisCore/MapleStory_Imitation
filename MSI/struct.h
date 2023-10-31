@@ -15,6 +15,11 @@ public:
 		return *this;
 	}
 	
+	Vec2 operator + (float _f)
+	{
+		return Vec2(x + _f, y + _f);
+	}
+
 	Vec2 operator + (Vec2 _vOther)
 	{
 		return Vec2(x + _vOther.x, y + _vOther.y);
@@ -26,7 +31,7 @@ public:
 		y += _f;
 	}
 
-	Vec2 operator += (Vec2 _vOther)
+	void operator += (Vec2 _vOther)
 	{
 		x += _vOther.x;
 		y += _vOther.y;
@@ -48,6 +53,11 @@ public:
 	{
 		x -= _vOther.x;
 		y -= _vOther.y;
+	}
+
+	Vec2 operator * (int _i)
+	{
+		return Vec2(x * (float)_i, y * (float)_i);
 	}
 
 public:

@@ -4,6 +4,7 @@
 
 class CComponent;
 class CCollider;
+class CAnimator;
 
 class CObject
 {
@@ -35,6 +36,7 @@ private:
 public:
 	void CreateComponent();
 	void CreateCollider();
+	void CreateAnimation();
 
 	virtual void OnCollision(CCollider* _pOther) {};
 	virtual void OnCollisionEnter(CCollider* _pOther) {};

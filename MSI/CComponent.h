@@ -2,17 +2,20 @@
 
 class CObject;
 class CCollider;
+class CAnimator;
 
 class CComponent
 {
 private:
 	CObject* m_pOwner;
 	CCollider* m_pCollider;
+	CAnimator* m_pAnimator;
 
 public:
 	CObject* GetObj() { return m_pOwner; }
 	
 	CCollider* GetCollider() { return m_pCollider; }
+	CAnimator* GetAnimator() { return m_pAnimator; }
 	
 
 public:

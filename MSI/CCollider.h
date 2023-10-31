@@ -48,5 +48,6 @@ public:
 	~CCollider();
 
 	friend class CObject;
+	friend class CComponent;
 };
 

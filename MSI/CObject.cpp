@@ -7,6 +7,7 @@
 
 #include "CComponent.h"
 #include "CCollider.h"
+#include "CAnimator.h"
 
 CObject::CObject()
 	: m_vPos{}
@@ -23,20 +24,17 @@ CObject::CObject(const CObject& _origin)
 	, m_pComponent(nullptr)
 	, m_bAlive(true)
 {
-	m_pComponent = new CComponent(*_origin.m_pComponent);
-	m_pComponent->m_pOwner = this;
-
-	//m_pCollider = new CCollider(*_origin.m_pCollider);
-	//m_pCollider->m_pOwner = this;
-
+	if (_origin.m_pComponent)
+	{
+		m_pComponent = new CComponent(*_origin.m_pComponent);
+		m_pComponent->GetCollider()->m_pOwner = this;
+		m_pComponent->GetAnimator()->m_pOwner = this;
+		m_pComponent->m_pOwner = this;
+	}
 }
 
 CObject::~CObject()
 {
-	if (m_pComponent->GetCollider() != nullptr) delete m_pComponent->GetCollider();
-
-
-
 	if (m_pComponent != nullptr) delete m_pComponent;
 }
 
@@ -68,6 +66,9 @@ void CObject::render(HDC _dc)
 void CObject::component_render(HDC _dc)
 {
 	if (m_pComponent->GetCollider() != nullptr) m_pComponent->GetCollider()->render(_dc);
+	
+	if (m_pComponent->GetAnimator() != nullptr) m_pComponent->GetAnimator()->render(_dc);
+
 }
 
 
@@ -80,5 +81,11 @@ void CObject::CreateComponent()
 void CObject::CreateCollider()
 {
 	m_pComponent->m_pCollider = new CCollider;
-	m_pComponent->m_pCollider->m_pOwner = m_pComponent->m_pOwner;
+	m_pComponent->m_pCollider->m_pOwner = this;
+}
+
+void CObject::CreateAnimation()
+{
+	m_pComponent->m_pAnimator = new CAnimator;
+	m_pComponent->m_pAnimator->m_pOwner = this;
 }

@@ -15,6 +15,8 @@
 
 #include "CComponent.h"
 #include "CCollider.h"
+#include "CAnimator.h"
+#include "CAnimation.h"
 
 CPlayer::CPlayer()
 	: m_eCurState(PLAYER_STATE::IDLE)
@@ -30,13 +32,20 @@ CPlayer::CPlayer()
 	//m_pTex->Load(strFilePath);
 
 	// 위 작업을 CResMgr를 이용
-	m_pTex = CResMgr::GetInst()->LoadTexture(L"PlayerTex", L"texture\\player.bmp");
 
 	CreateComponent();
-	CreateCollider();
 
+	CreateCollider();
 	GetComponent()->GetCollider()->SetScale(Vec2(700.f, 550.f));
 	GetComponent()->GetCollider()->SetOffsetPos(Vec2(0.f, -85.f));
+
+	CTexture* pTex = CResMgr::GetInst()->LoadTexture(L"PlayerTex", L"Texture\\link_0.bmp");
+	CreateAnimation();
+	GetComponent()->GetAnimator()->CreateAnimation(L"WALK_DOWN", pTex, Vec2(0.f, 520.f), Vec2(120.f, 130.f), Vec2(120.f, 0), 0.1f, 10);
+	GetComponent()->GetAnimator()->Play(L"WALK_DOWN", true);
+
+	CAnimation* pAnim = GetComponent()->GetAnimator()->FindAnimation(L"WALK_DOWN");
+	pAnim->GetFrame(0).vOffset = Vec2(0.f, -20.f);
 }
 
 CPlayer::~CPlayer()
@@ -49,25 +58,27 @@ void CPlayer::update()
 
 	if (KEY_HOLD(KEY::W))
 	{
-		vPos.y -= 100.f * fDT;
+		vPos.y -= 200.f * fDT;
 	}
 
 	if (KEY_HOLD(KEY::A))
 	{
-		vPos.x -= 100.f * fDT;
+		vPos.x -= 200.f * fDT;
 	}
 
 	if (KEY_HOLD(KEY::S))
 	{
-		vPos.y += 100.f * fDT;
+		vPos.y += 200.f * fDT;
 	}
 
 	if (KEY_HOLD(KEY::D))
 	{
-		vPos.x += 100.f * fDT;
+		vPos.x += 200.f * fDT;
 	}
 
 	SetPos(vPos);
+
+	GetComponent()->GetAnimator()->update();
 }
 
 void CPlayer::CreateMissile()
@@ -90,10 +101,10 @@ void CPlayer::OnCollisionEnter(CCollider* _pOther)
 
 void CPlayer::render(HDC _dc)
 {
-	int iWidth = m_pTex->Width();
-	int iHeight = m_pTex->Height();
+	//int iWidth = m_pTex->Width();
+	//int iHeight = m_pTex->Height();
 
-	Vec2 vPos = GetPos();
+	//Vec2 vPos = GetPos();
 
 	//BitBlt(_dc
 	//	, int(vPos.x - (float)(iWidth / 2.f))
@@ -103,15 +114,18 @@ void CPlayer::render(HDC _dc)
 	//	, m_pTex->GetDC()
 	//	, 0, 0, SRCCOPY);
 
-	TransparentBlt(_dc
-		, int(vPos.x - (float)(iWidth / 2.f))
-		, int(vPos.y - (float)(iHeight / 2.f))
-		, iWidth, iHeight
-		, m_pTex->GetDC()
-		, 0, 0, iWidth, iHeight
-		, RGB(255, 0, 255)
-	);
+	//TransparentBlt(_dc
+	//	, int(vPos.x - (float)(iWidth / 2.f))
+	//	, int(vPos.y - (float)(iHeight / 2.f))
+	//	, iWidth, iHeight
+	//	, m_pTex->GetDC()
+	//	, 0, 0, iWidth, iHeight
+	//	, RGB(255, 0, 255)
+	//);
 
-	// 컴포넌트 충돌체 등등 렌터링
+
+
+
+	// 컴포넌트 충돌체, 애니메이션등 렌더링
 	component_render(_dc);
 }

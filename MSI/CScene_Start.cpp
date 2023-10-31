@@ -44,6 +44,10 @@ void CScene_Start::Enter()
 	//AddObject(pPlayer, GROUP_TYPE::PLAYER);
 	CreateObject(pPlayer, GROUP_TYPE::PLAYER);
 
+	//CObject* pOtherPlayer = pPlayer->Clone();
+	//pOtherPlayer->SetPos(Vec2(100.f, 400.f));
+	//CreateObject(pOtherPlayer, GROUP_TYPE::PLAYER);
+
 
 	// 진입시 오브젝트 추가
 	CObject* pMonster = new CMonster;
