@@ -11,7 +11,7 @@ CCamera::CCamera()
 	: m_pTargetObj(nullptr)
 	, m_fTime(0.5f)
 	, m_fSpeed(0.f)
-	, m_fAccTime(0.f)
+	, m_fAccTime(0.5f)
 {
 
 }
@@ -66,7 +66,11 @@ void CCamera::CalDiff()
 	else
 	{
 		Vec2 vLookDir = m_vLookAt - m_vPrevLookAt;
-		m_vCurLookAt = m_vPrevLookAt + vLookDir.Normalize() * m_fSpeed * fDT;
+
+		if (!m_vLookAt.IsZero())
+		{
+			m_vCurLookAt = m_vPrevLookAt + vLookDir.Normalize() * m_fSpeed * fDT;
+		}
 	}
 
 	Vec2 vResolution = CCore::GetInst()->GetResolution();

@@ -32,7 +32,7 @@ void CSceneMgr::init()
 	m_arrScene[(UINT)SCENE_TYPE::TOOL] = new CScene_Tool;
 	m_arrScene[(UINT)SCENE_TYPE::TOOL]->SetName(L"Tool Scene");
 
-	m_pCurScene = m_arrScene[(UINT)SCENE_TYPE::START];
+	m_pCurScene = m_arrScene[(UINT)SCENE_TYPE::TOOL];
 	m_pCurScene->Enter();
 }
 
