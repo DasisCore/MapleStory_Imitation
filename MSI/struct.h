@@ -22,6 +22,7 @@ public:
 	{
 		float fLen = Length();
 
+		// 디버깅용 함수 (치명적인 오류 가능성)
 		assert(fLen != 0.f);
 
 		x /= fLen;
@@ -105,6 +106,11 @@ public:
 	Vec2()
 		: x(0.f)
 		, y(0.f)
+	{}
+	
+	Vec2(int _x, int _y)
+		:x((float)_x)
+		,y((float)_y)
 	{}
 
 	Vec2(float _x, float _y)

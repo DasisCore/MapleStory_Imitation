@@ -45,7 +45,7 @@ int CCore::init(HWND _hWnd, POINT _ptResolution)
 	ChangeWindowSize(GetResolution(), false);
 
 	// 메뉴바 삭제
-	SetMenu(m_hWnd, nullptr);
+	//SetMenu(m_hWnd, nullptr);
 
 	// =======================================
 	// 더블 버퍼링을 위한 멤버 변수 초기화

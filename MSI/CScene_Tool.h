@@ -7,6 +7,10 @@ private:
 
 
 public:
+    void SetTileIdx();
+
+
+public:
     virtual void update() override;
     virtual void Enter() override;
     virtual void Exit() override;

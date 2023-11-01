@@ -51,8 +51,8 @@ void CScene_Start::Enter()
 	pPlayer->SetPos(Vec2(640.f, 384.f));
 	pPlayer->SetScale(Vec2(100.f, 100.f)); 
 
-	//AddObject(pPlayer, GROUP_TYPE::PLAYER);
-	CreateObject(pPlayer, GROUP_TYPE::PLAYER);
+	AddObject(pPlayer, GROUP_TYPE::PLAYER);
+	//CreateObject(pPlayer, GROUP_TYPE::PLAYER);
 
 	//CObject* pOtherPlayer = pPlayer->Clone();
 	//pOtherPlayer->SetPos(Vec2(100.f, 400.f));
