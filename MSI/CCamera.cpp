@@ -67,7 +67,7 @@ void CCamera::CalDiff()
 	{
 		Vec2 vLookDir = m_vLookAt - m_vPrevLookAt;
 
-		if (!m_vLookAt.IsZero())
+		if (!vLookDir.IsZero())
 		{
 			m_vCurLookAt = m_vPrevLookAt + vLookDir.Normalize() * m_fSpeed * fDT;
 		}

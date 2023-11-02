@@ -33,7 +33,7 @@ CCollider::~CCollider()
 {
 }
 
-void CCollider::update()
+void CCollider::finalupdate()
 {
 	// 오브젝트의 위치 따라가기
 	Vec2 vObjectPos = GetObj()->GetPos();

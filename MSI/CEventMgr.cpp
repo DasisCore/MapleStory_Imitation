@@ -6,6 +6,7 @@
 
 #include "CSceneMgr.h"
 #include "CScene.h"
+#include "CUIMgr.h"
 
 CEventMgr::CEventMgr()
 {
@@ -74,7 +75,7 @@ void CEventMgr::Excute(const tEvent& _eve)
 		CSceneMgr::GetInst()->ChangeScene((SCENE_TYPE)_eve.lParam);
 
 		//// 포커스 UI 해제 (이전 Scene 의 UI를 가리키고 있기 때문)
-		//CUIMgr::GetInst()->SetFocusedUI(nullptr);
+		CUIMgr::GetInst()->SetFocusedUI(nullptr);
 	}
 		break;
 

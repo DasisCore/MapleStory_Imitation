@@ -46,7 +46,7 @@ public:
 
 public:
 	virtual void update() = 0;
-	virtual void finalupdate() final;	// 더 이상 오버라이딩을 할 수 없음
+	virtual void finalupdate();	// 더 이상 오버라이딩을 할 수 없음
 	virtual void render(HDC _dc);
 
 	CComponent* GetComponent() { return m_pComponent; }

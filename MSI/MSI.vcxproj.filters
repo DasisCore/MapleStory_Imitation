@@ -92,6 +92,18 @@
     <Filter Include="Engine\04. Object\Tile">
       <UniqueIdentifier>{2ee41b6f-410c-4cc9-95b7-3ed329a49a25}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\04. Object\UI">
+      <UniqueIdentifier>{180611a9-8024-4152-8bff-5b9b79a4893e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\03. Manager\UIMgr">
+      <UniqueIdentifier>{a4639533-6f7f-426b-ad9f-4a669423a4c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\04. Object\UI\PanelUI">
+      <UniqueIdentifier>{958ed04a-ceaa-428e-a519-006df195e094}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\04. Object\UI\BtnUI">
+      <UniqueIdentifier>{4b4381de-cefa-4fab-96e4-91ede3dc5374}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -130,9 +142,6 @@
     </ClInclude>
     <ClInclude Include="CScene_Start.h">
       <Filter>Engine\05. Scene\Scene_Start</Filter>
-    </ClInclude>
-    <ClInclude Include="CObject.h">
-      <Filter>Engine\04. Object</Filter>
     </ClInclude>
     <ClInclude Include="CPlayer.h">
       <Filter>Engine\04. Object\Player</Filter>
@@ -188,6 +197,21 @@
     <ClInclude Include="CTile.h">
       <Filter>Engine\04. Object\Tile</Filter>
     </ClInclude>
+    <ClInclude Include="CUI.h">
+      <Filter>Engine\04. Object\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="CObject.h">
+      <Filter>Engine\04. Object</Filter>
+    </ClInclude>
+    <ClInclude Include="CUIMgr.h">
+      <Filter>Engine\03. Manager\UIMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="CPanelUI.h">
+      <Filter>Engine\04. Object\UI\PanelUI</Filter>
+    </ClInclude>
+    <ClInclude Include="CBtnUI.h">
+      <Filter>Engine\04. Object\UI\BtnUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CCore.cpp">
@@ -208,9 +232,6 @@
     </ClCompile>
     <ClCompile Include="CScene_Start.cpp">
       <Filter>Engine\05. Scene\Scene_Start</Filter>
-    </ClCompile>
-    <ClCompile Include="CObject.cpp">
-      <Filter>Engine\04. Object</Filter>
     </ClCompile>
     <ClCompile Include="CPlayer.cpp">
       <Filter>Engine\04. Object\Player</Filter>
@@ -265,6 +286,21 @@
     </ClCompile>
     <ClCompile Include="CTile.cpp">
       <Filter>Engine\04. Object\Tile</Filter>
+    </ClCompile>
+    <ClCompile Include="CObject.cpp">
+      <Filter>Engine\04. Object</Filter>
+    </ClCompile>
+    <ClCompile Include="CUI.cpp">
+      <Filter>Engine\04. Object\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="CUIMgr.cpp">
+      <Filter>Engine\03. Manager\UIMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="CPanelUI.cpp">
+      <Filter>Engine\04. Object\UI\PanelUI</Filter>
+    </ClCompile>
+    <ClCompile Include="CBtnUI.cpp">
+      <Filter>Engine\04. Object\UI\BtnUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

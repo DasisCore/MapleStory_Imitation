@@ -37,7 +37,7 @@ public:
 	void OnCollisionExit(CCollider* _pOther);
 
 public:
-	void update();
+	void finalupdate();
 	void render(HDC _dc);
 
 	CCollider& operator = (CCollider* _origin) = delete;

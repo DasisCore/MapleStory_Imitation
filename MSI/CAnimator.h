@@ -22,8 +22,9 @@ public:
 	CAnimation* FindAnimation(const wstring& _strName);
 	void Play(const wstring& _strName, bool _bRepeat);
 
-	void render(HDC _dc);
 	void update();
+	void finalupdate();
+	void render(HDC _dc);
 
 
 public:

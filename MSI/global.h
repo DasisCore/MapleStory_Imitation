@@ -16,6 +16,9 @@
 // for TransparentBlt
 #pragma comment(lib, "Msimg32.lib")
 
+#include <list>
+using std::list;
+
 
 #include <vector>
 using std::vector;
