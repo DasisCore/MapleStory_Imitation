@@ -19,6 +19,10 @@ public:
 public:
     virtual void update() override;
     virtual void render(HDC _dc) override;
+
+    virtual void Save(FILE* _pFile);
+    virtual void Load(FILE* _pFile);
+
     virtual CTile* Clone() override { return new CTile(*this); }
 
 public:

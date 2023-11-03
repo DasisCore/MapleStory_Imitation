@@ -8,6 +8,8 @@
 #include "CTexture.h"
 #include "CTile.h"
 
+#include "CPathMgr.h"
+
 
 
 
@@ -92,6 +94,8 @@ void CScene::DeleteAll()
 
 void CScene::CreateTile(UINT _iXCount, UINT _iYCount)
 {
+	DeleteGroup(GROUP_TYPE::TILE);
+
 	m_iTileX = _iXCount;
 	m_iTileY = _iYCount;
 
@@ -99,7 +103,7 @@ void CScene::CreateTile(UINT _iXCount, UINT _iYCount)
 
 	for (UINT i = 0; i < _iXCount; i++)
 	{
-		for (UINT j = 0; j < _iYCount; j++)
+		for (UINT j = 0; j < _iYCount; j++)	
 		{
 			CTile* pTile = new CTile;
 
@@ -110,4 +114,37 @@ void CScene::CreateTile(UINT _iXCount, UINT _iYCount)
 		}
 	}
 
+}
+
+void CScene::LoadTile(const wstring& _strRelativePath)
+{
+	wstring strFilePath = CPathMgr::GetInst()->GetContentPath();
+	strFilePath += _strRelativePath;
+
+	FILE* pFile = nullptr;
+
+	_wfopen_s(&pFile, strFilePath.c_str(), L"rb");
+
+	assert(pFile);
+
+	UINT xCount;
+	UINT yCount;
+
+	// 타일 가로 세로 개수 불러오기
+	fread(&xCount, sizeof(UINT), 1, pFile);
+	fread(&yCount, sizeof(UINT), 1, pFile);
+
+	// 타일 생성
+	CreateTile(xCount, yCount);
+
+	// 타일들의 개별 데이터 읽어오기
+	const vector<CObject*>& vecTile = GetGroupObject(GROUP_TYPE::TILE);
+
+	for (size_t i = 0; i < vecTile.size(); i++)
+	{
+		((CTile*)vecTile[i])->Load(pFile);
+	}
+
+
+	fclose(pFile);
 }

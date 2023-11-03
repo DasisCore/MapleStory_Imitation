@@ -76,6 +76,10 @@ void CScene_Start::Enter()
 	CreateObject(pMonster, GROUP_TYPE::MONSTER);
 
 
+	// ex-> 타일 로딩
+
+
+
 	// 충돌 지정
 	CCollisionMgr::GetInst()->CheckGroup(GROUP_TYPE::PLAYER, GROUP_TYPE::MONSTER);
 

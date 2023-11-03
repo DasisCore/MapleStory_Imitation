@@ -18,6 +18,8 @@
 #include "CBtnUI.h"
 #include "CUIMgr.h"
 
+#include "CPathMgr.h"
+
 void ChangeScene(DWORD_PTR, DWORD_PTR);
 
 CScene_Tool::CScene_Tool()
@@ -83,7 +85,15 @@ void CScene_Tool::update()
 	// 
 	if (KEY_TAP(KEY::LSHIFT))
 	{
-		CUIMgr::GetInst()->SetFocusedUI(m_pUI);
+		//CUIMgr::GetInst()->SetFocusedUI(m_pUI);
+
+		SaveTileData();
+	}
+
+	if (KEY_TAP(KEY::CTRL))
+	{
+		//CUIMgr::GetInst()->SetFocusedUI(m_pUI);
+		LoadTileDate();
 	}
 }
 
@@ -109,6 +119,89 @@ void CScene_Tool::SetTileIdx()
 		const vector<CObject*>& vecTile = GetGroupObject(GROUP_TYPE::TILE);
 		((CTile*)vecTile[iIdx])->AddImgIdx();
 	}
+}
+
+void CScene_Tool::SaveTileData()
+{
+	OPENFILENAME ofn = {};
+	
+	wchar_t szName[256] = {};
+
+	ofn.lStructSize = sizeof(OPENFILENAME);
+	ofn.hwndOwner = CCore::GetInst()->GetMainHwnd();
+	ofn.lpstrFile = szName;
+	ofn.nMaxFile = sizeof(szName);
+	ofn.lpstrFilter = L"ALL\0*.*\0Tile\0*.tile\0";
+	ofn.nFilterIndex = 1;
+	ofn.lpstrFileTitle = nullptr;
+	ofn.nMaxFileTitle = 0;
+
+	wstring strTileFolder = CPathMgr::GetInst()->GetContentPath();
+	strTileFolder += L"Tile";
+
+	ofn.lpstrInitialDir = strTileFolder.c_str();
+	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+
+	// Modal 방식
+	if (GetSaveFileName(&ofn))
+	{
+		SaveTile(szName);
+	};
+}
+
+void CScene_Tool::LoadTileDate()
+{
+	OPENFILENAME ofn = {};
+
+	wchar_t szName[256] = {};
+
+	ofn.lStructSize = sizeof(OPENFILENAME);
+	ofn.hwndOwner = CCore::GetInst()->GetMainHwnd();
+	ofn.lpstrFile = szName;
+	ofn.nMaxFile = sizeof(szName);
+	ofn.lpstrFilter = L"ALL\0*.*\0Tile\0*.tile\0";
+	ofn.nFilterIndex = 1;
+	ofn.lpstrFileTitle = nullptr;
+	ofn.nMaxFileTitle = 0;
+
+	wstring strTileFolder = CPathMgr::GetInst()->GetContentPath();
+	strTileFolder += L"Tile";
+
+	ofn.lpstrInitialDir = strTileFolder.c_str();
+	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+
+	// Modal 방식
+	if (GetOpenFileName(&ofn))
+	{
+		wstring strRelativePath = CPathMgr::GetInst()->GetRelativePath(szName);
+		LoadTile(strRelativePath);
+	};
+}
+
+void CScene_Tool::SaveTile(const wstring& _strFilePath)
+{
+	// 커널 오브젝트
+	FILE* pFile = nullptr;
+	_wfopen_s(&pFile, _strFilePath.c_str(), L"wb");
+
+	assert(pFile);
+
+	// 타일 가로 세로 개수 저장
+	UINT xCount = GetTileX();
+	UINT yCount = GetTileY();
+
+	fwrite(&xCount, sizeof(UINT), 1, pFile);
+	fwrite(&yCount, sizeof(UINT), 1, pFile);
+
+	// 모든 타일들의 개별 데이터를 저장한다.
+	const vector<CObject*>& vecTile = GetGroupObject(GROUP_TYPE::TILE);
+
+	for (size_t i = 0; i < vecTile.size(); i++)
+	{
+		((CTile*)vecTile[i])->Save(pFile);
+	}
+
+	fclose(pFile);
 }
 
 

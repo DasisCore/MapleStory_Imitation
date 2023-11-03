@@ -82,6 +82,4 @@ void CEventMgr::Excute(const tEvent& _eve)
 	default:
 		break;
 	}
-
-
 }

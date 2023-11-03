@@ -9,6 +9,12 @@ private:
 public:
     void SetTileIdx();
 
+    void SaveTileData();
+    void LoadTileDate();
+    void SaveTile(const wstring& _strFilePath);
+
+
+
 
 public:
     virtual void update() override;
