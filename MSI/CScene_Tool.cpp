@@ -49,7 +49,9 @@ void CScene_Tool::Enter()
 	pBtnUI->SetName(L"ChildUI");
 	pBtnUI->SetScale(Vec2(100.f, 40.f));
 	pBtnUI->SetPos(Vec2(0.f, 0.f));
-	pBtnUI->SetClickCallBack(ChangeScene, 0, 0);
+	//pBtnUI->SetClickCallBack(ChangeScene, 0, 0);
+	// tool4
+	pBtnUI->SetClickCallBack(this, (SCENE_MEMFUNC)&CScene_Tool::SaveTileData);
 
 	pPanelUI->AddChild(pBtnUI);
 
@@ -83,12 +85,13 @@ void CScene_Tool::update()
 	//	ChangeScene(SCENE_TYPE::START);
 	//}
 	// 
-	if (KEY_TAP(KEY::LSHIFT))
-	{
-		//CUIMgr::GetInst()->SetFocusedUI(m_pUI);
 
-		SaveTileData();
-	}
+	//if (KEY_TAP(KEY::LSHIFT))
+	//{
+	//	//CUIMgr::GetInst()->SetFocusedUI(m_pUI);
+
+	//	SaveTileData();
+	//}
 
 	if (KEY_TAP(KEY::CTRL))
 	{
