@@ -87,6 +87,9 @@ void CScene_Start::Enter()
 	Vec2 vResolution = CCore::GetInst()->GetResolution();
 	CCamera::GetInst()->SetLookAt(vResolution / 2.f);
 
+	// Camera 효과 지정
+	CCamera::GetInst()->FadeOut(2.f);
+
 }
 
 void CScene_Start::Exit()

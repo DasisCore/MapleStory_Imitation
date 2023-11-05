@@ -127,5 +127,29 @@ void CPlayer::render(HDC _dc)
 
 
 	// 컴포넌트 충돌체, 애니메이션등 렌더링
-	component_render(_dc);
+	//component_render(_dc);
+
+
+	// 알파블렌딩 연습. 임시 텍스처 렌더
+	CTexture* pTex = CResMgr::GetInst()->LoadTexture(L"Player", L"Texture\\Player_A.bmp");
+
+	Vec2 vPos = GetPos();
+	vPos = CCamera::GetInst()->GetRenderPos(vPos);
+	float width = (float)pTex->Width();
+	float height = (float)pTex->Height();
+
+	BLENDFUNCTION bf = {};
+	bf.BlendOp = AC_SRC_OVER;
+	bf.BlendFlags = 0;
+	bf.AlphaFormat = AC_SRC_ALPHA;
+	bf.SourceConstantAlpha = 255;
+
+	AlphaBlend(_dc
+		, (int)(vPos.x - width / 2.f)
+		, (int)(vPos.y - height / 2.f)
+		, (int)(width), (int)(height)
+		, pTex->GetDC()
+		, 0, 0, (int)(width), (int)(height)
+		, bf
+	);
 }

@@ -1,5 +1,7 @@
 #pragma once
 
+class CTexture;
+
 class CCore
 {
 	SINGLE(CCore);
@@ -10,8 +12,7 @@ private:
 	HDC m_hDC;				// 메인 윈도우 DC
 
 	// 더블 버퍼링을 위한 멤버 변수
-	HDC m_memDC;
-	HBITMAP m_hBit;
+	CTexture* m_pMemTex;
 
 	HBRUSH m_arrBrush[(UINT)BRUSH_TYPE::END];
 	HPEN m_arrPen[(UINT)PEN_TYPE::END];

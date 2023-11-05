@@ -81,7 +81,7 @@ void CKeyMgr::update()
 			}
 		}
 
-		// Mouse 위치 계산
+		// Mouse 위치 계산	// 해당 윈도우가 포커싱 중일 때, 한번은 창 밖이 클릭이 가능함. 버그 고쳐야 함.
 		POINT ptPos = {};
 		GetCursorPos(&ptPos);
 
