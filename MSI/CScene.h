@@ -1,5 +1,7 @@
 #pragma once
 
+#include "CMonFactory.h"
+
 class CObject;
 
 class CScene
@@ -11,6 +13,8 @@ private:
 	UINT m_iTileX;		// 타일 가로 개수
 	UINT m_iTileY;		// 타일 세로 개수
 
+	CObject* m_pPlayer;
+
 
 public:
 	void SetName(const wstring _strName) { m_strName = _strName; }
@@ -18,6 +22,8 @@ public:
 
 	UINT GetTileX() { return m_iTileX; }
 	UINT GetTileY() { return m_iTileY; }
+
+	CObject* GetPlayer() { return m_pPlayer; }
 
 	virtual void finalupdate();		// 작업을 마무리해주는 업데이트
 	virtual void render(HDC _dc);
@@ -34,6 +40,7 @@ public:
 
 public:
 	void AddObject(CObject* _pObj, GROUP_TYPE _eType) { m_vecObj[(UINT)_eType].push_back(_pObj); }
+	void RegisterPlayer(CObject* _pPlayer) { m_pPlayer = _pPlayer; }
 	void DeleteGroup(GROUP_TYPE _eTarget);
 	void DeleteAll();
 

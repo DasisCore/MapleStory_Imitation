@@ -4,12 +4,11 @@
 #include "CComponent.h"
 #include "CCollider.h"
 
+#include "AI.h"
+
 CMonster::CMonster()
-	: m_fHP(0.f)
-	, m_fSpeed(0.f)
-	, m_fRecogRange(0.f)
-	, m_fAttRange(0.f)
-	, m_fAtt(0.f)
+	: m_tInfo{}
+	, m_pAI(nullptr)
 {
 	CreateComponent();
 	CreateCollider();
@@ -18,10 +17,19 @@ CMonster::CMonster()
 
 CMonster::~CMonster()
 {
+	if (m_pAI != nullptr)
+	{
+		delete m_pAI;
+	}
+}
+
+void CMonster::SetAI(AI* _pAI)
+{
+	m_pAI = _pAI;
+	m_pAI->m_pOwner = this;
 }
 
 void CMonster::update()
 {
-	Vec2 vCurPos = GetPos();
-
+	m_pAI->update();
 }

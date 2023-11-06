@@ -28,14 +28,17 @@ CScene_Tool::CScene_Tool()
 
 CScene_Tool::~CScene_Tool()
 {
+
 }
 
 
 void CScene_Tool::Enter()
 {
+	// 메뉴 바 붙이기
+	CCore::GetInst()->DockMenu();
+
 	// 타일 생성
 	CreateTile(5, 5);
-	
 
 	// UI 하나 만들어보기
 	Vec2 vResolution = CCore::GetInst()->GetResolution();
@@ -80,11 +83,11 @@ void CScene_Tool::update()
 
 	SetTileIdx();
 
-	//if (KEY_TAP(KEY::ENTER))
-	//{
-	//	ChangeScene(SCENE_TYPE::START);
-	//}
-	// 
+	if (KEY_TAP(KEY::ENTER))
+	{
+		ChangeScene(SCENE_TYPE::START);
+	}
+	 
 
 	//if (KEY_TAP(KEY::LSHIFT))
 	//{
@@ -210,6 +213,8 @@ void CScene_Tool::SaveTile(const wstring& _strFilePath)
 
 void CScene_Tool::Exit()
 {
+	CCore::GetInst()->DivideMenu();
+
 	DeleteAll();
 
 	CCollisionMgr::GetInst()->Reset();

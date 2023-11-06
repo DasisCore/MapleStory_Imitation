@@ -16,6 +16,9 @@
 #include "CKeyMgr.h"
 
 #include "CCamera.h"
+#include "AI.h"
+#include "CIdleState.h"
+#include "CTraceState.h"
 
 CScene_Start::CScene_Start()
 {
@@ -51,6 +54,8 @@ void CScene_Start::Enter()
 	pPlayer->SetPos(Vec2(640.f, 384.f));
 	pPlayer->SetScale(Vec2(100.f, 100.f)); 
 
+	RegisterPlayer(pPlayer);
+
 	AddObject(pPlayer, GROUP_TYPE::PLAYER);
 	//CreateObject(pPlayer, GROUP_TYPE::PLAYER);
 
@@ -61,30 +66,19 @@ void CScene_Start::Enter()
 
 	//CCamera::GetInst()->SetTarget(pPlayer);
 
+	// 몬스터 배치
+	Vec2 vResolution = CCore::GetInst()->GetResolution();
+	CMonster* pMon = CMonFactory::CreateMonter(MON_TYPE::NORMAL, vResolution / 2.f - Vec2(0.f, 300.f));
+	AddObject(pMon, GROUP_TYPE::MONSTER);
 
-
-	// 진입시 오브젝트 추가
-	CObject* pMonster = new CMonster;
-	pMonster->SetName(L"First Monster");
-	pMonster->SetPos(Vec2(640.f, 100.f));
-	pMonster->SetScale(Vec2(100.f, 50.f));
-
-	////AddObject(pMonster, GROUP_TYPE::MONSTER);
-
-
-	//// 오브젝트 추가하는 이벤트
-	CreateObject(pMonster, GROUP_TYPE::MONSTER);
-
-
-	// ex-> 타일 로딩
-
+	// 이벤트를 이용하여 오브젝트 삽입 예시
+	//CreateObject(pOtherPlayer, GROUP_TYPE::PLAYER);
 
 
 	// 충돌 지정
 	CCollisionMgr::GetInst()->CheckGroup(GROUP_TYPE::PLAYER, GROUP_TYPE::MONSTER);
 
 	// Camera Look 지정
-	Vec2 vResolution = CCore::GetInst()->GetResolution();
 	CCamera::GetInst()->SetLookAt(vResolution / 2.f);
 
 	// Camera 효과 지정

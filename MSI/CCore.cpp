@@ -14,6 +14,9 @@
 
 #include "CTexture.h"
 
+#include "SelectGDI.h"
+#include "resource.h"
+
 CCore::CCore()
 	: m_hWnd{0}
 	, m_ptResolution{0}
@@ -31,7 +34,8 @@ CCore::~CCore()
 	{
 		DeleteObject(m_arrPen[i]);
 	}
-
+	
+	DestroyMenu(m_hMenu);
 }
 
 int CCore::init(HWND _hWnd, POINT _ptResolution)
@@ -42,7 +46,8 @@ int CCore::init(HWND _hWnd, POINT _ptResolution)
 	m_hDC = GetDC(m_hWnd);
 
 	// 해상도에 맞게 윈도우 크기 설정
-	ChangeWindowSize(GetResolution(), false);
+	ChangeWindowSize(m_ptResolution, false);
+	m_hMenu = LoadMenu(nullptr, MAKEINTRESOURCEW(IDC_MSI));
 
 	// 메뉴바 삭제
 	//SetMenu(m_hWnd, nullptr);
@@ -91,8 +96,9 @@ void CCore::progress()
 	// =======================================
 	// 렌더링 작업
 	// =======================================
+
 	HDC currentDC = m_pMemTex->GetDC();
-	Rectangle(currentDC, -1, -1, m_ptResolution.x + 11, m_ptResolution.y + 1);
+	Clear();
 
 	CSceneMgr::GetInst()->render(currentDC);
 	CCamera::GetInst()->render(currentDC);
@@ -109,12 +115,30 @@ void CCore::progress()
 void CCore::CreateBrushPen()
 {
 	m_arrBrush[(UINT)BRUSH_TYPE::HOLLOW] = (HBRUSH)GetStockObject(HOLLOW_BRUSH);
+	m_arrBrush[(UINT)BRUSH_TYPE::BLACK] = (HBRUSH)GetStockObject(BLACK_BRUSH);
 
 	m_arrPen[(UINT)PEN_TYPE::RED] = CreatePen(PS_SOLID, 1, RGB(255, 0, 0));
 	m_arrPen[(UINT)PEN_TYPE::BLUE] = CreatePen(PS_SOLID, 1, RGB(0, 0, 255));
 	m_arrPen[(UINT)PEN_TYPE::GREEN] = CreatePen(PS_SOLID, 1, RGB(0, 255, 0));
+}
 
+void CCore::Clear()
+{
+	HDC currentDC = m_pMemTex->GetDC();
+	SelectGDI a(currentDC, BRUSH_TYPE::BLACK);
+	Rectangle(currentDC, -1, -1, m_ptResolution.x + 11, m_ptResolution.y + 1);
+}
 
+void CCore::DockMenu()
+{
+	SetMenu(m_hWnd, m_hMenu);
+	ChangeWindowSize(m_ptResolution, true);
+}
+
+void CCore::DivideMenu()
+{
+	SetMenu(m_hWnd, nullptr);
+	ChangeWindowSize(m_ptResolution, false);
 }
 
 void CCore::ChangeWindowSize(Vec2 _vResolution, bool _bMenu)
