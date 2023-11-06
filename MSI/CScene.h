@@ -19,10 +19,10 @@ public:
 	UINT GetTileX() { return m_iTileX; }
 	UINT GetTileY() { return m_iTileY; }
 
-
-
 	virtual void finalupdate();		// 작업을 마무리해주는 업데이트
 	virtual void render(HDC _dc);
+
+	void render_tile(HDC _dc);
 	
 	const vector<CObject*>& GetGroupObject(GROUP_TYPE _eType) { return m_vecObj[(UINT)_eType]; }
 
