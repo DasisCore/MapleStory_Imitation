@@ -42,6 +42,7 @@ void CScene::update()
 	{
 		for (size_t j = 0; j < m_vecObj[i].size(); j++)
 		{
+			if (m_vecObj[i][j]->IsDead()) continue;
 			m_vecObj[i][j]->update();
 		}
 	}

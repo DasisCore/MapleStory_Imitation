@@ -17,6 +17,7 @@
 #include "CCollider.h"
 #include "CAnimator.h"
 #include "CAnimation.h"
+#include "CRigidBody.h"
 
 CPlayer::CPlayer()
 	: m_eCurState(PLAYER_STATE::IDLE)
@@ -39,6 +40,10 @@ CPlayer::CPlayer()
 	GetComponent()->GetCollider()->SetScale(Vec2(100.f, 100.f));
 	GetComponent()->GetCollider()->SetOffsetPos(Vec2(0.f, 0.f));
 
+
+	CreateRigidbody();
+	
+
 	CTexture* pTex = CResMgr::GetInst()->LoadTexture(L"PlayerTex", L"Texture\\link_0.bmp");
 	CreateAnimation();
 	GetComponent()->GetAnimator()->CreateAnimation(L"WALK_DOWN", pTex, Vec2(0.f, 520.f), Vec2(120.f, 130.f), Vec2(120.f, 0.f), 0.1f, 10);
@@ -54,31 +59,49 @@ CPlayer::~CPlayer()
 
 void CPlayer::update()
 {
+	CRigidBody* pRigid = GetComponent()->GetRigidbody();
+
 	Vec2 vPos = GetPos();
 
 	if (KEY_HOLD(KEY::W))
 	{
-		vPos.y -= 500.f * fDT;
+		pRigid->AddForce(Vec2(0.f, -200.f));
 	}
-
 	if (KEY_HOLD(KEY::A))
 	{
-		vPos.x -= 500.f * fDT;
+		pRigid->AddForce(Vec2(-200.f, 0.f));
 	}
-
 	if (KEY_HOLD(KEY::S))
 	{
-		vPos.y += 500.f * fDT;
+		pRigid->AddForce(Vec2(0.f, 200.f));
 	}
-
 	if (KEY_HOLD(KEY::D))
 	{
-		vPos.x += 500.f * fDT;
+		pRigid->AddForce(Vec2(200.f, 0.f));
+	}
+
+
+	if (KEY_TAP(KEY::W))
+	{
+		pRigid->AddVelocity(Vec2(0.f, -100.f));
+	}
+	if (KEY_TAP(KEY::A))
+	{
+		pRigid->AddVelocity(Vec2(-100.f, 0.f));
+	}
+	if (KEY_TAP(KEY::S))
+	{
+		pRigid->AddVelocity(Vec2(0.f, 100.f));
+	}
+	if (KEY_TAP(KEY::D))
+	{
+		pRigid->AddVelocity(Vec2(100.f, 0.f));
 	}
 
 	SetPos(vPos);
 
 	GetComponent()->GetAnimator()->update();
+	GetComponent()->GetRigidbody();
 }
 
 void CPlayer::CreateMissile()

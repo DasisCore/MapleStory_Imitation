@@ -67,14 +67,19 @@ public:
 		return Vec2(x - _vOther.x, y - _vOther.y);
 	}
 
+	Vec2 operator - ()
+	{
+		return Vec2(-x, -y);
+	}
 
-	Vec2 operator -= (float _f)
+
+	void operator -= (float _f)
 	{
 		x -= _f;
 		y -= _f;
 	}
 
-	Vec2 operator -= (Vec2 _vOther)
+	void operator -= (Vec2 _vOther)
 	{
 		x -= _vOther.x;
 		y -= _vOther.y;
@@ -88,6 +93,12 @@ public:
 	Vec2 operator * (float _f)
 	{
 		return Vec2(x * _f, y * _f);
+	}
+
+	void operator *= (float _f)
+	{
+		x *= _f;
+		y *= _f;
 	}
 
 	Vec2 operator / (Vec2 _vOther)

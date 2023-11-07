@@ -38,6 +38,7 @@ public:
 	void CreateComponent();
 	void CreateCollider();
 	void CreateAnimation();
+	void CreateRigidbody();
 
 	virtual void OnCollision(CCollider* _pOther) {};
 	virtual void OnCollisionEnter(CCollider* _pOther) {};

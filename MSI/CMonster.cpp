@@ -31,5 +31,8 @@ void CMonster::SetAI(AI* _pAI)
 
 void CMonster::update()
 {
-	m_pAI->update();
+	if (m_pAI)
+	{
+		m_pAI->update();
+	}
 }

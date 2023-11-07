@@ -6,6 +6,9 @@
 #include "CIdleState.h"
 #include "CTraceState.h"
 
+#include "CComponent.h"
+#include "CRigidBody.h"
+
 CMonster* CMonFactory::CreateMonter(MON_TYPE _eType, Vec2 _vPos)
 {
 	CMonster* pMon = nullptr;
@@ -25,6 +28,9 @@ CMonster* CMonFactory::CreateMonter(MON_TYPE _eType, Vec2 _vPos)
 		info.fSpeed = 150.f;
 
 		pMon->SetMonInfo(info);
+
+		pMon->CreateRigidbody();
+		pMon->GetComponent()->GetRigidbody()->SetMass(1.f);
 
 		AI* pAI = new AI;
 		pAI->AddState(new CIdleState);

@@ -8,6 +8,7 @@
 #include "CComponent.h"
 #include "CCollider.h"
 #include "CAnimator.h"
+#include "CRigidBody.h"
 
 CObject::CObject()
 	: m_vPos{}
@@ -17,6 +18,7 @@ CObject::CObject()
 {
 }
 
+// 복사 생성자
 CObject::CObject(const CObject& _origin)
 	: m_strName(_origin.m_strName)
 	, m_vPos(_origin.m_vPos)
@@ -29,6 +31,7 @@ CObject::CObject(const CObject& _origin)
 		m_pComponent = new CComponent(*_origin.m_pComponent);
 		m_pComponent->GetCollider()->m_pOwner = this;
 		m_pComponent->GetAnimator()->m_pOwner = this;
+		m_pComponent->GetRigidbody()->m_pOwner = this;
 		m_pComponent->m_pOwner = this;
 	}
 }
@@ -90,4 +93,10 @@ void CObject::CreateAnimation()
 {
 	m_pComponent->m_pAnimator = new CAnimator;
 	m_pComponent->m_pAnimator->m_pOwner = this;
+}
+
+void CObject::CreateRigidbody()
+{
+	m_pComponent->m_pRigidbody = new CRigidBody;
+	m_pComponent->m_pRigidbody->m_pOwner = this;
 }
