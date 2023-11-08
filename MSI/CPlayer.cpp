@@ -18,12 +18,13 @@
 #include "CAnimator.h"
 #include "CAnimation.h"
 #include "CRigidBody.h"
+#include "CGravity.h"
 
 CPlayer::CPlayer()
 	: m_eCurState(PLAYER_STATE::IDLE)
 	, m_ePrevState(PLAYER_STATE::WALK)
-	, m_iDir(0)
-	, m_iPrevDir(0)
+	, m_iDir(1)
+	, m_iPrevDir(1)
 {
 	// 임시 텍스쳐 로딩
 	//m_pTex = new CTexture;
@@ -37,20 +38,40 @@ CPlayer::CPlayer()
 	CreateComponent();
 
 	CreateCollider();
-	GetComponent()->GetCollider()->SetScale(Vec2(100.f, 100.f));
+	GetComponent()->GetCollider()->SetScale(Vec2(30.f, 30.f));
 	GetComponent()->GetCollider()->SetOffsetPos(Vec2(0.f, 0.f));
 
 
 	CreateRigidbody();
 	
 
-	CTexture* pTex = CResMgr::GetInst()->LoadTexture(L"PlayerTex", L"Texture\\link_0.bmp");
-	CreateAnimation();
-	GetComponent()->GetAnimator()->CreateAnimation(L"WALK_DOWN", pTex, Vec2(0.f, 520.f), Vec2(120.f, 130.f), Vec2(120.f, 0.f), 0.1f, 10);
-	GetComponent()->GetAnimator()->Play(L"WALK_DOWN", true);
+	//CTexture* pTex = CResMgr::GetInst()->LoadTexture(L"PlayerTex", L"Texture\\link_0.bmp");
+	CTexture* pLeftTex = CResMgr::GetInst()->LoadTexture(L"PlayerLeft", L"Texture\\player01_L.bmp");
+	CTexture* pRightTex = CResMgr::GetInst()->LoadTexture(L"PlayerRight", L"Texture\\player01_R.bmp");
 
-	CAnimation* pAnim = GetComponent()->GetAnimator()->FindAnimation(L"WALK_DOWN");
-	pAnim->GetFrame(0).vOffset = Vec2(0.f, -20.f);
+
+	CreateAnimation();
+
+	CTexture* m_pLeftTex = CResMgr::GetInst()->LoadTexture(L"PlayerLeft", L"Texture\\player01_L.bmp");
+	CTexture* m_pRightTex = CResMgr::GetInst()->LoadTexture(L"PlayerRight", L"Texture\\Player01_R.bmp");
+
+	GetComponent()->GetAnimator()->CreateAnimation(L"IDLE_LEFT", m_pLeftTex, Vec2(0.f, 6.f), Vec2(26.f, 28.f), Vec2(31.f, 0.f), 0.1f, 8);
+	GetComponent()->GetAnimator()->CreateAnimation(L"IDLE_RIGHT", m_pRightTex, Vec2(161.f, 6.f), Vec2(26.f, 28.f), Vec2(31.f, 0.f), 0.1f, 8);
+
+	GetComponent()->GetAnimator()->CreateAnimation(L"WALK_LEFT", m_pLeftTex, Vec2(0.f, 68.f), Vec2(26.f, 28.f), Vec2(31.f, 0.f), 0.1f, 13);
+	GetComponent()->GetAnimator()->CreateAnimation(L"WALK_RIGHT", m_pRightTex, Vec2(6.f, 68.f), Vec2(26.f, 28.f), Vec2(31.f, 0.f), 0.1f, 13);
+
+	GetComponent()->GetAnimator()->CreateAnimation(L"JUMP_LEFT", m_pLeftTex, Vec2(0.f, 223.f), Vec2(26.f, 28.f), Vec2(31.f, 0.f), 0.1f, 6);
+	GetComponent()->GetAnimator()->CreateAnimation(L"JUMP_RIGHT", m_pRightTex, Vec2(379.f, 223.f), Vec2(26.f, 28.f), Vec2(-31.f, 0.f), 0.1f, 6);
+
+
+	//CAnimation* pAnim = GetComponent()->GetAnimator()->FindAnimation(L"WALK_DOWN");
+	//pAnim->GetFrame(0).vOffset = Vec2(0.f, -20.f);
+
+	// =====================================
+	// 중력 추가
+	// =====================================
+	CreateGravity();
 }
 
 CPlayer::~CPlayer()
@@ -59,49 +80,16 @@ CPlayer::~CPlayer()
 
 void CPlayer::update()
 {
-	CRigidBody* pRigid = GetComponent()->GetRigidbody();
 
-	Vec2 vPos = GetPos();
+	update_move();
 
-	if (KEY_HOLD(KEY::W))
-	{
-		pRigid->AddForce(Vec2(0.f, -200.f));
-	}
-	if (KEY_HOLD(KEY::A))
-	{
-		pRigid->AddForce(Vec2(-200.f, 0.f));
-	}
-	if (KEY_HOLD(KEY::S))
-	{
-		pRigid->AddForce(Vec2(0.f, 200.f));
-	}
-	if (KEY_HOLD(KEY::D))
-	{
-		pRigid->AddForce(Vec2(200.f, 0.f));
-	}
+	update_state();
 
-
-	if (KEY_TAP(KEY::W))
-	{
-		pRigid->AddVelocity(Vec2(0.f, -100.f));
-	}
-	if (KEY_TAP(KEY::A))
-	{
-		pRigid->AddVelocity(Vec2(-100.f, 0.f));
-	}
-	if (KEY_TAP(KEY::S))
-	{
-		pRigid->AddVelocity(Vec2(0.f, 100.f));
-	}
-	if (KEY_TAP(KEY::D))
-	{
-		pRigid->AddVelocity(Vec2(100.f, 0.f));
-	}
-
-	SetPos(vPos);
+	update_animation();
 
 	GetComponent()->GetAnimator()->update();
-	GetComponent()->GetRigidbody();
+	m_ePrevState = m_eCurState;
+	m_iPrevDir = m_iDir;
 }
 
 void CPlayer::CreateMissile()
@@ -117,6 +105,85 @@ void CPlayer::CreateMissile()
 	CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
 	pCurScene->AddObject(pMissile, GROUP_TYPE::MISSILE);
 }
+
+void CPlayer::update_state()
+{
+	if (KEY_TAP(KEY::A))
+	{
+		m_iDir = -1;
+		m_eCurState = PLAYER_STATE::WALK;
+	}
+	if (KEY_TAP(KEY::D))
+	{
+		m_iDir = 1;
+		m_eCurState = PLAYER_STATE::WALK;
+	}
+
+	if (0.f == GetComponent()->GetRigidbody()->GetSpeed())
+	{
+		m_eCurState = PLAYER_STATE::IDLE;
+	}
+}
+
+void CPlayer::update_move()
+{
+	CRigidBody* pRigid = GetComponent()->GetRigidbody();
+
+	if (KEY_HOLD(KEY::A))
+	{
+		pRigid->AddForce(Vec2(-200.f, 0.f));
+	}
+
+	if (KEY_HOLD(KEY::D))
+	{
+		pRigid->AddForce(Vec2(200.f, 0.f));
+	}
+
+
+	if (KEY_TAP(KEY::A))
+	{
+		pRigid->AddVelocity(Vec2(-100.f, 0.f));
+	}
+	if (KEY_TAP(KEY::D))
+	{
+		pRigid->AddVelocity(Vec2(100.f, 0.f));
+	}
+}
+
+void CPlayer::update_animation()
+{
+	if (m_ePrevState == m_eCurState && m_iPrevDir == m_iDir) return;
+
+	switch (m_eCurState)
+	{
+	case PLAYER_STATE::IDLE:
+	{
+		if (m_iDir == -1) GetComponent()->GetAnimator()->Play(L"IDLE_LEFT", true);
+		else GetComponent()->GetAnimator()->Play(L"IDLE_RIGHT", true);
+	}
+		break;
+
+	case PLAYER_STATE::WALK:
+	{
+		if (m_iDir == -1) GetComponent()->GetAnimator()->Play(L"WALK_LEFT", true);
+		else GetComponent()->GetAnimator()->Play(L"WALK_RIGHT", true);
+	}
+		break;
+
+	case PLAYER_STATE::ALERT:
+		break;
+
+	case PLAYER_STATE::ATTACK:
+		break;
+
+	case PLAYER_STATE::JUMP:
+		break;
+
+	case PLAYER_STATE::DEAD:
+		break;
+	}
+}
+
 
 void CPlayer::OnCollisionEnter(CCollider* _pOther)
 {

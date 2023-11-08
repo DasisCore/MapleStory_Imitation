@@ -23,6 +23,7 @@
 #include "CRigidBody.h"
 #include "SelectGDI.h"
 #include "CTimeMgr.h"
+#include "CGround.h"
 
 
 CScene_Start::CScene_Start()
@@ -120,7 +121,7 @@ void CScene_Start::Enter()
 {
 	// 진입시 오브젝트 추가
 	CObject* pPlayer = new CPlayer;
-	pPlayer->SetName(L"First Player");
+	pPlayer->SetName(L"Player");
 	pPlayer->SetPos(Vec2(640.f, 384.f));
 	pPlayer->SetScale(Vec2(100.f, 100.f)); 
 
@@ -145,8 +146,16 @@ void CScene_Start::Enter()
 	//CreateObject(pOtherPlayer, GROUP_TYPE::PLAYER);
 
 
+	// 땅 물체 배치
+	CObject* pGround = new CGround;
+	pGround->SetPos(Vec2(640.f, 584.f));
+	pGround->SetScale(Vec2(200.f, 60.f));
+	AddObject(pGround, GROUP_TYPE::GROUND);
+
+
 	// 충돌 지정
 	CCollisionMgr::GetInst()->CheckGroup(GROUP_TYPE::PLAYER, GROUP_TYPE::MONSTER);
+	CCollisionMgr::GetInst()->CheckGroup(GROUP_TYPE::PLAYER, GROUP_TYPE::GROUND);
 
 	// Camera Look 지정
 	CCamera::GetInst()->SetLookAt(vResolution / 2.f);
@@ -154,6 +163,7 @@ void CScene_Start::Enter()
 	// Camera 효과 지정
 	CCamera::GetInst()->FadeOut(1.f);
 
+	start();
 }
 
 void CScene_Start::Exit()

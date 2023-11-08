@@ -4,12 +4,14 @@
 #include "CCollider.h"
 #include "CAnimator.h"
 #include "CRigidBody.h"
+#include "CGravity.h"
 
 CComponent::CComponent()
 	: m_pOwner(nullptr)
 	, m_pCollider(nullptr)
 	, m_pAnimator(nullptr)
 	, m_pRigidbody(nullptr)
+	, m_pGravity(nullptr)
 {
 }
 
@@ -18,6 +20,7 @@ CComponent::CComponent(const CComponent& _origin)
 	, m_pCollider(nullptr)
 	, m_pAnimator(nullptr)
 	, m_pRigidbody(nullptr)
+	, m_pGravity(nullptr)
 {
 	if (_origin.m_pCollider)
 	{
@@ -33,6 +36,11 @@ CComponent::CComponent(const CComponent& _origin)
 	{
 		m_pRigidbody = new CRigidBody(*_origin.m_pRigidbody);
 	}
+
+	if (_origin.m_pGravity)
+	{
+		m_pGravity = new CGravity(*_origin.m_pGravity);
+	}
 }
 
 CComponent::~CComponent()
@@ -42,11 +50,14 @@ CComponent::~CComponent()
 	if (m_pAnimator) delete m_pAnimator;
 
 	if (m_pRigidbody) delete m_pRigidbody;
+
+	if (m_pGravity) delete m_pGravity;
 }
 
 void CComponent::finalupdate()
 {
 	if (m_pCollider) m_pCollider->finalupdate();
 	if (m_pAnimator) m_pAnimator->finalupdate();
+	if (m_pGravity) m_pGravity->finalupdate();
 	if (m_pRigidbody) m_pRigidbody->finalupdate();
 }

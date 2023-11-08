@@ -9,6 +9,7 @@
 #include "CCollider.h"
 #include "CAnimator.h"
 #include "CRigidBody.h"
+#include "CGravity.h"
 
 CObject::CObject()
 	: m_vPos{}
@@ -32,6 +33,7 @@ CObject::CObject(const CObject& _origin)
 		m_pComponent->GetCollider()->m_pOwner = this;
 		m_pComponent->GetAnimator()->m_pOwner = this;
 		m_pComponent->GetRigidbody()->m_pOwner = this;
+		m_pComponent->GetGravity()->m_pOwner = this;
 		m_pComponent->m_pOwner = this;
 	}
 }
@@ -70,10 +72,9 @@ void CObject::render(HDC _dc)
 
 void CObject::component_render(HDC _dc)
 {
-	if (m_pComponent->GetCollider() != nullptr) m_pComponent->GetCollider()->render(_dc);
-	
 	if (m_pComponent->GetAnimator() != nullptr) m_pComponent->GetAnimator()->render(_dc);
-
+	
+	if (m_pComponent->GetCollider() != nullptr) m_pComponent->GetCollider()->render(_dc);
 }
 
 
@@ -99,4 +100,10 @@ void CObject::CreateRigidbody()
 {
 	m_pComponent->m_pRigidbody = new CRigidBody;
 	m_pComponent->m_pRigidbody->m_pOwner = this;
+}
+
+void CObject::CreateGravity()
+{
+	m_pComponent->m_pGravity = new CGravity;
+	m_pComponent->m_pGravity->m_pOwner = this;
 }

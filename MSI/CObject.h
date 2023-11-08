@@ -39,6 +39,7 @@ public:
 	void CreateCollider();
 	void CreateAnimation();
 	void CreateRigidbody();
+	void CreateGravity();
 
 	virtual void OnCollision(CCollider* _pOther) {};
 	virtual void OnCollisionEnter(CCollider* _pOther) {};
@@ -46,6 +47,7 @@ public:
 
 
 public:
+	virtual void start() {};	// Scene이 시작되기 직전에 호출되는 함수
 	virtual void update() = 0;
 	virtual void finalupdate();	// 더 이상 오버라이딩을 할 수 없음
 	virtual void render(HDC _dc);
