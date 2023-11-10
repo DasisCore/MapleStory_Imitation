@@ -8,6 +8,9 @@
 #include "CObject.h"
 #include "CCamera.h"
 
+#include "CResMgr.h"
+#include "CPathMgr.h"
+
 CAnimation::CAnimation()
 	: m_strName()
 	, m_pAnimator(nullptr)
@@ -85,6 +88,61 @@ void CAnimation::Create(CTexture* _pTex, Vec2 _vLT, Vec2 _vSliceSize, Vec2 _vSte
 
 		m_vecFrm.push_back(frm);
 	}
+}
+
+void CAnimation::Save(const wstring& _strRelativePath)
+{
+	wstring strFilePath = CPathMgr::GetInst()->GetContentPath();
+	strFilePath += _strRelativePath;
+
+	FILE* pFile = nullptr;
+	_wfopen_s(&pFile, strFilePath.c_str(), L"wb");
+	assert(pFile);
+
+	// Animation의 이름을 저장한다. -> 데이터 직렬화
+	SaveWString(m_strName, pFile);
+
+	// 텍스쳐 키
+	SaveWString(m_pTex->GetKey(), pFile);
+	SaveWString(m_pTex->GetRelativePath(), pFile);
+
+	// 프레임 개수
+	size_t iFrameCount = m_vecFrm.size();
+	fwrite(&iFrameCount, sizeof(size_t), 1, pFile);
+
+	// 프레임 정보
+	fwrite(m_vecFrm.data(), sizeof(tAnimFrm), iFrameCount, pFile);
+
+	fclose(pFile);
+}
+
+void CAnimation::Load(const wstring& _strRelativePath)
+{
+	wstring strFilePath = CPathMgr::GetInst()->GetContentPath();
+	strFilePath += _strRelativePath;
+
+	FILE* pFile = nullptr;
+	_wfopen_s(&pFile, strFilePath.c_str(), L"rb");
+	assert(pFile);
+
+	// 문자열 읽기
+	LoadWString(m_strName, pFile);
+
+	// 텍스쳐
+	wstring strTexKey, strTexPath;
+	LoadWString(strTexKey, pFile);
+	LoadWString(strTexPath, pFile);
+	m_pTex = CResMgr::GetInst()->LoadTexture(strTexKey, strTexPath);
+
+	// 프레임 개수
+	size_t iFrameCount = 0;
+	fread(&iFrameCount, sizeof(size_t), 1, pFile);
+
+	// 모든 프레임 정보
+	m_vecFrm.resize(iFrameCount);
+	fread(m_vecFrm.data(), sizeof(tAnimFrm), iFrameCount, pFile);
+
+	fclose(pFile);
 }
 
 

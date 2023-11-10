@@ -134,6 +134,12 @@
     <Filter Include="Engine\04. Object\Ground">
       <UniqueIdentifier>{41663e70-6720-4f71-a47c-77d8bcff59b0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\06. Resource\Sound">
+      <UniqueIdentifier>{f3d8d80a-b5ae-468e-abd4-038cf6ecafba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\03. Manager\SoundMgr">
+      <UniqueIdentifier>{92241e07-ab4f-43fe-b40c-0a6d7c2bb8f7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -266,6 +272,12 @@
     <ClInclude Include="CGround.h">
       <Filter>Engine\04. Object\Ground</Filter>
     </ClInclude>
+    <ClInclude Include="CSound.h">
+      <Filter>Engine\06. Resource\Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="CSoundMgr.h">
+      <Filter>Engine\03. Manager\SoundMgr</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CCore.cpp">
@@ -379,6 +391,12 @@
     </ClCompile>
     <ClCompile Include="CGround.cpp">
       <Filter>Engine\04. Object\Ground</Filter>
+    </ClCompile>
+    <ClCompile Include="CSound.cpp">
+      <Filter>Engine\06. Resource\Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="CSoundMgr.cpp">
+      <Filter>Engine\03. Manager\SoundMgr</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

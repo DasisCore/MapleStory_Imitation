@@ -33,3 +33,6 @@ void Safe_Delete_Vector(vector<T>& _vec)
 	}
 	_vec.clear();
 }
+
+void SaveWString(const wstring& _str, FILE* _pFile);
+void LoadWString(wstring& _str, FILE* _pFile);

@@ -11,6 +11,9 @@
 #include "CUIMgr.h"
 #include "CResMgr.h"
 #include "CCamera.h"
+#include "CSoundMgr.h"
+
+#include "CSound.h"
 
 #include "CTexture.h"
 
@@ -69,7 +72,19 @@ int CCore::init(HWND _hWnd, POINT _ptResolution)
 	CTimeMgr::GetInst()->init();
 	CKeyMgr::GetInst()->init();
 	CCamera::GetInst()->init();
+	CSoundMgr::GetInst()->init();
 	CSceneMgr::GetInst()->init();
+
+
+	// 사운드 테스트 이후 fmod로 변경
+	CResMgr::GetInst()->LoadSound(L"BGM_01", L"Sound\\DM.wav");
+	CSound* pNewSound = CResMgr::GetInst()->FindSound(L"BGM_01");
+
+	pNewSound->PlayToBGM(true);
+	//pNewSound->Play();
+
+	pNewSound->SetPosition(0.f);	// 백분률, 소리 위치 설정 (재생 위치)
+	pNewSound->SetVolume(1.f);
 
 	return S_OK;
 }
