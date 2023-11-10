@@ -79,10 +79,10 @@ void CScene_Start::update()
 	}
 
 
-	if (KEY_TAP(KEY::ENTER))
-	{
-		ChangeScene(SCENE_TYPE::TOOL);
-	}
+	//if (KEY_TAP(KEY::ENTER))
+	//{
+	//	ChangeScene(SCENE_TYPE::TOOL);
+	//}
 
 	//if (KEY_TAP(KEY::LBTN))
 	//{
@@ -140,6 +140,8 @@ void CScene_Start::Enter()
 	// 몬스터 배치
 	Vec2 vResolution = CCore::GetInst()->GetResolution();
 	CMonster* pMon = CMonFactory::CreateMonter(MON_TYPE::NORMAL, vResolution / 2.f - Vec2(0.f, 300.f));
+	pMon->SetName(L"Monster");
+	pMon->SetScale(Vec2(110.f, 60.f));
 	AddObject(pMon, GROUP_TYPE::MONSTER);
 
 	// 이벤트를 이용하여 오브젝트 삽입 예시
@@ -148,6 +150,7 @@ void CScene_Start::Enter()
 
 	// 땅 물체 배치
 	CObject* pGround = new CGround;
+	pGround->SetName(L"Ground");
 	pGround->SetPos(Vec2(640.f, 584.f));
 	pGround->SetScale(Vec2(200.f, 60.f));
 	AddObject(pGround, GROUP_TYPE::GROUND);

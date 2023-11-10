@@ -40,6 +40,7 @@ void CGround::OnCollisionEnter(CCollider* _pOther)
 		float fLen = abs(vObjPos.y - vPos.y);
 		float fValue = (vObjScale.y / 2.f + vScale.y / 2.f) - fLen;
 
+		// Ãæµ¹ À¯Áö¸¦ À§ÇØ 1ÇÈ¼¿ ´ú ¿Ã·ÁÁÜ.
 		vObjPos = pOtherObj->GetPos();
 		vObjPos.y -= fValue;
 
@@ -63,8 +64,9 @@ void CGround::OnCollision(CCollider* _pOther)
 		float fLen = abs(vObjPos.y - vPos.y);
 		float fValue = (vObjScale.y / 2.f + vScale.y / 2.f) - fLen;
 
+		// Ãæµ¹ À¯Áö¸¦ À§ÇØ 1ÇÈ¼¿ ´ú ¿Ã·ÁÁÜ.
 		vObjPos = pOtherObj->GetPos();
-		vObjPos.y -= (fValue - 1.f);
+		vObjPos.y -= fValue;
 		
 		pOtherObj->SetPos(vObjPos);
 	}

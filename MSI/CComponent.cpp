@@ -45,19 +45,19 @@ CComponent::CComponent(const CComponent& _origin)
 
 CComponent::~CComponent()
 {
-	if (m_pCollider) delete m_pCollider;
-
 	if (m_pAnimator) delete m_pAnimator;
 
 	if (m_pRigidbody) delete m_pRigidbody;
 
 	if (m_pGravity) delete m_pGravity;
+	
+	if (m_pCollider) delete m_pCollider;
 }
 
 void CComponent::finalupdate()
 {
-	if (m_pCollider) m_pCollider->finalupdate();
 	if (m_pAnimator) m_pAnimator->finalupdate();
 	if (m_pGravity) m_pGravity->finalupdate();
 	if (m_pRigidbody) m_pRigidbody->finalupdate();
+	if (m_pCollider) m_pCollider->finalupdate();
 }

@@ -80,7 +80,6 @@ CPlayer::~CPlayer()
 
 void CPlayer::update()
 {
-
 	update_move();
 
 	update_state();
@@ -90,6 +89,12 @@ void CPlayer::update()
 	GetComponent()->GetAnimator()->update();
 	m_ePrevState = m_eCurState;
 	m_iPrevDir = m_iDir;
+
+	if (KEY_TAP(KEY::ENTER))
+	{
+		SetPos(Vec2(640.f, 384.f));
+		GetComponent()->GetRigidbody()->SetVelocity(Vec2(0.f, 0.f));
+	}
 }
 
 void CPlayer::CreateMissile()
@@ -108,20 +113,32 @@ void CPlayer::CreateMissile()
 
 void CPlayer::update_state()
 {
-	if (KEY_TAP(KEY::A))
+	if (KEY_HOLD(KEY::A))
 	{
 		m_iDir = -1;
-		m_eCurState = PLAYER_STATE::WALK;
+		if (m_eCurState != PLAYER_STATE::JUMP)
+		{
+			m_eCurState = PLAYER_STATE::WALK;
+		}
 	}
-	if (KEY_TAP(KEY::D))
+	if (KEY_HOLD(KEY::D))
 	{
 		m_iDir = 1;
-		m_eCurState = PLAYER_STATE::WALK;
+		if (m_eCurState != PLAYER_STATE::JUMP)
+		{
+			m_eCurState = PLAYER_STATE::WALK;
+		}
 	}
 
-	if (0.f == GetComponent()->GetRigidbody()->GetSpeed())
+	if (0.f == GetComponent()->GetRigidbody()->GetSpeed() && m_eCurState != PLAYER_STATE::JUMP)
 	{
 		m_eCurState = PLAYER_STATE::IDLE;
+	}
+
+	if (KEY_TAP(KEY::SPACE))
+	{
+		m_eCurState = PLAYER_STATE::JUMP;
+		GetComponent()->GetRigidbody()->SetVelocity(Vec2(GetComponent()->GetRigidbody()->GetVelocity().x, -400.f));
 	}
 }
 
@@ -142,11 +159,11 @@ void CPlayer::update_move()
 
 	if (KEY_TAP(KEY::A))
 	{
-		pRigid->AddVelocity(Vec2(-100.f, 0.f));
+		pRigid->SetVelocity(Vec2(-100.f, pRigid->GetVelocity().y));
 	}
 	if (KEY_TAP(KEY::D))
 	{
-		pRigid->AddVelocity(Vec2(100.f, 0.f));
+		pRigid->SetVelocity(Vec2(100.f, pRigid->GetVelocity().y));
 	}
 }
 
@@ -165,8 +182,8 @@ void CPlayer::update_animation()
 
 	case PLAYER_STATE::WALK:
 	{
-		if (m_iDir == -1) GetComponent()->GetAnimator()->Play(L"WALK_LEFT", true);
-		else GetComponent()->GetAnimator()->Play(L"WALK_RIGHT", true);
+		if (m_iDir == -1) GetComponent()->GetAnimator()->Play(L"JUMP_LEFT", true);
+		else GetComponent()->GetAnimator()->Play(L"JUMP_RIGHT", true);
 	}
 		break;
 
@@ -177,6 +194,10 @@ void CPlayer::update_animation()
 		break;
 
 	case PLAYER_STATE::JUMP:
+	{
+		if (m_iDir == -1) GetComponent()->GetAnimator()->Play(L"WALK_LEFT", true);
+		else GetComponent()->GetAnimator()->Play(L"WALK_RIGHT", true);
+	}
 		break;
 
 	case PLAYER_STATE::DEAD:
@@ -187,13 +208,22 @@ void CPlayer::update_animation()
 
 void CPlayer::OnCollisionEnter(CCollider* _pOther)
 {
+	CObject* pOtherObj = _pOther->GetObj();
+	if (pOtherObj->GetName() == L"Ground")
+	{
+		Vec2 vPos = GetPos();
+		if (vPos.y < pOtherObj->GetPos().y)
+		{
+			m_eCurState = PLAYER_STATE::IDLE;
+		}
+	}
 }
 
 void CPlayer::render(HDC _dc)
 {
 	//int iWidth = m_pTex->Width();
 	//int iHeight = m_pTex->Height();
-
+		
 	//Vec2 vPos = GetPos();
 
 	//BitBlt(_dc

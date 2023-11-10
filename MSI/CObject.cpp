@@ -11,6 +11,8 @@
 #include "CRigidBody.h"
 #include "CGravity.h"
 
+#include "SelectGDI.h"
+
 CObject::CObject()
 	: m_vPos{}
 	, m_vScale{}
@@ -52,6 +54,8 @@ void CObject::finalupdate()
 void CObject::render(HDC _dc)
 {
 	Vec2 vRenderPos = CCamera::GetInst()->GetRenderPos(m_vPos);
+	
+	SelectGDI a(_dc, BRUSH_TYPE::HOLLOW);
 
 	RECT rc = {
 	  (int)(vRenderPos.x - m_vScale.x / 2.f)

@@ -41,7 +41,8 @@ void CEventMgr::update()
 	{
 		Excute(m_vecEvent[i]);
 
-		// 씬 체인지가 발생했담녀 다른 이벤트들은 삭제시켜줘야 한다.
+		// 씬 체인지가 발생했다면 다른 이벤트들은 삭제시켜줘야 한다.
+		if (m_vecEvent[i].eEvent == EVENT_TYPE::SCENE_CHANGE) break;
 	}
 	m_vecEvent.clear();
 }
