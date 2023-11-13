@@ -140,6 +140,9 @@
     <Filter Include="Engine\03. Manager\SoundMgr">
       <UniqueIdentifier>{92241e07-ab4f-43fe-b40c-0a6d7c2bb8f7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\05. Scene\Scene_Tool\ToolWindow">
+      <UniqueIdentifier>{957205a6-1015-4438-9ec0-46ff305a14ad}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -278,6 +281,9 @@
     <ClInclude Include="CSoundMgr.h">
       <Filter>Engine\03. Manager\SoundMgr</Filter>
     </ClInclude>
+    <ClInclude Include="CToolWindow.h">
+      <Filter>Engine\05. Scene\Scene_Tool\ToolWindow</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CCore.cpp">
@@ -397,6 +403,9 @@
     </ClCompile>
     <ClCompile Include="CSoundMgr.cpp">
       <Filter>Engine\03. Manager\SoundMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="CToolWindow.cpp">
+      <Filter>Engine\05. Scene\Scene_Tool\ToolWindow</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

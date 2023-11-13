@@ -20,6 +20,8 @@
 
 #include "CPathMgr.h"
 
+#include "CToolWindow.h"
+
 void ChangeScene(DWORD_PTR, DWORD_PTR);
 
 CScene_Tool::CScene_Tool()
@@ -69,6 +71,9 @@ void CScene_Tool::Enter()
 
 	// 카메라 LookAt 지정
 	CCamera::GetInst()->SetLookAt(vResolution / 2.f);
+
+	CToolWindow::GetInst()->init();
+	CToolWindow::GetInst()->showWindow();
 }
 
 void ChangeScene(DWORD_PTR, DWORD_PTR)
@@ -86,6 +91,11 @@ void CScene_Tool::update()
 	if (KEY_TAP(KEY::ENTER))
 	{
 		ChangeScene(SCENE_TYPE::START);
+	}
+
+	if (KEY_TAP(KEY::F1))
+	{
+		CToolWindow::GetInst()->showWindow();
 	}
 	 
 
@@ -218,6 +228,8 @@ void CScene_Tool::Exit()
 	DeleteAll();
 
 	CCollisionMgr::GetInst()->Reset();
+
+	CToolWindow::GetInst()->Destroy_window();
 }
 
 

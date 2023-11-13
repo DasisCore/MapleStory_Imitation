@@ -73,16 +73,15 @@ void CScene_Start::update()
 				}
 			}
 				
-
 			vecObj[j]->update();
 		}
 	}
 
 
-	//if (KEY_TAP(KEY::ENTER))
-	//{
-	//	ChangeScene(SCENE_TYPE::TOOL);
-	//}
+	if (KEY_TAP(KEY::ENTER))
+	{
+		ChangeScene(SCENE_TYPE::TOOL);
+	}
 
 	//if (KEY_TAP(KEY::LBTN))
 	//{

@@ -41,16 +41,31 @@ CCore::~CCore()
 	DestroyMenu(m_hMenu);
 }
 
-int CCore::init(HWND _hWnd, POINT _ptResolution)
+int CCore::init(HWND _hWnd, POINT _ptResolution, HINSTANCE _hInstance)
 {
 	// 기본 멤버 변수 초기화
 	m_hWnd = _hWnd;
 	m_ptResolution = _ptResolution;
 	m_hDC = GetDC(m_hWnd);
+	m_hInstance = _hInstance;
 
 	// 해상도에 맞게 윈도우 크기 설정
 	ChangeWindowSize(m_ptResolution, false);
 	m_hMenu = LoadMenu(nullptr, MAKEINTRESOURCEW(IDC_MSI));
+
+
+	// 맨 처음 윈도우의 위치를 화면 정 중앙으로 위치 시킨다.
+	// 모니터의 해상도 얻기
+	int screenWidth = GetSystemMetrics(SM_CXSCREEN);
+	int screenHeight = GetSystemMetrics(SM_CYSCREEN);
+
+	// 화면 정 중앙의 값 계산
+	int centerX = (screenWidth - 1280) / 2;
+	int centerY = (screenHeight - 720) / 2;
+
+	RECT rt = { 0, 0, (long)_ptResolution.x, (long)_ptResolution.y };
+	SetWindowPos(m_hWnd, nullptr, centerX, centerY, rt.right - rt.left, rt.bottom - rt.top, 0);
+
 
 	// 메뉴바 삭제
 	//SetMenu(m_hWnd, nullptr);
@@ -164,8 +179,16 @@ void CCore::ChangeWindowSize(Vec2 _vResolution, bool _bMenu)
 	// 메뉴바 유무에 맞추어 window의 크기를 조정한다.
 	AdjustWindowRect(&rt, WS_OVERLAPPEDWINDOW, _bMenu);
 	
+	// 현재 윈도우의 위치를 얻어온다. 그 위치를 유지하면서 window의 사이즈를 조절한다.
+	HWND MainhWnd = CCore::GetInst()->GetMainHwnd();
+	RECT mainWndRect;
+	GetWindowRect(MainhWnd, &mainWndRect);
+
+	int mainWndX = mainWndRect.left;
+	int mainWndY = mainWndRect.top;
+
 	// 윈도우의 위치와 크기를 조정
-	SetWindowPos(m_hWnd, nullptr, 100, 100, rt.right - rt.left, rt.bottom - rt.top, 0);
+	SetWindowPos(m_hWnd, nullptr, mainWndX, mainWndY, rt.right - rt.left, rt.bottom - rt.top, 0);
 }
 
 void CCore::render()
