@@ -49,7 +49,6 @@ CPlayer::CPlayer()
 	//CTexture* pLeftTex = CResMgr::GetInst()->LoadTexture(L"PlayerLeft", L"Texture\\player01_L.bmp");
 	//CTexture* pRightTex = CResMgr::GetInst()->LoadTexture(L"PlayerRight", L"Texture\\player01_R.bmp");
 
-
 	CreateAnimation();
 
 	GetComponent()->GetAnimator()->LoadAnimation(L"\\Animation\\player_idle_left.anim");

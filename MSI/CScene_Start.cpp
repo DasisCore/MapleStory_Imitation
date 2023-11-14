@@ -42,8 +42,8 @@ void CScene_Start::update()
 {
 	if (KEY_HOLD(KEY::LBTN))
 	{
-		m_bUseForce = true;
-		CreateForce();
+		//m_bUseForce = true;
+		//CreateForce();
 	}
 	else
 	{
@@ -151,7 +151,7 @@ void CScene_Start::Enter()
 	CObject* pGround = new CGround;
 	pGround->SetName(L"Ground");
 	pGround->SetPos(Vec2(640.f, 584.f));
-	pGround->SetScale(Vec2(200.f, 60.f));
+	pGround->SetScale(Vec2(1000.f, 60.f));
 	AddObject(pGround, GROUP_TYPE::GROUND);
 
 
@@ -160,7 +160,8 @@ void CScene_Start::Enter()
 	CCollisionMgr::GetInst()->CheckGroup(GROUP_TYPE::PLAYER, GROUP_TYPE::GROUND);
 
 	// Camera Look 지정
-	CCamera::GetInst()->SetLookAt(vResolution / 2.f);
+	//CCamera::GetInst()->SetLookAt(vResolution / 2.f);
+	CCamera::GetInst()->SetTarget(pPlayer);
 
 	// Camera 효과 지정
 	CCamera::GetInst()->FadeOut(1.f);
@@ -178,10 +179,6 @@ void CScene_Start::Exit()
 void CScene_Start::CreateForce()
 {
 	m_vForcePos = CCamera::GetInst()->GetRealPos(MOUSE_POS);
-
-
-
-
 
 }
 

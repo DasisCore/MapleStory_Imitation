@@ -12,6 +12,12 @@
 #include "define.h"
 #include "struct.h"
 
+// GDI+ (이미지 처리)
+#include <gdiplus.h>
+
+using namespace Gdiplus;
+
+#pragma comment (lib, "Gdiplus.lib")
 
 // for TransparentBlt
 #pragma comment(lib, "Msimg32.lib")

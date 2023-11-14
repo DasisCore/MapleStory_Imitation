@@ -21,6 +21,9 @@ private:
 	// 메뉴
 	HMENU m_hMenu;	// Tool_Scene에서만 사용
 
+	// GDI+ 
+	ULONG_PTR m_gdiplusToken;
+
  
 public:
 	int init(HWND _hWnd, POINT _ptResolution, HINSTANCE _hInstance);

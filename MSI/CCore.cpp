@@ -26,6 +26,7 @@ CCore::CCore()
 	, m_hDC{0}
 	, m_arrBrush{}
 	, m_arrPen{}
+	, m_gdiplusToken(0)
 {
 
 }
@@ -39,6 +40,9 @@ CCore::~CCore()
 	}
 	
 	DestroyMenu(m_hMenu);
+
+	// 프로그램 종료시 GDI+ 종료
+	GdiplusShutdown(m_gdiplusToken);
 }
 
 int CCore::init(HWND _hWnd, POINT _ptResolution, HINSTANCE _hInstance)
@@ -93,13 +97,19 @@ int CCore::init(HWND _hWnd, POINT _ptResolution, HINSTANCE _hInstance)
 
 	// 사운드 테스트 이후 fmod로 변경
 	CResMgr::GetInst()->LoadSound(L"BGM_01", L"Sound\\DM.wav");
-	CSound* pNewSound = CResMgr::GetInst()->FindSound(L"BGM_01");
+	//CSound* pNewSound = CResMgr::GetInst()->FindSound(L"BGM_01");
 
-	pNewSound->PlayToBGM(true);
+	//pNewSound->PlayToBGM(true);
 	//pNewSound->Play();
 
-	pNewSound->SetPosition(0.f);	// 백분률, 소리 위치 설정 (재생 위치)
-	pNewSound->SetVolume(1.f);
+	//pNewSound->SetPosition(0.f);	// 백분률, 소리 위치 설정 (재생 위치)
+	//pNewSound->SetVolume(1.f);
+
+
+	// PNG 이미지 처리를 위한 GDI+ 초기화
+	GdiplusStartupInput gdiplusStartupInput;
+	gdiplusStartupInput.SuppressBackgroundThread = FALSE;	// PNG의 ALPHA 처리
+	GdiplusStartup(&m_gdiplusToken, &gdiplusStartupInput, NULL);
 
 	return S_OK;
 }
