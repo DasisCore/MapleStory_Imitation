@@ -12,6 +12,9 @@ private:
     float m_fForce;
     bool m_bUseForce;
 
+    // ¿”Ω√ gdi+ ∞¥√º
+    Image* m_pTempImage;
+
 public:
     virtual void update() override;
     virtual void render(HDC _dc) override;

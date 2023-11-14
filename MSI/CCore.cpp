@@ -73,6 +73,10 @@ int CCore::init(HWND _hWnd, POINT _ptResolution, HINSTANCE _hInstance)
 
 	// 메뉴바 삭제
 	//SetMenu(m_hWnd, nullptr);
+	
+	// PNG 이미지 처리를 위한 GDI+ 초기화
+	m_gdiplusStartupInput.SuppressBackgroundThread = FALSE;	// PNG의 ALPHA 처리
+	GdiplusStartup(&m_gdiplusToken, &m_gdiplusStartupInput, NULL);
 
 	// =======================================
 	// 더블 버퍼링 용도의 텍스처 생성
@@ -91,12 +95,12 @@ int CCore::init(HWND _hWnd, POINT _ptResolution, HINSTANCE _hInstance)
 	CTimeMgr::GetInst()->init();
 	CKeyMgr::GetInst()->init();
 	CCamera::GetInst()->init();
-	CSoundMgr::GetInst()->init();
+	//CSoundMgr::GetInst()->init();
 	CSceneMgr::GetInst()->init();
 
 
 	// 사운드 테스트 이후 fmod로 변경
-	CResMgr::GetInst()->LoadSound(L"BGM_01", L"Sound\\DM.wav");
+	//CResMgr::GetInst()->LoadSound(L"BGM_01", L"Sound\\DM.wav");
 	//CSound* pNewSound = CResMgr::GetInst()->FindSound(L"BGM_01");
 
 	//pNewSound->PlayToBGM(true);
@@ -104,12 +108,6 @@ int CCore::init(HWND _hWnd, POINT _ptResolution, HINSTANCE _hInstance)
 
 	//pNewSound->SetPosition(0.f);	// 백분률, 소리 위치 설정 (재생 위치)
 	//pNewSound->SetVolume(1.f);
-
-
-	// PNG 이미지 처리를 위한 GDI+ 초기화
-	GdiplusStartupInput gdiplusStartupInput;
-	gdiplusStartupInput.SuppressBackgroundThread = FALSE;	// PNG의 ALPHA 처리
-	GdiplusStartup(&m_gdiplusToken, &gdiplusStartupInput, NULL);
 
 	return S_OK;
 }
@@ -144,7 +142,6 @@ void CCore::progress()
 	CCamera::GetInst()->render(currentDC);
 
 	BitBlt(m_hDC, 0, 0, m_ptResolution.x, m_ptResolution.y, currentDC, 0, 0, SRCCOPY);
-
 
 	// =======================================
 	// 이벤트 지연처리

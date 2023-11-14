@@ -31,11 +31,13 @@ CScene_Start::CScene_Start()
 	, m_fForceRadius(500.f)
 	, m_fCurRadius(0.f)
 	, m_fForce(500.f)
+	, m_pTempImage(nullptr)
 {
 }
 
 CScene_Start::~CScene_Start()
 {
+	//if (m_pTempImage) delete m_pTempImage;
 }
 
 void CScene_Start::update()
@@ -95,6 +97,11 @@ void CScene_Start::update()
 void CScene_Start::render(HDC _dc)
 {
 	CScene::render(_dc);
+
+	// 임시 아그네스 이미지 출력
+	HDC memDC = CCore::GetInst()->GetMemTex()->GetDC();
+	Graphics graphics(memDC);
+	graphics.DrawImage(m_pTempImage, 0, 0);
 
 	if (!m_bUseForce) return;
 
@@ -165,6 +172,11 @@ void CScene_Start::Enter()
 
 	// Camera 효과 지정
 	CCamera::GetInst()->FadeOut(1.f);
+
+	// 임시로 이미지 한장 출력
+	wstring strRelativePath = CPathMgr::GetInst()->GetContentPath();
+	strRelativePath += L"\\Texture\\Agnes.png";
+	m_pTempImage = Image::FromFile(strRelativePath.c_str());
 
 	start();
 }

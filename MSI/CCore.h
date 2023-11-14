@@ -23,7 +23,7 @@ private:
 
 	// GDI+ 
 	ULONG_PTR m_gdiplusToken;
-
+	GdiplusStartupInput m_gdiplusStartupInput;
  
 public:
 	int init(HWND _hWnd, POINT _ptResolution, HINSTANCE _hInstance);
@@ -44,6 +44,7 @@ public:
 	POINT GetResolution() { return m_ptResolution; }
 	HDC GetMainDC() { return m_hDC; }
 	HINSTANCE GetMainhInstance() { return m_hInstance; }
+	CTexture* GetMemTex() { return m_pMemTex; }
 
 	HBRUSH GetBrush(BRUSH_TYPE _eType) { return m_arrBrush[(UINT)_eType]; }
 	HPEN GetPen(PEN_TYPE _eType) { return m_arrPen[(UINT)_eType]; }
