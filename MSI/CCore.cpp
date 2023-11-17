@@ -68,8 +68,7 @@ int CCore::init(HWND _hWnd, POINT _ptResolution, HINSTANCE _hInstance)
 	int centerY = (screenHeight - 720) / 2;
 
 	RECT rt = { 0, 0, (long)_ptResolution.x, (long)_ptResolution.y };
-	SetWindowPos(m_hWnd, nullptr, centerX, centerY, rt.right - rt.left, rt.bottom - rt.top, 0);
-
+	SetWindowPos(m_hWnd, nullptr, centerX, centerY, rt.right - rt.left, rt.bottom - rt.top, SWP_NOSIZE);
 
 	// 메뉴바 삭제
 	//SetMenu(m_hWnd, nullptr);
@@ -162,7 +161,7 @@ void CCore::CreateBrushPen()
 void CCore::Clear()
 {
 	HDC currentDC = m_pMemTex->GetDC();
-	SelectGDI a(currentDC, BRUSH_TYPE::BLACK);
+	//SelectGDI a(currentDC, BRUSH_TYPE::BLACK);
 	Rectangle(currentDC, -1, -1, m_ptResolution.x + 11, m_ptResolution.y + 1);
 }
 
@@ -185,11 +184,10 @@ void CCore::ChangeWindowSize(Vec2 _vResolution, bool _bMenu)
 	
 	// 메뉴바 유무에 맞추어 window의 크기를 조정한다.
 	AdjustWindowRect(&rt, WS_OVERLAPPEDWINDOW, _bMenu);
-	
+
 	// 현재 윈도우의 위치를 얻어온다. 그 위치를 유지하면서 window의 사이즈를 조절한다.
-	HWND MainhWnd = CCore::GetInst()->GetMainHwnd();
 	RECT mainWndRect;
-	GetWindowRect(MainhWnd, &mainWndRect);
+	GetWindowRect(m_hWnd, &mainWndRect);
 
 	int mainWndX = mainWndRect.left;
 	int mainWndY = mainWndRect.top;

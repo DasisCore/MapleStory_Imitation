@@ -37,6 +37,7 @@ CScene_Start::CScene_Start()
 
 CScene_Start::~CScene_Start()
 {
+	// GDI+에서 자원관리를 해주기 때문에 delete를 호출하지 않아도 된다.
 	//if (m_pTempImage) delete m_pTempImage;
 }
 
@@ -101,7 +102,7 @@ void CScene_Start::render(HDC _dc)
 	// 임시 아그네스 이미지 출력
 	HDC memDC = CCore::GetInst()->GetMemTex()->GetDC();
 	Graphics graphics(memDC);
-	graphics.DrawImage(m_pTempImage, 0, 0);
+	graphics.DrawImage(m_pTempImage, 100, 100, 10, 50, 87, 90, UnitPixel);
 
 	if (!m_bUseForce) return;
 
@@ -129,7 +130,7 @@ void CScene_Start::Enter()
 	CObject* pPlayer = new CPlayer;
 	pPlayer->SetName(L"Player");
 	pPlayer->SetPos(Vec2(640.f, 384.f));
-	pPlayer->SetScale(Vec2(100.f, 100.f)); 
+	pPlayer->SetScale(Vec2(45.f, 70.f)); 
 
 	RegisterPlayer(pPlayer);
 
@@ -173,7 +174,8 @@ void CScene_Start::Enter()
 	// Camera 효과 지정
 	CCamera::GetInst()->FadeOut(1.f);
 
-	// 임시로 이미지 한장 출력
+	// ====================================================================================
+	// 임시 GDI+ 이미지 출력
 	wstring strRelativePath = CPathMgr::GetInst()->GetContentPath();
 	strRelativePath += L"\\Texture\\Agnes.png";
 	m_pTempImage = Image::FromFile(strRelativePath.c_str());

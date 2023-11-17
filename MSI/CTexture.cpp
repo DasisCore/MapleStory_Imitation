@@ -3,6 +3,8 @@
 #include "CTexture.h"
 #include "CCore.h"
 
+#include "SelectGDI.h"
+
 CTexture::CTexture()
 	: m_dc(0)
 	, m_hBit(0)
@@ -20,17 +22,31 @@ CTexture::~CTexture()
 
 void CTexture::Load(const wstring& _strFilePath)
 {
-	// 파일로부터 로딩한 데이터를 비트맵으로 생성
-	m_hBit = (HBITMAP)LoadImage(nullptr, _strFilePath.c_str(), IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_LOADFROMFILE);
-	assert(m_hBit);
+	// 이미지 불러오기
+	Image* image = Image::FromFile(_strFilePath.c_str());
 
-	// 비트맵과 연결한 DC
+	// 불러온 이미지로부터 width값과 height값 얻기
+	UINT iWidth = image->GetWidth();
+	UINT iHeight = image->GetHeight();
+
+	// 이미지 크기에 맞는 bitmap생성
+	Bitmap bitmap(iWidth, iHeight, PixelFormat32bppARGB);
+	// bitmap 핸들 m_hBit에 연결하기
+	bitmap.GetHBITMAP(0, &m_hBit);
+
+	// 메인 DC에 호환되는 메모리 DC 생성
 	m_dc = CreateCompatibleDC(CCore::GetInst()->GetMainDC());
 
 	// 비트맵과 DC 연결
 	HBITMAP hPrevBit = (HBITMAP)SelectObject(m_dc, m_hBit);
+	// 이전 object는 필요 없으므로 삭제
 	DeleteObject(hPrevBit);
 
+	// GDI+를 이용해서 m_dc에 그림 그리기
+	Graphics graphics(m_dc);
+	graphics.DrawImage(image, 0, 0);
+
+	// m_hBit로부터 m_bitInfo에 비트맵 정보 채우기
 	GetObject(m_hBit, sizeof(BITMAP), &m_bitInfo);
 }
 
