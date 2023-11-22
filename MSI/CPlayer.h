@@ -9,7 +9,9 @@ enum class PLAYER_STATE
     ATTACK,
     JUMP,
     DEAD,
-    END
+    PRONE,
+    PRONE_ATT,
+    END,
 };
 
 enum class PLAYER_ATTACK_STATE
@@ -34,7 +36,8 @@ private:
     int m_iDir;
     int m_iPrevDir;
 
-    //CTexture* m_pTex;
+    bool m_bIsGround;
+    bool m_bIsAir;
 
 public:
     virtual void update() override;

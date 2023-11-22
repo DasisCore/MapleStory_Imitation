@@ -25,6 +25,8 @@ CPlayer::CPlayer()
 	, m_ePrevState(PLAYER_STATE::WALK)
 	, m_iDir(1)
 	, m_iPrevDir(1)
+	, m_bIsGround(0)
+	, m_bIsAir(0)
 {
 	// 임시 텍스쳐 로딩
 	//m_pTex = new CTexture;
@@ -73,6 +75,9 @@ CPlayer::CPlayer()
 
 	GetComponent()->GetAnimator()->CreateAnimation(L"JUMP_LEFT", m_pLeftTex, Vec2(62.f, 75.f), Vec2(73.f, 79.f), Vec2(0.f, 0.f), 0.1f, 1);
 	GetComponent()->GetAnimator()->CreateAnimation(L"JUMP_RIGHT", m_pRightTex, Vec2(1105.f, 75.f), Vec2(73.f, 79.f), Vec2(0.f, 0.f), 0.1f, 1);
+
+	GetComponent()->GetAnimator()->CreateAnimation(L"PRONE_LEFT", m_pLeftTex, Vec2(280.f, 75.f), Vec2(85.f, 75.f), Vec2(0.f, 0.f), 1.f, 1);
+	GetComponent()->GetAnimator()->CreateAnimation(L"PRONE_RIGHT", m_pRightTex, Vec2(730.f, 76.f), Vec2(73.f, 75.f), Vec2(0.f, 0.f), 1.f, 1);
 
 
 	////// Animation 저장해보기
@@ -136,21 +141,51 @@ void CPlayer::update_state()
 	if (KEY_HOLD(KEY::A))
 	{
 		m_iDir = -1;
-		if (m_eCurState != PLAYER_STATE::JUMP)
-		{
-			m_eCurState = PLAYER_STATE::WALK;
-		}
-	}
-	if (KEY_HOLD(KEY::D))
-	{
-		m_iDir = 1;
-		if (m_eCurState != PLAYER_STATE::JUMP)
+		if (m_eCurState != PLAYER_STATE::JUMP && m_bIsGround)
 		{
 			m_eCurState = PLAYER_STATE::WALK;
 		}
 	}
 
-	if (0.f == GetComponent()->GetRigidbody()->GetSpeed() && m_eCurState != PLAYER_STATE::JUMP)
+	if (KEY_HOLD(KEY::D))
+	{
+		m_iDir = 1;
+		if (m_eCurState != PLAYER_STATE::JUMP && m_bIsGround)
+		{
+			m_eCurState = PLAYER_STATE::WALK;
+		}
+	}
+
+	if (KEY_AWAY(KEY::A))
+	{
+		m_iDir = -1;
+		if (m_eCurState != PLAYER_STATE::JUMP && m_bIsGround)
+		{
+			m_eCurState = PLAYER_STATE::IDLE;
+		}
+	}
+
+	if (KEY_AWAY(KEY::D))
+	{
+		m_iDir = 1;
+		if (m_eCurState != PLAYER_STATE::JUMP && m_bIsGround)
+		{
+			m_eCurState = PLAYER_STATE::IDLE;
+		}
+	}
+
+	if (m_bIsGround && KEY_HOLD(KEY::S))
+	{
+		m_eCurState = PLAYER_STATE::PRONE;
+	}
+
+	if (m_bIsGround && KEY_AWAY(KEY::S))
+	{
+		m_eCurState = PLAYER_STATE::IDLE;
+	}
+
+
+	if (0.f == GetComponent()->GetRigidbody()->GetSpeed() && m_eCurState != PLAYER_STATE::JUMP && m_bIsGround)
 	{
 		m_eCurState = PLAYER_STATE::IDLE;
 	}
@@ -158,6 +193,8 @@ void CPlayer::update_state()
 	if (KEY_TAP(KEY::SPACE))
 	{
 		m_eCurState = PLAYER_STATE::JUMP;
+		m_bIsAir = 1;
+		m_bIsGround = 0;
 		GetComponent()->GetRigidbody()->SetVelocity(Vec2(GetComponent()->GetRigidbody()->GetVelocity().x, -400.f));
 	}
 }
@@ -219,7 +256,12 @@ void CPlayer::update_animation()
 		else GetComponent()->GetAnimator()->Play(L"JUMP_RIGHT", true);
 	}
 		break;
-
+	case PLAYER_STATE::PRONE:
+	{
+		if (m_iDir == -1) GetComponent()->GetAnimator()->Play(L"PRONE_LEFT", true);
+		else GetComponent()->GetAnimator()->Play(L"PRONE_RIGHT", true);
+	}
+		break;
 	case PLAYER_STATE::DEAD:
 		break;
 	}
@@ -235,61 +277,66 @@ void CPlayer::OnCollisionEnter(CCollider* _pOther)
 		if (vPos.y < pOtherObj->GetPos().y)
 		{
 			m_eCurState = PLAYER_STATE::IDLE;
+			m_bIsGround = 1;
+			m_bIsAir = 0;
 		}
 	}
 }
 
 void CPlayer::render(HDC _dc)
 {
-	//int iWidth = m_pTex->Width();
-	//int iHeight = m_pTex->Height();
-		
-	//Vec2 vPos = GetPos();
-
-	//BitBlt(_dc
-	//	, int(vPos.x - (float)(iWidth / 2.f))
-	//	, int(vPos.y - (float)(iHeight / 2.f))
-	//	, iWidth
-	//	, iHeight
-	//	, m_pTex->GetDC()
-	//	, 0, 0, SRCCOPY);
-
-	//TransparentBlt(_dc
-	//	, int(vPos.x - (float)(iWidth / 2.f))
-	//	, int(vPos.y - (float)(iHeight / 2.f))
-	//	, iWidth, iHeight
-	//	, m_pTex->GetDC()
-	//	, 0, 0, iWidth, iHeight
-	//	, RGB(255, 0, 255)
-	//);
-
-
-
-
 	// 컴포넌트 충돌체, 애니메이션등 렌더링
 	component_render(_dc);
 
+	Graphics graphics(_dc);
 
-	// 알파블렌딩 연습. 임시 텍스처 렌더
-	//CTexture* pTex = CResMgr::GetInst()->LoadTexture(L"Player", L"Texture\\Player_A.bmp");
+	Font font(L"Arial", 9, FontStyle::FontStyleBold);
+	SolidBrush brush(Color(255, 0, 0, 0));
 
-	//Vec2 vPos = GetPos();
-	//vPos = CCamera::GetInst()->GetRenderPos(vPos);
-	//float width = (float)pTex->Width();
-	//float height = (float)pTex->Height();
+	Vec2 vPos = GetPos();
+	vPos = CCamera::GetInst()->GetRenderPos(vPos);
 
-	//BLENDFUNCTION bf = {};
-	//bf.BlendOp = AC_SRC_OVER;
-	//bf.BlendFlags = 0;
-	//bf.AlphaFormat = AC_SRC_ALPHA;
-	//bf.SourceConstantAlpha = 255;
+	wstring current_state = L"";
 
-	//AlphaBlend(_dc
-	//	, (int)(vPos.x - width / 2.f)
-	//	, (int)(vPos.y - height / 2.f)
-	//	, (int)(width), (int)(height)
-	//	, pTex->GetDC()
-	//	, 0, 0, (int)(width), (int)(height)
-	//	, bf
-	//);
+	if (m_eCurState == PLAYER_STATE::IDLE)
+	{
+		current_state = L"IDLE";
+	}
+	else if (m_eCurState == PLAYER_STATE::ATTACK)
+	{
+		current_state = L"ATTACK";
+	}
+	else if (m_eCurState == PLAYER_STATE::DEAD)
+	{
+		current_state = L"DEAD";
+	}
+	else if (m_eCurState == PLAYER_STATE::JUMP)
+	{
+		current_state = L"JUMP";
+	}
+	else if (m_eCurState == PLAYER_STATE::PRONE)
+	{
+		current_state = L"PRONE";
+	}
+	else if (m_eCurState == PLAYER_STATE::PRONE_ATT)
+	{
+		current_state = L"PRONE_ATT";
+	}
+	else if (m_eCurState == PLAYER_STATE::WALK)
+	{
+		current_state = L"WALK";
+	}
+
+	if (m_iDir == -1)
+	{
+		current_state += L"_LEFT";
+	}
+	else if (m_iDir == 1)
+	{
+		current_state += L"_RIGHT";
+	}
+
+	PointF point(vPos.x - 30.f, vPos.y - 55.f);
+
+	graphics.DrawString(current_state.c_str(), -1, &font, point, &brush);
 }
