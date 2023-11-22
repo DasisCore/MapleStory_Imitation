@@ -54,6 +54,20 @@ void CAnimator::CreateAnimation(const wstring& _strName, CTexture* _pTex, Vec2 _
 	m_mapAnim.insert(make_pair(_strName, pAnim));
 }
 
+void CAnimator::CreateAnimation_rewind(const wstring& _strName, CTexture* _pTex, Vec2 _vLT, Vec2 _vSliceSize, Vec2 _vStep, float _fDuration, UINT _iFrameCount)
+{
+	CAnimation* pAnim = FindAnimation(_strName);
+	assert(nullptr == pAnim);
+
+	pAnim = new CAnimation;
+
+	pAnim->SetName(_strName);
+	pAnim->m_pAnimator = this;
+	pAnim->Create_rewind(_pTex, _vLT, _vSliceSize, _vStep, _fDuration, _iFrameCount);
+
+	m_mapAnim.insert(make_pair(_strName, pAnim));
+}
+
 void CAnimator::LoadAnimation(const wstring& _strRelationPath)
 {
 	CAnimation* pAnim = new CAnimation;

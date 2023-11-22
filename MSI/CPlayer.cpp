@@ -61,19 +61,18 @@ CPlayer::CPlayer()
 	//GetComponent()->GetAnimator()->LoadAnimation(L"\\Animation\\player_jump_left.anim");
 	//GetComponent()->GetAnimator()->LoadAnimation(L"\\Animation\\player_jump_right.anim");
 
-	//CTexture* m_pLeftTex = CResMgr::GetInst()->LoadTexture(L"PlayerLeft", L"Texture\\Player01_L.bmp");
-	CTexture* m_pLeftTex = CResMgr::GetInst()->LoadTexture(L"PlayerLeft", L"Texture\\Agnes.png");
-	CTexture* m_pRightTex = CResMgr::GetInst()->LoadTexture(L"PlayerRight", L"Texture\\Player01_R.bmp");
+	CTexture* m_pLeftTex = CResMgr::GetInst()->LoadTexture(L"RavenLeft", L"Texture\\Player\\Raven.png");
+	CTexture* m_pRightTex = CResMgr::GetInst()->LoadTexture(L"RavenRight", L"Texture\\Player\\Raven.png", 1);
 
-	//GetComponent()->GetAnimator()->CreateAnimation(L"IDLE_LEFT", m_pLeftTex, Vec2(0.f, 6.f), Vec2(26.f, 28.f), Vec2(31.f, 0.f), 0.1f, 8);
-	GetComponent()->GetAnimator()->CreateAnimation(L"IDLE_LEFT", m_pLeftTex, Vec2(0.f, 0.f), Vec2(87.f, 90.f), Vec2(0.f, 0.f), 1.f, 1);
-	GetComponent()->GetAnimator()->CreateAnimation(L"IDLE_RIGHT", m_pRightTex, Vec2(161.f, 6.f), Vec2(26.f, 28.f), Vec2(31.f, 0.f), 0.1f, 8);
+	// 기본 IDLE 상태는 rewind 필요
+	GetComponent()->GetAnimator()->CreateAnimation_rewind(L"IDLE_LEFT", m_pLeftTex, Vec2(645.f, 75.f), Vec2(73.f, 79.f), Vec2(73.f, 0.f), 0.5f, 3);
+	GetComponent()->GetAnimator()->CreateAnimation_rewind(L"IDLE_RIGHT", m_pRightTex, Vec2(375.f, 75.f), Vec2(73.f, 79.f), Vec2(73.f, 0.f), 0.5f, 3);
 
-	GetComponent()->GetAnimator()->CreateAnimation(L"WALK_LEFT", m_pLeftTex, Vec2(0.f, 68.f), Vec2(26.f, 28.f), Vec2(31.f, 0.f), 0.1f, 13);
-	GetComponent()->GetAnimator()->CreateAnimation(L"WALK_RIGHT", m_pRightTex, Vec2(6.f, 68.f), Vec2(26.f, 28.f), Vec2(31.f, 0.f), 0.1f, 13);
+	GetComponent()->GetAnimator()->CreateAnimation(L"WALK_LEFT", m_pLeftTex, Vec2(865.f, 76.f), Vec2(73.f, 78.f), Vec2(73.f, 0.f), 0.1f, 4);
+	GetComponent()->GetAnimator()->CreateAnimation(L"WALK_RIGHT", m_pRightTex, Vec2(85.f, 76.f), Vec2(73.f, 78.f), Vec2(73.f, 0.f), 0.1f, 4);
 
-	GetComponent()->GetAnimator()->CreateAnimation(L"JUMP_LEFT", m_pLeftTex, Vec2(0.f, 223.f), Vec2(26.f, 28.f), Vec2(31.f, 0.f), 0.1f, 6);
-	GetComponent()->GetAnimator()->CreateAnimation(L"JUMP_RIGHT", m_pRightTex, Vec2(379.f, 223.f), Vec2(26.f, 28.f), Vec2(-31.f, 0.f), 0.1f, 6);
+	GetComponent()->GetAnimator()->CreateAnimation(L"JUMP_LEFT", m_pLeftTex, Vec2(62.f, 75.f), Vec2(73.f, 79.f), Vec2(0.f, 0.f), 0.1f, 1);
+	GetComponent()->GetAnimator()->CreateAnimation(L"JUMP_RIGHT", m_pRightTex, Vec2(1105.f, 75.f), Vec2(73.f, 79.f), Vec2(0.f, 0.f), 0.1f, 1);
 
 
 	////// Animation 저장해보기
@@ -203,8 +202,8 @@ void CPlayer::update_animation()
 
 	case PLAYER_STATE::WALK:
 	{
-		if (m_iDir == -1) GetComponent()->GetAnimator()->Play(L"JUMP_LEFT", true);
-		else GetComponent()->GetAnimator()->Play(L"JUMP_RIGHT", true);
+		if (m_iDir == -1) GetComponent()->GetAnimator()->Play(L"WALK_LEFT", true);
+		else GetComponent()->GetAnimator()->Play(L"WALK_RIGHT", true);
 	}
 		break;
 
@@ -216,8 +215,8 @@ void CPlayer::update_animation()
 
 	case PLAYER_STATE::JUMP:
 	{
-		if (m_iDir == -1) GetComponent()->GetAnimator()->Play(L"WALK_LEFT", true);
-		else GetComponent()->GetAnimator()->Play(L"WALK_RIGHT", true);
+		if (m_iDir == -1) GetComponent()->GetAnimator()->Play(L"JUMP_LEFT", true);
+		else GetComponent()->GetAnimator()->Play(L"JUMP_RIGHT", true);
 	}
 		break;
 

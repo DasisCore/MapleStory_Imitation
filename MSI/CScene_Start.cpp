@@ -102,7 +102,10 @@ void CScene_Start::render(HDC _dc)
 	// 임시 아그네스 이미지 출력
 	HDC memDC = CCore::GetInst()->GetMemTex()->GetDC();
 	Graphics graphics(memDC);
-	graphics.DrawImage(m_pTempImage, 100, 100, 10, 50, 87, 90, UnitPixel);
+	int Width = m_pTempImage->GetWidth();
+	int Height = m_pTempImage->GetHeight();
+	graphics.DrawImage(m_pTempImage, Width, 0, -Width, Height);
+	graphics.DrawImage(m_pTempImage, 0, Height, Width, Height);
 
 	if (!m_bUseForce) return;
 
@@ -177,7 +180,7 @@ void CScene_Start::Enter()
 	// ====================================================================================
 	// 임시 GDI+ 이미지 출력
 	wstring strRelativePath = CPathMgr::GetInst()->GetContentPath();
-	strRelativePath += L"\\Texture\\Agnes.png";
+	strRelativePath += L"\\Texture\\Player\\Raven.png";
 	m_pTempImage = Image::FromFile(strRelativePath.c_str());
 
 	start();

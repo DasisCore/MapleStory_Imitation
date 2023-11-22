@@ -20,7 +20,7 @@ CTexture::~CTexture()
 }
 
 
-void CTexture::Load(const wstring& _strFilePath)
+void CTexture::Load(const wstring& _strFilePath, int _iDir)
 {
 	// 이미지 불러오기
 	Image* image = Image::FromFile(_strFilePath.c_str());
@@ -44,7 +44,15 @@ void CTexture::Load(const wstring& _strFilePath)
 
 	// GDI+를 이용해서 m_dc에 그림 그리기
 	Graphics graphics(m_dc);
-	graphics.DrawImage(image, 0, 0);
+
+	if (!_iDir)
+	{
+		graphics.DrawImage(image, 0, 0, iWidth, iHeight);
+	}
+	else
+	{
+		graphics.DrawImage(image, iWidth, 0, (int)iWidth * -1, iHeight);
+	}
 
 	// m_hBit로부터 m_bitInfo에 비트맵 정보 채우기
 	GetObject(m_hBit, sizeof(BITMAP), &m_bitInfo);

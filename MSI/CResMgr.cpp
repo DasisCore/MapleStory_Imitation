@@ -16,7 +16,8 @@ CResMgr::~CResMgr()
 	Safe_Delete_Map(m_mapTex);
 }
 
-CTexture* CResMgr::LoadTexture(const wstring& _strKey, const wstring& _strRelativePath)
+// 좌우 반전을 원할 경우 마지막 인자로 1을 넣어주면 된다.
+CTexture* CResMgr::LoadTexture(const wstring& _strKey, const wstring& _strRelativePath, int _iDir)
 {
 	CTexture* pTex = FindTexture(_strKey);
 
@@ -26,7 +27,7 @@ CTexture* CResMgr::LoadTexture(const wstring& _strKey, const wstring& _strRelati
 	strFilePath += _strRelativePath;
 
 	pTex = new CTexture;
-	pTex->Load(strFilePath);
+	pTex->Load(strFilePath, _iDir);
 	pTex->SetKey(_strKey);
 	pTex->SetRelativePath(_strRelativePath);
 
