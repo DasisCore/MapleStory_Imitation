@@ -21,7 +21,8 @@
 #include "CGravity.h"
 
 CPlayer::CPlayer()
-	: m_eCurState(PLAYER_STATE::IDLE)
+	: m_wCurChar(L"RAVEN")
+	, m_eCurState(PLAYER_STATE::IDLE)
 	, m_ePrevState(PLAYER_STATE::WALK)
 	, m_iDir(1)
 	, m_iPrevDir(1)
@@ -67,17 +68,17 @@ CPlayer::CPlayer()
 	CTexture* m_pRightTex = CResMgr::GetInst()->LoadTexture(L"RavenRight", L"Texture\\Player\\Raven.png", 1);
 
 	// 기본 IDLE 상태는 rewind 필요
-	GetComponent()->GetAnimator()->CreateAnimation_rewind(L"IDLE_LEFT", m_pLeftTex, Vec2(645.f, 75.f), Vec2(73.f, 79.f), Vec2(73.f, 0.f), 0.5f, 3);
-	GetComponent()->GetAnimator()->CreateAnimation_rewind(L"IDLE_RIGHT", m_pRightTex, Vec2(375.f, 75.f), Vec2(73.f, 79.f), Vec2(73.f, 0.f), 0.5f, 3);
+	GetComponent()->GetAnimator()->CreateAnimation_rewind(L"RAVEN_LEFT_IDLE", m_pLeftTex, Vec2(645.f, 75.f), Vec2(73.f, 79.f), Vec2(73.f, 0.f), 0.5f, 3);
+	GetComponent()->GetAnimator()->CreateAnimation_rewind(L"RAVEN_RIGHT_IDLE", m_pRightTex, Vec2(375.f, 75.f), Vec2(73.f, 79.f), Vec2(73.f, 0.f), 0.5f, 3);
 
-	GetComponent()->GetAnimator()->CreateAnimation(L"WALK_LEFT", m_pLeftTex, Vec2(865.f, 76.f), Vec2(73.f, 78.f), Vec2(73.f, 0.f), 0.1f, 4);
-	GetComponent()->GetAnimator()->CreateAnimation(L"WALK_RIGHT", m_pRightTex, Vec2(85.f, 76.f), Vec2(73.f, 78.f), Vec2(73.f, 0.f), 0.1f, 4);
+	GetComponent()->GetAnimator()->CreateAnimation(L"RAVEN_LEFT_WALK", m_pLeftTex, Vec2(865.f, 76.f), Vec2(73.f, 78.f), Vec2(73.f, 0.f), 0.1f, 4);
+	GetComponent()->GetAnimator()->CreateAnimation(L"RAVEN_RIGHT_WALK", m_pRightTex, Vec2(85.f, 76.f), Vec2(73.f, 78.f), Vec2(73.f, 0.f), 0.1f, 4);
 
-	GetComponent()->GetAnimator()->CreateAnimation(L"JUMP_LEFT", m_pLeftTex, Vec2(62.f, 75.f), Vec2(73.f, 79.f), Vec2(0.f, 0.f), 0.1f, 1);
-	GetComponent()->GetAnimator()->CreateAnimation(L"JUMP_RIGHT", m_pRightTex, Vec2(1105.f, 75.f), Vec2(73.f, 79.f), Vec2(0.f, 0.f), 0.1f, 1);
+	GetComponent()->GetAnimator()->CreateAnimation(L"RAVEN_LEFT_JUMP", m_pLeftTex, Vec2(62.f, 75.f), Vec2(73.f, 79.f), Vec2(0.f, 0.f), 0.1f, 1);
+	GetComponent()->GetAnimator()->CreateAnimation(L"RAVEN_RIGHT_JUMP", m_pRightTex, Vec2(1105.f, 75.f), Vec2(73.f, 79.f), Vec2(0.f, 0.f), 0.1f, 1);
 
-	GetComponent()->GetAnimator()->CreateAnimation(L"PRONE_LEFT", m_pLeftTex, Vec2(280.f, 75.f), Vec2(85.f, 75.f), Vec2(0.f, 0.f), 1.f, 1);
-	GetComponent()->GetAnimator()->CreateAnimation(L"PRONE_RIGHT", m_pRightTex, Vec2(730.f, 76.f), Vec2(73.f, 75.f), Vec2(0.f, 0.f), 1.f, 1);
+	GetComponent()->GetAnimator()->CreateAnimation(L"RAVEN_LEFT_PRONE", m_pLeftTex, Vec2(280.f, 75.f), Vec2(85.f, 75.f), Vec2(0.f, 0.f), 1.f, 1);
+	GetComponent()->GetAnimator()->CreateAnimation(L"RAVEN_RIGHT_PRONE", m_pRightTex, Vec2(730.f, 76.f), Vec2(73.f, 75.f), Vec2(0.f, 0.f), 1.f, 1);
 
 
 	////// Animation 저장해보기
@@ -138,7 +139,7 @@ void CPlayer::CreateMissile()
 
 void CPlayer::update_state()
 {
-	if (KEY_HOLD(KEY::A))
+	if (KEY_HOLD(KEY::LEFT))
 	{
 		m_iDir = -1;
 		if (m_eCurState != PLAYER_STATE::JUMP && m_bIsGround)
@@ -147,7 +148,7 @@ void CPlayer::update_state()
 		}
 	}
 
-	if (KEY_HOLD(KEY::D))
+	if (KEY_HOLD(KEY::RIGHT))
 	{
 		m_iDir = 1;
 		if (m_eCurState != PLAYER_STATE::JUMP && m_bIsGround)
@@ -156,7 +157,7 @@ void CPlayer::update_state()
 		}
 	}
 
-	if (KEY_AWAY(KEY::A))
+	if (KEY_AWAY(KEY::LEFT))
 	{
 		m_iDir = -1;
 		if (m_eCurState != PLAYER_STATE::JUMP && m_bIsGround)
@@ -165,7 +166,7 @@ void CPlayer::update_state()
 		}
 	}
 
-	if (KEY_AWAY(KEY::D))
+	if (KEY_AWAY(KEY::RIGHT))
 	{
 		m_iDir = 1;
 		if (m_eCurState != PLAYER_STATE::JUMP && m_bIsGround)
@@ -174,12 +175,12 @@ void CPlayer::update_state()
 		}
 	}
 
-	if (m_bIsGround && KEY_HOLD(KEY::S))
+	if (m_bIsGround && KEY_HOLD(KEY::DOWN))
 	{
 		m_eCurState = PLAYER_STATE::PRONE;
 	}
 
-	if (m_bIsGround && KEY_AWAY(KEY::S))
+	if (m_bIsGround && KEY_AWAY(KEY::DOWN))
 	{
 		m_eCurState = PLAYER_STATE::IDLE;
 	}
@@ -190,7 +191,7 @@ void CPlayer::update_state()
 		m_eCurState = PLAYER_STATE::IDLE;
 	}
 
-	if (KEY_TAP(KEY::SPACE))
+	if (KEY_TAP(KEY::ALT))
 	{
 		m_eCurState = PLAYER_STATE::JUMP;
 		m_bIsAir = 1;
@@ -203,24 +204,36 @@ void CPlayer::update_move()
 {
 	CRigidBody* pRigid = GetComponent()->GetRigidbody();
 
-	if (KEY_HOLD(KEY::A))
+	if (KEY_HOLD(KEY::LEFT))
 	{
 		pRigid->AddForce(Vec2(-200.f, 0.f));
 	}
 
-	if (KEY_HOLD(KEY::D))
+	if (KEY_HOLD(KEY::RIGHT))
 	{
 		pRigid->AddForce(Vec2(200.f, 0.f));
 	}
 
 
-	if (KEY_TAP(KEY::A))
+	if (KEY_TAP(KEY::LEFT))
 	{
 		pRigid->SetVelocity(Vec2(-100.f, pRigid->GetVelocity().y));
 	}
-	if (KEY_TAP(KEY::D))
+	if (KEY_TAP(KEY::RIGHT))
 	{
 		pRigid->SetVelocity(Vec2(100.f, pRigid->GetVelocity().y));
+	}
+
+
+	if (KEY_TAP(KEY::LSHIFT))
+	{
+		if (KEY_HOLD(KEY::UP))
+		{
+			Vec2 vPos = GetPos();
+			vPos.y -= 200.f;
+			SetPos(vPos);
+			pRigid->SetVelocity(Vec2(0.f, 0.f));
+		}
 	}
 }
 
@@ -228,19 +241,24 @@ void CPlayer::update_animation()
 {
 	if (m_ePrevState == m_eCurState && m_iPrevDir == m_iDir) return;
 
+	wstring currentChar = m_wCurChar;
+
+	if (m_iDir == -1) currentChar += L"_LEFT";
+	else currentChar += L"_RIGHT";
+
 	switch (m_eCurState)
 	{
 	case PLAYER_STATE::IDLE:
 	{
-		if (m_iDir == -1) GetComponent()->GetAnimator()->Play(L"IDLE_LEFT", true);
-		else GetComponent()->GetAnimator()->Play(L"IDLE_RIGHT", true);
+		currentChar += L"_IDLE";
+		GetComponent()->GetAnimator()->Play(currentChar.c_str(), true);
 	}
 		break;
 
 	case PLAYER_STATE::WALK:
 	{
-		if (m_iDir == -1) GetComponent()->GetAnimator()->Play(L"WALK_LEFT", true);
-		else GetComponent()->GetAnimator()->Play(L"WALK_RIGHT", true);
+		currentChar += L"_WALK";
+		GetComponent()->GetAnimator()->Play(currentChar.c_str(), true);
 	}
 		break;
 
@@ -252,14 +270,14 @@ void CPlayer::update_animation()
 
 	case PLAYER_STATE::JUMP:
 	{
-		if (m_iDir == -1) GetComponent()->GetAnimator()->Play(L"JUMP_LEFT", true);
-		else GetComponent()->GetAnimator()->Play(L"JUMP_RIGHT", true);
+		currentChar += L"_JUMP";
+		GetComponent()->GetAnimator()->Play(currentChar.c_str(), true);
 	}
 		break;
 	case PLAYER_STATE::PRONE:
-	{
-		if (m_iDir == -1) GetComponent()->GetAnimator()->Play(L"PRONE_LEFT", true);
-		else GetComponent()->GetAnimator()->Play(L"PRONE_RIGHT", true);
+	{		
+		currentChar += L"_PRONE";
+		GetComponent()->GetAnimator()->Play(currentChar.c_str(), true);
 	}
 		break;
 	case PLAYER_STATE::DEAD:

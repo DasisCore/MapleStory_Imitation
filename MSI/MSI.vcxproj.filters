@@ -143,6 +143,9 @@
     <Filter Include="Engine\05. Scene\Scene_Tool\ToolWindow">
       <UniqueIdentifier>{957205a6-1015-4438-9ec0-46ff305a14ad}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\04. Object\Player\Voltarix">
+      <UniqueIdentifier>{51cd0d7d-6415-4139-bd27-c57855a82f6f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -284,6 +287,9 @@
     <ClInclude Include="CToolWindow.h">
       <Filter>Engine\05. Scene\Scene_Tool\ToolWindow</Filter>
     </ClInclude>
+    <ClInclude Include="CVoltarix.h">
+      <Filter>Engine\04. Object\Player\Voltarix</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CCore.cpp">
@@ -406,6 +412,9 @@
     </ClCompile>
     <ClCompile Include="CToolWindow.cpp">
       <Filter>Engine\05. Scene\Scene_Tool\ToolWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="CVoltarix.cpp">
+      <Filter>Engine\04. Object\Player\Voltarix</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

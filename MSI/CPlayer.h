@@ -23,13 +23,17 @@ enum class PLAYER_ATTACK_STATE
 };
 
 
-class CTexture;
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+class CTexture;
 
 class CPlayer :
     public CObject
 {
 private:
+    wstring m_wCurChar;
+
     PLAYER_STATE m_eCurState;
     PLAYER_STATE m_ePrevState;
 
@@ -38,6 +42,9 @@ private:
 
     bool m_bIsGround;
     bool m_bIsAir;
+
+public:
+    void setCurChar(wstring _wstrChar) { m_wCurChar = _wstrChar; }
 
 public:
     virtual void update() override;

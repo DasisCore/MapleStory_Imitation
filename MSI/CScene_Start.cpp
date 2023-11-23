@@ -25,6 +25,8 @@
 #include "CTimeMgr.h"
 #include "CGround.h"
 
+#include "CVoltarix.h"
+
 
 CScene_Start::CScene_Start()
 	: m_bUseForce(false)
@@ -144,8 +146,16 @@ void CScene_Start::Enter()
 	//pOtherPlayer->SetPos(Vec2(100.f, 400.f));
 	//CreateObject(pOtherPlayer, GROUP_TYPE::PLAYER);
 
-
 	//CCamera::GetInst()->SetTarget(pPlayer);
+
+	// Voltarix 추가
+	CVoltarix* pVoltarix = new CVoltarix;
+	pVoltarix->SetName(L"Player");
+	pVoltarix->SetPos(Vec2(340.f, 383.f));
+	pVoltarix->SetScale(Vec2(45.f, 70.f));
+	AddObject(pVoltarix, GROUP_TYPE::PLAYER);
+
+
 
 	// 몬스터 배치
 	Vec2 vResolution = CCore::GetInst()->GetResolution();
