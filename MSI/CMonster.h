@@ -23,6 +23,7 @@ private:
 public:
     float GetSpeed() { return m_tInfo.fSpeed; }
     void SetSpeed(float _fSpeed) { m_tInfo.fSpeed = _fSpeed; }
+
     void SetAI(AI* _pAI);
     const tMonInfo& GetInfo() { return m_tInfo; }
 
@@ -31,7 +32,9 @@ public:
     virtual void update() override;
     CMonster* Clone() { return new CMonster(*this); }
 
-private:
+    
+//private:  // 원래 private여야 함. 수정하지 못해야 함. Lesh등을 위해 잠시 풀어둠.
+public:
     void SetMonInfo(const tMonInfo& _info) { m_tInfo = _info; }
 
 public:

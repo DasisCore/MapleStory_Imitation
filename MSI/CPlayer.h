@@ -53,7 +53,7 @@ public:
 public:
     void CreateMissile();
     void update_state();
-    void update_move();
+    virtual void update_move();
     void update_animation();
 
     virtual void OnCollisionEnter(CCollider* _pOther) override;

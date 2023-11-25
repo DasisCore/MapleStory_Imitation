@@ -225,16 +225,7 @@ void CPlayer::update_move()
 	}
 
 
-	if (KEY_TAP(KEY::LSHIFT))
-	{
-		if (KEY_HOLD(KEY::UP))
-		{
-			Vec2 vPos = GetPos();
-			vPos.y -= 200.f;
-			SetPos(vPos);
-			pRigid->SetVelocity(Vec2(0.f, 0.f));
-		}
-	}
+
 }
 
 void CPlayer::update_animation()

@@ -100,7 +100,8 @@ void CAnimation::render(HDC _dc)
 	//);
 }
 
-void CAnimation::Create(CTexture* _pTex, Vec2 _vLT, Vec2 _vSliceSize, Vec2 _vStep, float _fDuration, UINT _iFrameCount)
+//_inAtlasNxtLine는 아틀라스 이미지에서 2줄 이상을 가져갔을때를 대비함.
+void CAnimation::Create(CTexture* _pTex, Vec2 _vLT, Vec2 _vSliceSize, Vec2 _vStep, float _fDuration, UINT _iFrameCount, int _inAtlasNxtLine)
 {
 	m_pTex = _pTex;
 
@@ -110,6 +111,13 @@ void CAnimation::Create(CTexture* _pTex, Vec2 _vLT, Vec2 _vSliceSize, Vec2 _vSte
 		frm.fDuration = _fDuration;
 		frm.vSlice = _vSliceSize;
 		frm.vLT = _vLT + _vStep * (float)i;
+
+		if (_inAtlasNxtLine != 0 && abs(_inAtlasNxtLine) <= i)
+		{
+			if (_inAtlasNxtLine > 0) frm.vLT.x -= _pTex->Width();
+			else frm.vLT.x += _pTex->Width();
+			frm.vLT.y += _vSliceSize.y;
+		}
 
 		m_vecFrm.push_back(frm);
 	}

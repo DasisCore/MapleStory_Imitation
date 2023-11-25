@@ -5,6 +5,7 @@
 #include "CObject.h"
 #include "CPlayer.h"
 #include "CMonster.h"
+#include "CLesh.h"
 
 #include "CTexture.h"
 #include "CPathMgr.h"
@@ -102,12 +103,12 @@ void CScene_Start::render(HDC _dc)
 	CScene::render(_dc);
 
 	// 임시 아그네스 이미지 출력
-	HDC memDC = CCore::GetInst()->GetMemTex()->GetDC();
-	Graphics graphics(memDC);
-	int Width = m_pTempImage->GetWidth();
-	int Height = m_pTempImage->GetHeight();
-	graphics.DrawImage(m_pTempImage, Width, 0, -Width, Height);
-	graphics.DrawImage(m_pTempImage, 0, Height, Width, Height);
+	//HDC memDC = CCore::GetInst()->GetMemTex()->GetDC();
+	//Graphics graphics(memDC);
+	//int Width = m_pTempImage->GetWidth();
+	//int Height = m_pTempImage->GetHeight();
+	//graphics.DrawImage(m_pTempImage, Width, 0, -Width, Height);
+	//graphics.DrawImage(m_pTempImage, 0, Height, Width, Height);
 
 	if (!m_bUseForce) return;
 
@@ -167,6 +168,29 @@ void CScene_Start::Enter()
 	// 이벤트를 이용하여 오브젝트 삽입 예시
 	//CreateObject(pOtherPlayer, GROUP_TYPE::PLAYER);
 
+	CLesh* pMonLesh = new CLesh;
+	pMonLesh->SetName(L"Lesh");
+	pMonLesh->SetScale(Vec2(50.f, 60.f));
+	pMonLesh->SetPos(Vec2(200.f, 200.f));
+
+	tMonInfo info = {};
+	info.fAtt = 10.f;
+	info.fAttRange = 50.f;
+	info.fRecogRange = 300.f;
+	info.fHP = 100.f;
+	info.fSpeed = 150.f;
+
+	pMonLesh->SetMonInfo(info);
+
+	AI* pAI = new AI;
+	pAI->AddState(new CIdleState);
+	pAI->AddState(new CTraceState);
+	pAI->SetCurState(MON_STATE::IDLE);
+	pMonLesh->SetAI(pAI);
+
+	AddObject(pMonLesh, GROUP_TYPE::MONSTER);
+
+
 
 	// 땅 물체 배치
 	CObject* pGround = new CGround;
@@ -189,9 +213,9 @@ void CScene_Start::Enter()
 
 	// ====================================================================================
 	// 임시 GDI+ 이미지 출력
-	wstring strRelativePath = CPathMgr::GetInst()->GetContentPath();
-	strRelativePath += L"\\Texture\\Player\\Raven.png";
-	m_pTempImage = Image::FromFile(strRelativePath.c_str());
+	//wstring strRelativePath = CPathMgr::GetInst()->GetContentPath();
+	//strRelativePath += L"\\Texture\\Player\\Raven.png";
+	//m_pTempImage = Image::FromFile(strRelativePath.c_str());
 
 	start();
 }

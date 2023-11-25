@@ -13,6 +13,13 @@ CMonster::CMonster()
 	CreateComponent();
 	CreateCollider();
 	GetComponent()->GetCollider()->SetScale(Vec2(110.f, 60.f));
+
+	CreateAnimation();
+	CreateRigidbody();
+	
+	// 공중 몹은 중력이 필요 없으므로, 
+	// 기본으로 넣어주지 않는다.
+	//CreateGravity();
 }
 
 CMonster::~CMonster()
@@ -31,6 +38,7 @@ void CMonster::SetAI(AI* _pAI)
 
 void CMonster::update()
 {
+
 	if (m_pAI)
 	{
 		m_pAI->update();

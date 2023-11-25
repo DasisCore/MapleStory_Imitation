@@ -18,7 +18,7 @@ public:
 	CObject* GetObj() { return m_pOwner; }
 
 public:
-	void CreateAnimation(const wstring& _strName, CTexture* _pTex, Vec2 _vLT, Vec2 _vSliceSize, Vec2 _vStep, float _fDuration, UINT _iFrameCount);
+	void CreateAnimation(const wstring& _strName, CTexture* _pTex, Vec2 _vLT, Vec2 _vSliceSize, Vec2 _vStep, float _fDuration, UINT _iFrameCount, int _inAtlasNxtLine = 0);
 	void CreateAnimation_rewind(const wstring& _strName, CTexture* _pTex, Vec2 _vLT, Vec2 _vSliceSize, Vec2 _vStep, float _fDuration, UINT _iFrameCount);
 	void LoadAnimation(const wstring& _strRelationPath);
 	CAnimation* FindAnimation(const wstring& _strName);

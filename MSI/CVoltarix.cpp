@@ -4,9 +4,12 @@
 #include "CComponent.h"
 #include "CAnimator.h"
 #include "CCollider.h"
+#include "CRigidBody.h"
 #include "CGravity.h"
 #include "CTexture.h"
 #include "CResMgr.h"
+
+#include "CKeyMgr.h"
 
 CVoltarix::CVoltarix()
 {
@@ -44,4 +47,46 @@ CVoltarix::CVoltarix()
 
 CVoltarix::~CVoltarix()
 {
+}
+
+void CVoltarix::update_move()
+{
+	CPlayer::update_move();
+
+	skill_teleport();
+}
+
+void CVoltarix::skill_teleport()
+{
+	CRigidBody* pRigid = GetComponent()->GetRigidbody();
+
+	if (KEY_TAP(KEY::LSHIFT))
+	{
+		Vec2 vPos = GetPos();
+		if (KEY_HOLD(KEY::UP))
+		{
+			vPos.y -= 200.f;
+			pRigid->SetVelocity(Vec2(0.f, 0.f));
+		}
+
+		if (KEY_HOLD(KEY::LEFT))
+		{
+			vPos.x -= 200.f;
+			pRigid->SetVelocity(Vec2(-100.f, pRigid->GetVelocity().y));
+		}
+
+		if (KEY_HOLD(KEY::RIGHT))
+		{
+			vPos.x += 200.f;
+			pRigid->SetVelocity(Vec2(100.f, pRigid->GetVelocity().y));
+		}
+
+		if (KEY_HOLD(KEY::DOWN))
+		{
+			vPos.y += 200.f;
+			pRigid->SetVelocity(Vec2(0.f, 0.f));
+		}
+
+		SetPos(vPos);
+	}
 }

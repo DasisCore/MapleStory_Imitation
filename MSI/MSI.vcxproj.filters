@@ -146,6 +146,12 @@
     <Filter Include="Engine\04. Object\Player\Voltarix">
       <UniqueIdentifier>{51cd0d7d-6415-4139-bd27-c57855a82f6f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\04. Object\Monster\Lesh">
+      <UniqueIdentifier>{805dc15f-fcae-4588-ac55-94f321af62f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\04. Object\Monster\DarkLesh">
+      <UniqueIdentifier>{17d5dd98-4c3c-478e-ab14-6a869f9c58e6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -290,6 +296,9 @@
     <ClInclude Include="CVoltarix.h">
       <Filter>Engine\04. Object\Player\Voltarix</Filter>
     </ClInclude>
+    <ClInclude Include="CLesh.h">
+      <Filter>Engine\04. Object\Monster\Lesh</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CCore.cpp">
@@ -415,6 +424,9 @@
     </ClCompile>
     <ClCompile Include="CVoltarix.cpp">
       <Filter>Engine\04. Object\Player\Voltarix</Filter>
+    </ClCompile>
+    <ClCompile Include="CLesh.cpp">
+      <Filter>Engine\04. Object\Monster\Lesh</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
