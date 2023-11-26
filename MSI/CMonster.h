@@ -8,6 +8,7 @@ struct tMonInfo
     float fRecogRange;    // 인지 범위
     float fAttRange;      // 공격 사거리
     float fAtt;           // 공격력
+    int mDir;             // 방향
 };
 
 
@@ -26,10 +27,12 @@ public:
 
     void SetAI(AI* _pAI);
     const tMonInfo& GetInfo() { return m_tInfo; }
+    void SetRandomDir();
 
 
 public:
     virtual void update() override;
+    virtual void render(HDC _dc) override;
     CMonster* Clone() { return new CMonster(*this); }
 
     

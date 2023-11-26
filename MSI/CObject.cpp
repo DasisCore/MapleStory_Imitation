@@ -18,6 +18,7 @@ CObject::CObject()
 	, m_vScale{}
 	, m_pComponent(nullptr)
 	, m_bAlive(true)
+	, m_bGroundCheck(1)
 {
 }
 
@@ -54,23 +55,20 @@ void CObject::finalupdate()
 void CObject::render(HDC _dc)
 {
 	Vec2 vRenderPos = CCamera::GetInst()->GetRenderPos(m_vPos);
+
+	// 이름표 출력
+	Graphics graphics(_dc);
+
+	Font font(L"Arial", 13, FontStyle::FontStyleBold);
+
+	SolidBrush brush(Color(255, 0, 0, 0));
+
+	Vec2 vPos = GetPos();
+
+	PointF point((int)(vRenderPos.x - m_vScale.x / 2.f), vPos.y - 70.f);
+
+	graphics.DrawString(m_strName.c_str(), -1, &font, point, &brush);
 	
-	SelectGDI a(_dc, BRUSH_TYPE::HOLLOW);
-
-	RECT rc = {
-	  (int)(vRenderPos.x - m_vScale.x / 2.f)
-	, (int)((vRenderPos.y - m_vScale.y / 2.f) - 125.f)
-	, (int)(vRenderPos.x + m_vScale.x / 2.f)
-	, (int)(vRenderPos.y + m_vScale.y / 2.f) };
-
-	DrawText(_dc, m_strName.c_str(), -1, &rc, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
-
-	Rectangle(_dc
-		, (int)(vRenderPos.x - m_vScale.x / 2.f)
-		, (int)(vRenderPos.y - m_vScale.y / 2.f)
-		, (int)(vRenderPos.x + m_vScale.x / 2.f)
-		, (int)(vRenderPos.y + m_vScale.y / 2.f));
-
 	component_render(_dc);
 }
 

@@ -39,5 +39,20 @@ public:
 
 		return random_number;
 	}
+
+	bool GetRandomBool()
+	{
+		// 시드를 현재 시간으로 설정
+		std::random_device rd;
+		std::default_random_engine generator(rd());
+
+		// 1부터 30 사이의 정수를 생성하는 분포 생성
+		std::uniform_int_distribution<int> distribution(0, 1);
+
+		// 난수 생성
+		int random_number = distribution(generator);
+
+		return !!random_number;
+	}
 };
 

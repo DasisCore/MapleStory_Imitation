@@ -20,6 +20,7 @@
 #include "AI.h"
 #include "CIdleState.h"
 #include "CTraceState.h"
+#include "CPatrolState.h"
 
 #include "CRigidBody.h"
 #include "SelectGDI.h"
@@ -101,7 +102,7 @@ void CScene_Start::update()
 
 	if (KEY_TAP(KEY::Z))
 	{
-		int randomNumber = CRandom::GetInst()->GetBetweenIntNumber<int>(1, 30);
+		int randomNumber = CRandom::GetInst()->GetBetweenInt<int>(1, 30);
 		m_itempNumber = randomNumber;
 	}
 }
@@ -158,7 +159,8 @@ void CScene_Start::Enter()
 	// 진입시 오브젝트 추가
 	CObject* pPlayer = new CPlayer;
 	pPlayer->SetName(L"Player");
-	pPlayer->SetPos(Vec2(640.f, 384.f));
+	pPlayer->SetPos(Vec2(10040.f, 384.f));
+	//pPlayer->SetPos(Vec2(640.f, 384.f));
 	pPlayer->SetScale(Vec2(45.f, 70.f)); 
 
 	RegisterPlayer(pPlayer);
@@ -174,9 +176,12 @@ void CScene_Start::Enter()
 
 	// Voltarix 추가
 	CVoltarix* pVoltarix = new CVoltarix;
-	pVoltarix->SetName(L"Player");
+	pVoltarix->SetName(L"Voltarix");
 	pVoltarix->SetPos(Vec2(340.f, 383.f));
 	pVoltarix->SetScale(Vec2(45.f, 70.f));
+
+	RegisterPlayer(pVoltarix);
+
 	AddObject(pVoltarix, GROUP_TYPE::PLAYER);
 
 
@@ -184,15 +189,15 @@ void CScene_Start::Enter()
 	// 몬스터 배치
 	Vec2 vResolution = CCore::GetInst()->GetResolution();
 	CMonster* pMon = CMonFactory::CreateMonter(MON_TYPE::NORMAL, vResolution / 2.f - Vec2(0.f, 300.f));
-	pMon->SetName(L"Monster");
-	pMon->SetScale(Vec2(110.f, 60.f));
+	pMon->SetName(L"Air_Monster");
+	pMon->SetScale(Vec2(60.f, 60.f));
 	AddObject(pMon, GROUP_TYPE::MONSTER);
 
 	// 이벤트를 이용하여 오브젝트 삽입 예시
 	//CreateObject(pOtherPlayer, GROUP_TYPE::PLAYER);
 
 	CLesh* pMonLesh = new CLesh;
-	pMonLesh->SetName(L"Player");
+	pMonLesh->SetName(L"Lesh");
 	pMonLesh->SetScale(Vec2(50.f, 60.f));
 	pMonLesh->SetPos(Vec2(200.f, 200.f));
 
@@ -201,13 +206,15 @@ void CScene_Start::Enter()
 	info.fAttRange = 50.f;
 	info.fRecogRange = 300.f;
 	info.fHP = 100.f;
-	info.fSpeed = 150.f;
+	info.fSpeed = 100.f;
+	info.mDir = 1;
 
 	pMonLesh->SetMonInfo(info);
 
 	AI* pAI = new AI;
 	pAI->AddState(new CIdleState);
 	pAI->AddState(new CTraceState);
+	pAI->AddState(new CPatrolState);
 	pAI->SetCurState(MON_STATE::IDLE);
 	pMonLesh->SetAI(pAI);
 
@@ -219,7 +226,7 @@ void CScene_Start::Enter()
 	CObject* pGround = new CGround;
 	pGround->SetName(L"Ground");
 	pGround->SetPos(Vec2(640.f, 584.f));
-	pGround->SetScale(Vec2(1000.f, 60.f));
+	pGround->SetScale(Vec2(3000.f, 60.f));
 	AddObject(pGround, GROUP_TYPE::GROUND);
 
 
@@ -229,8 +236,8 @@ void CScene_Start::Enter()
 	CCollisionMgr::GetInst()->CheckGroup(GROUP_TYPE::MONSTER, GROUP_TYPE::GROUND);
 
 	// Camera Look 지정
-	//CCamera::GetInst()->SetLookAt(vResolution / 2.f);
-	CCamera::GetInst()->SetTarget(pPlayer);
+	CCamera::GetInst()->SetLookAt(vResolution / 2.f);
+	//CCamera::GetInst()->SetTarget(pPlayer);
 
 	// Camera 효과 지정
 	CCamera::GetInst()->FadeOut(1.f);

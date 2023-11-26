@@ -7,7 +7,7 @@
 CRigidBody::CRigidBody()
 	: m_pOwner(nullptr)
 	, m_fMass(1.f)
-	, m_fFricCoeff(100.f)
+	, m_fFricCoeff(300.f)
 	, m_vMaxVelocity(Vec2(200.f, 600.f))
 {
 }

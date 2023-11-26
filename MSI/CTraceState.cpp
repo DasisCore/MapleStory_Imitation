@@ -42,4 +42,14 @@ void CTraceState::update()
 	vMonPos += vMonDir * GetMonster()->GetInfo().fSpeed * fDT;
 
 	GetMonster()->SetPos(vMonPos);
+
+	// 플레이어가 탐지거리 이상으로 멀어진다면 추적을 멈춘다.
+	CMonster* pMonster = GetMonster();
+	Vec2 vDiff = (vPlayerPos - vMonPos);
+	float fLen = vDiff.Length();
+
+	if (fLen > pMonster->GetInfo().fRecogRange)
+	{
+		ChangeAIState(GetAI(), MON_STATE::IDLE);
+	}
 }

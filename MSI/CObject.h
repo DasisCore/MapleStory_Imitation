@@ -17,6 +17,7 @@ private:
 	CComponent* m_pComponent;
 
 	bool m_bAlive;
+	bool m_bGroundCheck;
 
 public:
 	void SetName(const wstring& _strName) { m_strName = _strName; }
@@ -29,6 +30,7 @@ public:
 	void SetScale(Vec2 _vScale) { m_vScale = _vScale; }
 
 	bool IsDead() { return !m_bAlive; }
+	bool GetGroundCheck() { return m_bGroundCheck; }
 
 private:
 	void SetDead() { m_bAlive = false; }

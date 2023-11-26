@@ -1,10 +1,11 @@
 #pragma once
 #include "CState.h"
-class CIdleState :
+
+class CPatrolState :
     public CState
 {
 private:
-    float m_fWaitTime;
+    float m_fMoveTime;
 
 
 public:
@@ -12,9 +13,8 @@ public:
     virtual void Exit() override;
     virtual void update() override;
 
-
 public:
-    CIdleState();
-    ~CIdleState();
+    CPatrolState();
+    ~CPatrolState();
 };
 

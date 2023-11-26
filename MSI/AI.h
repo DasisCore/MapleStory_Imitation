@@ -18,6 +18,7 @@ public:
 public:
 	void AddState(CState* _pState);
 	CState* GetState(MON_STATE _eState);
+	CState* GetCurState() { return m_pCurState; }
 	void SetCurState(MON_STATE _eState);
 
 	void ChangeState(MON_STATE _eState);

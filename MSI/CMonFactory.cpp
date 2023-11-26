@@ -5,6 +5,7 @@
 
 #include "CIdleState.h"
 #include "CTraceState.h"
+#include "CPatrolState.h"
 
 #include "CComponent.h"
 #include "CRigidBody.h"
@@ -25,7 +26,7 @@ CMonster* CMonFactory::CreateMonter(MON_TYPE _eType, Vec2 _vPos)
 		info.fAttRange = 50.f;
 		info.fRecogRange = 300.f;
 		info.fHP = 100.f;
-		info.fSpeed = 150.f;
+		info.fSpeed = 100.f;
 
 		pMon->SetMonInfo(info);
 
@@ -35,6 +36,7 @@ CMonster* CMonFactory::CreateMonter(MON_TYPE _eType, Vec2 _vPos)
 		AI* pAI = new AI;
 		pAI->AddState(new CIdleState);
 		pAI->AddState(new CTraceState);
+		pAI->AddState(new CPatrolState);
 		pAI->SetCurState(MON_STATE::IDLE);
 
 		pMon->SetAI(pAI);

@@ -305,6 +305,9 @@
     <ClInclude Include="CRandom.h">
       <Filter>Engine\08. Module</Filter>
     </ClInclude>
+    <ClInclude Include="CPatrolState.h">
+      <Filter>Engine\08. Module\AI\State\Patrol</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CCore.cpp">
@@ -436,6 +439,9 @@
     </ClCompile>
     <ClCompile Include="CRandom.cpp">
       <Filter>Engine\08. Module</Filter>
+    </ClCompile>
+    <ClCompile Include="CPatrolState.cpp">
+      <Filter>Engine\08. Module\AI\State\Patrol</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -27,7 +27,7 @@ void CGround::update()
 void CGround::OnCollisionEnter(CCollider* _pOther)
 {
 	CObject* pOtherObj = _pOther->GetObj();
-	if (pOtherObj->GetName() == L"Player")
+	if (pOtherObj->GetGroundCheck())
 	{
 		pOtherObj->GetComponent()->GetGravity()->SetGround(true);
 
@@ -51,7 +51,7 @@ void CGround::OnCollisionEnter(CCollider* _pOther)
 void CGround::OnCollision(CCollider* _pOther)
 {
 	CObject* pOtherObj = _pOther->GetObj();
-	if (pOtherObj->GetName() == L"Player")
+	if (pOtherObj->GetGroundCheck())
 	{
 		pOtherObj->GetComponent()->GetGravity()->SetGround(true);
 
@@ -75,7 +75,7 @@ void CGround::OnCollision(CCollider* _pOther)
 void CGround::OnCollisionExit(CCollider* _pOther)
 {
 	CObject* pOtherObj = _pOther->GetObj();
-	if (pOtherObj->GetName() == L"Player")
+	if (pOtherObj->GetGroundCheck())
 	{
 		pOtherObj->GetComponent()->GetGravity()->SetGround(false);
 	}

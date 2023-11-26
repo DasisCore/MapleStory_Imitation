@@ -157,6 +157,7 @@
     <ClInclude Include="CObject.h" />
     <ClInclude Include="CPanelUI.h" />
     <ClInclude Include="CPathMgr.h" />
+    <ClInclude Include="CPatrolState.h" />
     <ClInclude Include="CPlayer.h" />
     <ClInclude Include="CRandom.h" />
     <ClInclude Include="CRes.h" />
@@ -209,6 +210,7 @@
     <ClCompile Include="CObject.cpp" />
     <ClCompile Include="CPanelUI.cpp" />
     <ClCompile Include="CPathMgr.cpp" />
+    <ClCompile Include="CPatrolState.cpp" />
     <ClCompile Include="CPlayer.cpp" />
     <ClCompile Include="CRandom.cpp" />
     <ClCompile Include="CRes.cpp" />

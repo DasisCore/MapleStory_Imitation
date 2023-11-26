@@ -113,6 +113,13 @@ public:
 		return Vec2(x / _f, y / _f);
 	}
 
+
+	bool operator == (Vec2 _Other)
+	{
+		if (x == _Other.x && y == _Other.y) return true;
+		else return false;
+	}
+
 public:
 	Vec2()
 		: x(0.f)

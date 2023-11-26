@@ -206,25 +206,23 @@ void CPlayer::update_move()
 
 	if (KEY_HOLD(KEY::LEFT))
 	{
-		pRigid->AddForce(Vec2(-200.f, 0.f));
+		pRigid->AddForce(Vec2(-400.f, 0.f));
 	}
 
 	if (KEY_HOLD(KEY::RIGHT))
 	{
-		pRigid->AddForce(Vec2(200.f, 0.f));
+		pRigid->AddForce(Vec2(400.f, 0.f));
 	}
 
 
 	if (KEY_TAP(KEY::LEFT))
 	{
-		pRigid->SetVelocity(Vec2(-100.f, pRigid->GetVelocity().y));
+		pRigid->SetVelocity(Vec2(-300.f, pRigid->GetVelocity().y));
 	}
 	if (KEY_TAP(KEY::RIGHT))
 	{
-		pRigid->SetVelocity(Vec2(100.f, pRigid->GetVelocity().y));
+		pRigid->SetVelocity(Vec2(300.f, pRigid->GetVelocity().y));
 	}
-
-
 
 }
 
@@ -303,7 +301,7 @@ void CPlayer::show_state(HDC _dc)
 {
 	Graphics graphics(_dc);
 
-	Font font(L"Arial", 9, FontStyle::FontStyleBold);
+	Font font(L"Arial", 13, FontStyle::FontStyleBold);
 	SolidBrush brush(Color(255, 0, 0, 0));
 
 	Vec2 vPos = GetPos();
@@ -349,7 +347,10 @@ void CPlayer::show_state(HDC _dc)
 		current_state += L"_RIGHT";
 	}
 
-	PointF point(vPos.x - 30.f, vPos.y - 55.f);
+	PointF point(vPos.x + 30.f, vPos.y);
 
-	graphics.DrawString(current_state.c_str(), -1, &font, point, &brush);
+	graphics.DrawString(GetName().c_str(), -1, &font, PointF(vPos.x - 22.f, vPos.y - 55.f), &brush);
+
+	Font font2(L"Arial", 10);
+	graphics.DrawString(current_state.c_str(), -1, &font2, point, &brush);
 }
