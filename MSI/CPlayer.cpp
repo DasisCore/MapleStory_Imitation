@@ -296,7 +296,11 @@ void CPlayer::render(HDC _dc)
 {
 	// 컴포넌트 충돌체, 애니메이션등 렌더링
 	component_render(_dc);
+	show_state(_dc);
+}
 
+void CPlayer::show_state(HDC _dc)
+{
 	Graphics graphics(_dc);
 
 	Font font(L"Arial", 9, FontStyle::FontStyleBold);

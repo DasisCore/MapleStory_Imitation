@@ -28,6 +28,8 @@
 
 #include "CVoltarix.h"
 
+#include "CRandom.h"
+
 
 CScene_Start::CScene_Start()
 	: m_bUseForce(false)
@@ -35,6 +37,7 @@ CScene_Start::CScene_Start()
 	, m_fCurRadius(0.f)
 	, m_fForce(500.f)
 	, m_pTempImage(nullptr)
+	, m_itempNumber(0)
 {
 }
 
@@ -96,6 +99,11 @@ void CScene_Start::update()
 	//}
 
 
+	if (KEY_TAP(KEY::Z))
+	{
+		int randomNumber = CRandom::GetInst()->GetBetweenIntNumber<int>(1, 30);
+		m_itempNumber = randomNumber;
+	}
 }
 
 void CScene_Start::render(HDC _dc)
@@ -110,6 +118,21 @@ void CScene_Start::render(HDC _dc)
 	//graphics.DrawImage(m_pTempImage, Width, 0, -Width, Height);
 	//graphics.DrawImage(m_pTempImage, 0, Height, Width, Height);
 
+	// 랜덤 함수 테스트
+	wstring tempStr = std::to_wstring(m_itempNumber);
+	tempStr = L"Random Number : " + tempStr;
+
+	Graphics graphics(_dc);
+
+	Font font(L"Arial", 20, FontStyle::FontStyleBold);
+
+	SolidBrush brush(Color(255, 0, 0, 0));
+
+	PointF point(100.f, 10.f);
+
+	graphics.DrawString(tempStr.c_str(), -1, &font, point, &brush);
+
+	// 원그리는 부분
 	if (!m_bUseForce) return;
 
 	SelectGDI a(_dc, BRUSH_TYPE::HOLLOW);
@@ -169,7 +192,7 @@ void CScene_Start::Enter()
 	//CreateObject(pOtherPlayer, GROUP_TYPE::PLAYER);
 
 	CLesh* pMonLesh = new CLesh;
-	pMonLesh->SetName(L"Lesh");
+	pMonLesh->SetName(L"Player");
 	pMonLesh->SetScale(Vec2(50.f, 60.f));
 	pMonLesh->SetPos(Vec2(200.f, 200.f));
 
@@ -203,6 +226,7 @@ void CScene_Start::Enter()
 	// 충돌 지정
 	CCollisionMgr::GetInst()->CheckGroup(GROUP_TYPE::PLAYER, GROUP_TYPE::MONSTER);
 	CCollisionMgr::GetInst()->CheckGroup(GROUP_TYPE::PLAYER, GROUP_TYPE::GROUND);
+	CCollisionMgr::GetInst()->CheckGroup(GROUP_TYPE::MONSTER, GROUP_TYPE::GROUND);
 
 	// Camera Look 지정
 	//CCamera::GetInst()->SetLookAt(vResolution / 2.f);

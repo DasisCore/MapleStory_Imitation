@@ -8,7 +8,7 @@
 CLesh::CLesh()
 	: CMonster()
 {
-	//CreateGravity();
+	CreateGravity();
 
 	CTexture* pLeshLeftTex = CResMgr::GetInst()->LoadTexture(L"Monster_Left_Lesh", L"Texture\\Monster\\Lesh.png");
 	CTexture* pLeshRightTex = CResMgr::GetInst()->LoadTexture(L"Monster_Right_Lesh", L"Texture\\Monster\\Lesh.png", 1);
@@ -37,5 +37,5 @@ void CLesh::update()
 {
 	CMonster::update();
 
-	GetComponent()->GetAnimator()->Play(L"LESH_RIGHT_DIE", true);
+	GetComponent()->GetAnimator()->Play(L"LESH_RIGHT_WALK", true);
 }

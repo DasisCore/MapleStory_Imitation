@@ -63,6 +63,7 @@ public:
 // юс╫ц
 public:
     virtual void render(HDC _dc);
+    void show_state(HDC _dc);
 
 
 public:

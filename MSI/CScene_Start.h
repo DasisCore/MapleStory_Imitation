@@ -14,6 +14,8 @@ private:
 
     // 임시 gdi+ 객체
     Image* m_pTempImage;
+    // 임시 숫자 저장
+    int m_itempNumber;
 
 public:
     virtual void update() override;

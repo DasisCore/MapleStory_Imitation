@@ -152,6 +152,9 @@
     <Filter Include="Engine\04. Object\Monster\DarkLesh">
       <UniqueIdentifier>{17d5dd98-4c3c-478e-ab14-6a869f9c58e6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\08. Module\AI\State\Patrol">
+      <UniqueIdentifier>{29692aa1-2767-44d3-a729-7f7e2fcf583c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -299,6 +302,9 @@
     <ClInclude Include="CLesh.h">
       <Filter>Engine\04. Object\Monster\Lesh</Filter>
     </ClInclude>
+    <ClInclude Include="CRandom.h">
+      <Filter>Engine\08. Module</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CCore.cpp">
@@ -427,6 +433,9 @@
     </ClCompile>
     <ClCompile Include="CLesh.cpp">
       <Filter>Engine\04. Object\Monster\Lesh</Filter>
+    </ClCompile>
+    <ClCompile Include="CRandom.cpp">
+      <Filter>Engine\08. Module</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
