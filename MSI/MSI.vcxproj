@@ -139,6 +139,7 @@
     <ClInclude Include="AI.h" />
     <ClInclude Include="CAnimation.h" />
     <ClInclude Include="CAnimator.h" />
+    <ClInclude Include="CAttackState.h" />
     <ClInclude Include="CBtnUI.h" />
     <ClInclude Include="CCamera.h" />
     <ClInclude Include="CCollider.h" />
@@ -160,6 +161,7 @@
     <ClInclude Include="CPatrolState.h" />
     <ClInclude Include="CPlayer.h" />
     <ClInclude Include="CRandom.h" />
+    <ClInclude Include="CRaven.h" />
     <ClInclude Include="CRes.h" />
     <ClInclude Include="CResMgr.h" />
     <ClInclude Include="CRigidBody.h" />
@@ -192,6 +194,7 @@
     <ClCompile Include="AI.cpp" />
     <ClCompile Include="CAnimation.cpp" />
     <ClCompile Include="CAnimator.cpp" />
+    <ClCompile Include="CAttackState.cpp" />
     <ClCompile Include="CBtnUI.cpp" />
     <ClCompile Include="CCamera.cpp" />
     <ClCompile Include="CCollider.cpp" />
@@ -213,6 +216,7 @@
     <ClCompile Include="CPatrolState.cpp" />
     <ClCompile Include="CPlayer.cpp" />
     <ClCompile Include="CRandom.cpp" />
+    <ClCompile Include="CRaven.cpp" />
     <ClCompile Include="CRes.cpp" />
     <ClCompile Include="CResMgr.cpp" />
     <ClCompile Include="CRigidBody.cpp" />

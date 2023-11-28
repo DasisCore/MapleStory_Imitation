@@ -49,5 +49,6 @@ public:
 
 	friend class CObject;
 	friend class CComponent;
+	friend class CTraceState;
 };
 

@@ -14,6 +14,7 @@ CResMgr::CResMgr()
 CResMgr::~CResMgr()
 {
 	Safe_Delete_Map(m_mapTex);
+	Safe_Delete_Map(m_mapSound);
 }
 
 // 좌우 반전을 원할 경우 마지막 인자로 1을 넣어주면 된다.

@@ -1,13 +1,13 @@
 #pragma once
 #include "CState.h"
 
-class CObject;
+class CCollider;
 
-class CTraceState :
+class CAttackState :
     public CState
 {
 private:
-    CObject* m_pObj;
+    CCollider* m_pCollider;
 
 
 public:
@@ -15,8 +15,9 @@ public:
     virtual void Exit() override;
     virtual void update() override;
 
+
 public:
-    CTraceState();
-    ~CTraceState();
+    CAttackState();
+    ~CAttackState();
 };
 

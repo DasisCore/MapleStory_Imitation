@@ -33,6 +33,7 @@ public:
 	bool GetGroundCheck() { return m_bGroundCheck; }
 
 private:
+public:
 	void SetDead() { m_bAlive = false; }
 
 

@@ -177,7 +177,7 @@ void CScene_Start::Enter()
 	// Voltarix 추가
 	CVoltarix* pVoltarix = new CVoltarix;
 	pVoltarix->SetName(L"Voltarix");
-	pVoltarix->SetPos(Vec2(340.f, 383.f));
+	pVoltarix->SetPos(Vec2(740.f, 383.f));
 	pVoltarix->SetScale(Vec2(45.f, 70.f));
 
 	RegisterPlayer(pVoltarix);
@@ -188,10 +188,10 @@ void CScene_Start::Enter()
 
 	// 몬스터 배치
 	Vec2 vResolution = CCore::GetInst()->GetResolution();
-	CMonster* pMon = CMonFactory::CreateMonter(MON_TYPE::NORMAL, vResolution / 2.f - Vec2(0.f, 300.f));
-	pMon->SetName(L"Air_Monster");
-	pMon->SetScale(Vec2(60.f, 60.f));
-	AddObject(pMon, GROUP_TYPE::MONSTER);
+	//CMonster* pMon = CMonFactory::CreateMonter(MON_TYPE::NORMAL, vResolution / 2.f - Vec2(0.f, 300.f));
+	//pMon->SetName(L"Air_Monster");
+	//pMon->SetScale(Vec2(60.f, 60.f));
+	//AddObject(pMon, GROUP_TYPE::MONSTER);
 
 	// 이벤트를 이용하여 오브젝트 삽입 예시
 	//CreateObject(pOtherPlayer, GROUP_TYPE::PLAYER);

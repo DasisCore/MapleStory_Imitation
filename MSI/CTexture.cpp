@@ -56,6 +56,8 @@ void CTexture::Load(const wstring& _strFilePath, int _iDir)
 
 	// m_hBit로부터 m_bitInfo에 비트맵 정보 채우기
 	GetObject(m_hBit, sizeof(BITMAP), &m_bitInfo);
+
+	delete image;
 }
 
 void CTexture::Create(UINT _iWidth, UINT _iHeight)

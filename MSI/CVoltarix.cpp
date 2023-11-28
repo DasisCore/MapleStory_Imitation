@@ -12,18 +12,19 @@
 #include "CKeyMgr.h"
 
 CVoltarix::CVoltarix()
+	:CPlayer()
 {
 	setCurChar(L"VOLTARIX");
 
-	CreateComponent();
+	//CreateComponent();
 
 	// 캐릭터 기본 콜라이더 크기 (45, 70)
 	CreateCollider();
 	GetComponent()->GetCollider()->SetScale(Vec2(45.f, 70.f));
 	GetComponent()->GetCollider()->SetOffsetPos(Vec2(0.f, 0.f));
 
-	CreateRigidbody();
-	CreateAnimation();
+	//CreateRigidbody();
+	//CreateAnimation();
 	CreateGravity();
 
 	CTexture* m_pVoltarix_LeftTex = CResMgr::GetInst()->LoadTexture(L"VoltarixLeft", L"Texture\\Player\\Voltarix.png");

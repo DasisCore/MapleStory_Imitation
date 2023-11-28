@@ -1,6 +1,19 @@
 // MSI.cpp : Defines the entry point for the application.
 //
 
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
+
+#ifdef _DEBUG
+#define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
+// Replace _NORMAL_BLOCK with _CLIENT_BLOCK if you want the
+// allocations to be of _CLIENT_BLOCK type
+#else
+#define DBG_NEW new
+#endif
+
+
 #include "global.h"
 #include "framework.h"
 #include "main.h"
@@ -28,7 +41,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 {
     // 메모리 누수 체크
     _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-    //_CrtSetBreakAlloc(310);
+    //_CrtSetBreakAlloc(591);
 
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);

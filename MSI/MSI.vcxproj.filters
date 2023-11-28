@@ -155,6 +155,9 @@
     <Filter Include="Engine\08. Module\AI\State\Patrol">
       <UniqueIdentifier>{29692aa1-2767-44d3-a729-7f7e2fcf583c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\04. Object\Player\Raven">
+      <UniqueIdentifier>{7a55e35e-793d-4023-9bd4-66060c471d03}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -308,6 +311,12 @@
     <ClInclude Include="CPatrolState.h">
       <Filter>Engine\08. Module\AI\State\Patrol</Filter>
     </ClInclude>
+    <ClInclude Include="CAttackState.h">
+      <Filter>Engine\08. Module\AI\State\Attack</Filter>
+    </ClInclude>
+    <ClInclude Include="CRaven.h">
+      <Filter>Engine\04. Object\Player\Raven</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CCore.cpp">
@@ -442,6 +451,12 @@
     </ClCompile>
     <ClCompile Include="CPatrolState.cpp">
       <Filter>Engine\08. Module\AI\State\Patrol</Filter>
+    </ClCompile>
+    <ClCompile Include="CAttackState.cpp">
+      <Filter>Engine\08. Module\AI\State\Attack</Filter>
+    </ClCompile>
+    <ClCompile Include="CRaven.cpp">
+      <Filter>Engine\04. Object\Player\Raven</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
