@@ -1,13 +1,13 @@
 #pragma once
 #include "CState.h"
 
-class CObject;
+class CDetect;
 
 class CTraceState :
     public CState
 {
 private:
-    CObject* m_pObj;
+    CDetect* m_pDetect;
 
 
 public:

@@ -4,10 +4,15 @@
 #include "CResMgr.h"
 #include "CComponent.h"
 #include "CAnimator.h"
+#include "CTimeMgr.h"
 
 CLesh::CLesh()
 	: CMonster()
+	, m_fAttDelay(1.5f)
+	, m_fAttTime(1.5f)
 {
+	setCurChar(L"LESH");
+
 	CreateGravity();
 
 	CTexture* pLeshLeftTex = CResMgr::GetInst()->LoadTexture(L"Monster_Left_Lesh", L"Texture\\Monster\\Lesh.png");
@@ -36,6 +41,11 @@ CLesh::~CLesh()
 void CLesh::update()
 {
 	CMonster::update();
+	//GetComponent()->GetAnimator()->Play(L"LESH_RIGHT_WALK", true);
+}
 
-	GetComponent()->GetAnimator()->Play(L"LESH_RIGHT_WALK", true);
+void CLesh::Attack()
+{
+	m_fAttTime -= fDT;
+	//GetComponent()->GetAnimator()->Play(L"LESH_RIGHT_ATTACK", true);
 }

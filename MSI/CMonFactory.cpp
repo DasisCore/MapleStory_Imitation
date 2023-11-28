@@ -6,6 +6,7 @@
 #include "CIdleState.h"
 #include "CTraceState.h"
 #include "CPatrolState.h"
+#include "CAttackState.h"
 
 #include "CComponent.h"
 #include "CRigidBody.h"
@@ -37,6 +38,8 @@ CMonster* CMonFactory::CreateMonter(MON_TYPE _eType, Vec2 _vPos)
 		pAI->AddState(new CIdleState);
 		pAI->AddState(new CTraceState);
 		pAI->AddState(new CPatrolState);
+		pAI->AddState(new CAttackState);
+		
 		pAI->SetCurState(MON_STATE::IDLE);
 
 		pMon->SetAI(pAI);

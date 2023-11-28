@@ -15,16 +15,18 @@
 #include "CComponent.h"
 #include "CObject.h"
 #include "CMissile.h"
+#include "CDetect.h"
+#include "CEventMgr.h"
+#include "CRigidBody.h"
 
 CTraceState::CTraceState()
 	: CState(MON_STATE::TRACE)
-	, m_pObj(nullptr)
+	, m_pDetect(nullptr)
 {
 }
 
 CTraceState::~CTraceState()
 {
-	//if (m_pObj) delete m_pObj;
 }
 
 
@@ -35,43 +37,45 @@ void CTraceState::Enter()
 	CMonster* pMon = GetMonster();
 	Vec2 vPos = pMon->GetPos();
 
-	if (m_pObj != nullptr)
+	if (m_pDetect == nullptr)
 	{
-		m_pObj = new CMissile;
-		m_pObj->SetScale(Vec2(10.f, 10.f));
-		m_pObj->SetPos(vPos);
-		m_pObj->SetName(L"miss");
-		m_pObj->CreateComponent();
-		m_pObj->CreateCollider();
-		m_pObj->GetComponent()->GetCollider()->SetScale(Vec2(50.f, 50.f));
-		m_pObj->GetComponent()->GetCollider()->SetOffsetPos(Vec2(50.f, 0.f));
-		pCurScene->AddObject(m_pObj, GROUP_TYPE::MONSTER);
+		m_pDetect = new CDetect;
+		m_pDetect->SetScale(Vec2(10.f, 10.f));
+		m_pDetect->SetPos(vPos + Vec2(50.f, 0.f));
+		m_pDetect->SetName(L"Detect_area");
+		m_pDetect->CreateComponent();
+		m_pDetect->CreateCollider();
+		m_pDetect->GetComponent()->GetCollider()->SetScale(Vec2(50.f, 50.f));
+		//m_pObj->GetComponent()->GetCollider()->SetOffsetPos(Vec2(50.f, 0.f));
+		pCurScene->AddObject(m_pDetect, GROUP_TYPE::MONSTER);
 	}
 }
 
 void CTraceState::Exit()
 {
-	//if (m_pObj) delete m_pObj;
-	if (m_pObj)
-	{
-		if (m_pObj->IsDead()) delete m_pObj;
-		m_pObj->SetDead();
-	};
+	// Trace State를 나갈 때, 해당 오브젝트를 삭제하도록 Event에 넣어주고,
+	// m_pObj는 삭제된 주소값을 가리키기 때문에 nullptr로 변경한다.
+	DeleteObject(m_pDetect);
+	m_pDetect = nullptr;
 }
 
 void CTraceState::update()
 {
 	Vec2 vMonPos = GetMonster()->GetPos();
-
-	if(m_pObj) m_pObj->SetPos(vMonPos);
-	HDC dc = CCore::GetInst()->GetMemTex()->GetDC();
-	
 	CPlayer* pPlayer = (CPlayer*)CSceneMgr::GetInst()->GetCurScene()->GetPlayer();
 
-	// 타겟 추적
-	//CPlayer* pPlayer = (CPlayer*)CSceneMgr::GetInst()->GetCurScene()->GetPlayer();
-	Vec2 vPlayerPos = pPlayer->GetPos();
+	CCollider* pPlayerCol = pPlayer->GetComponent()->GetCollider();
 
+	if(m_pDetect) m_pDetect->SetPos(vMonPos + Vec2(50.f, 0.f));
+
+	if (m_pDetect->IsDetect())
+	{
+		ChangeAIState(GetAI(), MON_STATE::ATT);
+	}
+
+	// 플레이어 추적
+	HDC dc = CCore::GetInst()->GetMemTex()->GetDC();
+	Vec2 vPlayerPos = pPlayer->GetPos();
 	Vec2 vMonDir = vPlayerPos - vMonPos;
 	if (vMonDir.IsZero()) return;
 
@@ -80,6 +84,7 @@ void CTraceState::update()
 	vMonPos += vMonDir * GetMonster()->GetInfo().fSpeed * fDT;
 
 	GetMonster()->SetPos(vMonPos);
+	GetMonster()->GetComponent()->GetRigidbody()->SetVelocity(Vec2((vPlayerPos - vMonPos).x, 0.f));
 
 	// 플레이어가 탐지거리 이상으로 멀어진다면 추적을 멈춘다.
 	CMonster* pMonster = GetMonster();

@@ -158,6 +158,9 @@
     <Filter Include="Engine\04. Object\Player\Raven">
       <UniqueIdentifier>{7a55e35e-793d-4023-9bd4-66060c471d03}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\04. Object\Detect">
+      <UniqueIdentifier>{ecbb9bd9-d76b-4a90-b57b-4d443767d5c7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -317,6 +320,9 @@
     <ClInclude Include="CRaven.h">
       <Filter>Engine\04. Object\Player\Raven</Filter>
     </ClInclude>
+    <ClInclude Include="CDetect.h">
+      <Filter>Engine\04. Object\Detect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CCore.cpp">
@@ -457,6 +463,9 @@
     </ClCompile>
     <ClCompile Include="CRaven.cpp">
       <Filter>Engine\04. Object\Player\Raven</Filter>
+    </ClCompile>
+    <ClCompile Include="CDetect.cpp">
+      <Filter>Engine\04. Object\Detect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

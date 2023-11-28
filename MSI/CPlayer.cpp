@@ -29,15 +29,6 @@ CPlayer::CPlayer()
 	, m_bIsGround(0)
 	, m_bIsAir(0)
 {
-	// 임시 텍스쳐 로딩
-	//m_pTex = new CTexture;
-
-	//wstring strFilePath = CPathMgr::GetInst()->GetContentPath();
-	//strFilePath += L"texture\\player.bmp";
-	//m_pTex->Load(strFilePath);
-
-	// 위 작업을 CResMgr를 이용
-
 	CreateComponent();
 
 	// 캐릭터 기본 콜라이더 크기 (45, 70)

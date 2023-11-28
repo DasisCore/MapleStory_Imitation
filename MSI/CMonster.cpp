@@ -3,7 +3,9 @@
 
 #include "CComponent.h"
 #include "CCollider.h"
+#include "CAnimator.h"
 #include "CRandom.h"
+#include "CRigidBody.h"
 
 #include "AI.h"
 
@@ -45,12 +47,19 @@ void CMonster::SetRandomDir()
 	else m_tInfo.mDir = -1;
 }
 
+
+
 void CMonster::update()
 {
+	Vec2 vV = GetComponent()->GetRigidbody()->GetVelocity();
+	if (vV.x < 0) m_tInfo.mDir = -1;
+	else m_tInfo.mDir = 1;
+
 	if (m_pAI)
 	{
 		m_pAI->update();
 	}
+	update_animation();
 }
 
 void CMonster::render(HDC _dc)
@@ -82,6 +91,9 @@ void CMonster::render(HDC _dc)
 		tempStr = L"TRACE";
 	}
 
+	Vec2 vV = GetComponent()->GetRigidbody()->GetVelocity();
+	tempStr = std::to_wstring(vV.x) + L" / " + std::to_wstring(vV.y);
+
 	Graphics graphics(_dc);
 
 	Font font(L"Arial", 10, FontStyle::FontStyleBold);
@@ -93,4 +105,43 @@ void CMonster::render(HDC _dc)
 	PointF point(vPos.x + 40.f, vPos.y);
 
 	graphics.DrawString(tempStr.c_str(), -1, &font, point, &brush);
+}
+
+void CMonster::update_animation()
+{
+	wstring currentChar = m_wCurChar;
+
+	MON_STATE curState = m_pAI->GetCurState()->GetType();
+
+	if (m_tInfo.mDir == -1)
+	{
+		currentChar += L"_LEFT";
+	}
+	else
+	{
+		currentChar += L"_RIGHT";
+	}
+
+	if (curState == MON_STATE::IDLE)
+	{
+		currentChar += L"_IDLE";
+	}
+	else if (curState == MON_STATE::PATROL)
+	{
+		currentChar += L"_WALK";
+	}
+	else if (curState == MON_STATE::ATT)
+	{
+		currentChar += L"_ATTACK";
+	}
+	else if (curState == MON_STATE::RUN)
+	{
+		currentChar += L"_WALK";
+	}
+	else if (curState == MON_STATE::TRACE)
+	{
+		currentChar += L"_WALK";
+	}
+
+	GetComponent()->GetAnimator()->Play(currentChar.c_str(), true);
 }

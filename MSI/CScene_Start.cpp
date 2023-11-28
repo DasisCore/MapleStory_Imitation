@@ -21,6 +21,7 @@
 #include "CIdleState.h"
 #include "CTraceState.h"
 #include "CPatrolState.h"
+#include "CAttackState.h"
 
 #include "CRigidBody.h"
 #include "SelectGDI.h"
@@ -215,6 +216,8 @@ void CScene_Start::Enter()
 	pAI->AddState(new CIdleState);
 	pAI->AddState(new CTraceState);
 	pAI->AddState(new CPatrolState);
+	pAI->AddState(new CAttackState);
+	
 	pAI->SetCurState(MON_STATE::IDLE);
 	pMonLesh->SetAI(pAI);
 

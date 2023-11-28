@@ -1,13 +1,13 @@
 #pragma once
 #include "CState.h"
 
-class CCollider;
+class CDetect;
 
 class CAttackState :
     public CState
 {
 private:
-    CCollider* m_pCollider;
+    CDetect* m_pDetect;
 
 
 public:
