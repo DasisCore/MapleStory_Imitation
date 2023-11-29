@@ -14,6 +14,9 @@
 CMonster::CMonster()
 	: m_tInfo{}
 	, m_pAI(nullptr)
+	, m_fLeftDist(0.f)
+	, m_fRightDist(0.f)
+
 {
 	CreateComponent();
 	CreateCollider();
@@ -91,8 +94,8 @@ void CMonster::render(HDC _dc)
 		tempStr = L"TRACE";
 	}
 
-	Vec2 vV = GetComponent()->GetRigidbody()->GetVelocity();
-	tempStr = std::to_wstring(vV.x) + L" / " + std::to_wstring(vV.y);
+	//Vec2 vV = GetComponent()->GetRigidbody()->GetVelocity();
+	tempStr = std::to_wstring(m_fLeftDist) + L" / " + std::to_wstring(m_fRightDist);
 
 	Graphics graphics(_dc);
 

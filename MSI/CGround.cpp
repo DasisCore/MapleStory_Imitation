@@ -4,6 +4,7 @@
 #include "CComponent.h"
 #include "CCollider.h"
 #include "CGravity.h"
+#include "CMonster.h"
 
 CGround::CGround()
 {
@@ -53,6 +54,25 @@ void CGround::OnCollision(CCollider* _pOther)
 	CObject* pOtherObj = _pOther->GetObj();
 	if (pOtherObj->GetGroundCheck())
 	{
+		if (_pOther->GetObj()->GetName().substr(0, 7) == L"Monster")
+		{
+			// 몬스터의 정보
+			float fMonPos = _pOther->GetFinalPos().x;
+			float fMonHalfSide = _pOther->GetScale().x / 2;
+
+			// 땅의 정보
+			float fGroundPos = GetPos().x;
+			float fGroundHalfSide = GetScale().x / 2;
+
+			// 남은 거리를 계속 계산해줘야 함. (좌우)
+
+			CMonster* pMonster = (CMonster*)_pOther->GetObj();
+		
+			float fLeftRemain = abs((fMonPos + fMonHalfSide) - (fGroundPos - fGroundHalfSide));
+			float fRightRemain = abs((fMonPos - fMonHalfSide) - (fGroundPos + fGroundHalfSide));
+			pMonster->SetRemainDist(fLeftRemain, fRightRemain);
+		}
+
 		pOtherObj->GetComponent()->GetGravity()->SetGround(true);
 
 		Vec2 vObjPos = _pOther->GetFinalPos();

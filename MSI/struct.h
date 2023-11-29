@@ -31,6 +31,22 @@ public:
 		return *this;
 	}
 
+	// x를 _l과 _r 사이로 한정 짓는다.
+	Vec2& ClampX(float _l, float _r)
+	{
+		x = max(_l, x);
+		x = min(_r, x);
+		return *this;
+	}
+
+	// y를 _l과 _h 사이로 한정 짓는다.
+	Vec2& ClampY(float _l, float _h)
+	{
+		y = max(_l, y);
+		y = min(_h, y);
+		return *this;
+	}
+
 public:
 
 	Vec2& operator = (POINT _pt)

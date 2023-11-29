@@ -198,7 +198,7 @@ void CScene_Start::Enter()
 	//CreateObject(pOtherPlayer, GROUP_TYPE::PLAYER);
 
 	CLesh* pMonLesh = new CLesh;
-	pMonLesh->SetName(L"Lesh");
+	pMonLesh->SetName(L"Monster_Lesh");
 	pMonLesh->SetScale(Vec2(50.f, 60.f));
 	pMonLesh->SetPos(Vec2(200.f, 200.f));
 
@@ -229,7 +229,7 @@ void CScene_Start::Enter()
 	CObject* pGround = new CGround;
 	pGround->SetName(L"Ground");
 	pGround->SetPos(Vec2(640.f, 584.f));
-	pGround->SetScale(Vec2(3000.f, 60.f));
+	pGround->SetScale(Vec2(1000.f, 60.f));
 	AddObject(pGround, GROUP_TYPE::GROUND);
 
 

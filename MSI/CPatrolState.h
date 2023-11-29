@@ -6,6 +6,7 @@ class CPatrolState :
 {
 private:
     float m_fMoveTime;
+    int m_iDir;
 
 
 public:

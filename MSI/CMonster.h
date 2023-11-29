@@ -21,6 +21,9 @@ private:
     tMonInfo m_tInfo;
     AI* m_pAI;
 
+    float m_fLeftDist;
+    float m_fRightDist;
+
 
 public:
     float GetSpeed() { return m_tInfo.fSpeed; }
@@ -30,6 +33,11 @@ public:
     void SetAI(AI* _pAI);
     const tMonInfo& GetInfo() { return m_tInfo; }
     void SetRandomDir();
+    void SetMonDir(int _iDir) { m_tInfo.mDir = _iDir; }
+
+    void SetRemainDist(float _fLeft, float _fRight) { m_fLeftDist = _fLeft; m_fRightDist = _fRight; }
+    // 편의상 Vec2로 리턴해줌.
+    Vec2 GetRemainDist() { return Vec2(m_fLeftDist, m_fRightDist); }
 
 public:
     void update_animation();
