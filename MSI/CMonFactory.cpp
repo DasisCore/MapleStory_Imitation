@@ -25,7 +25,7 @@ CMonster* CMonFactory::CreateMonter(MON_TYPE _eType, Vec2 _vPos)
 		tMonInfo info = {};
 		info.fAtt = 10.f;
 		info.fAttRange = 50.f;
-		info.fRecogRange = 300.f;
+		info.vRecogRange = Vec2(250.f, 50.f);
 		info.fHP = 100.f;
 		info.fSpeed = 100.f;
 
@@ -40,7 +40,7 @@ CMonster* CMonFactory::CreateMonter(MON_TYPE _eType, Vec2 _vPos)
 		pAI->AddState(new CPatrolState);
 		pAI->AddState(new CAttackState);
 		
-		pAI->SetCurState(MON_STATE::IDLE);
+		pAI->SetCurState(MON_STATE::TRACE);
 
 		pMon->SetAI(pAI);
 	}

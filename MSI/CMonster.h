@@ -5,10 +5,10 @@ struct tMonInfo
 {
     float fHP;            // 체력
     float fSpeed;         // 속도
-    float fRecogRange;    // 인지 범위
+    Vec2 vRecogRange;    // 인지 범위
     float fAttRange;      // 공격 사거리
     float fAtt;           // 공격력
-    int mDir;             // 방향
+    int iDir;             // 방향
 };
 
 class AI;
@@ -33,7 +33,7 @@ public:
     void SetAI(AI* _pAI);
     const tMonInfo& GetInfo() { return m_tInfo; }
     void SetRandomDir();
-    void SetMonDir(int _iDir) { m_tInfo.mDir = _iDir; }
+    void SetMonDir(int _iDir) { m_tInfo.iDir = _iDir; }
 
     void SetRemainDist(float _fLeft, float _fRight) { m_fLeftDist = _fLeft; m_fRightDist = _fRight; }
     // 편의상 Vec2로 리턴해줌.

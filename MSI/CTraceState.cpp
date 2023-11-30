@@ -79,6 +79,7 @@ void CTraceState::update()
 	Vec2 vMonDir = vPlayerPos - vMonPos;
 	if (vMonDir.IsZero()) return;
 
+
 	vMonDir.Normalize();
 
 	vMonPos += vMonDir * GetMonster()->GetInfo().fSpeed * fDT;
@@ -91,8 +92,8 @@ void CTraceState::update()
 	Vec2 vDiff = (vPlayerPos - vMonPos);
 	float fLen = vDiff.Length();
 
-	if (fLen > pMonster->GetInfo().fRecogRange)
-	{
-		ChangeAIState(GetAI(), MON_STATE::IDLE);
-	}
+	//if (fLen > pMonster->GetInfo().vRecogRange)
+	//{
+	//	ChangeAIState(GetAI(), MON_STATE::IDLE);
+	//}
 }

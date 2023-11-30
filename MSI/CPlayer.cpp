@@ -286,6 +286,11 @@ void CPlayer::render(HDC _dc)
 	// 컴포넌트 충돌체, 애니메이션등 렌더링
 	component_render(_dc);
 	show_state(_dc);
+
+	Graphics g(_dc);
+	Pen pen(Color(0, 0, 255));
+	g.DrawLine(&pen, Point(-1000, GetPos().y + GetScale().y / 2.f), Point(+3000, GetPos().y + GetScale().y / 2.f));
+	g.DrawLine(&pen, Point(GetPos().x - GetScale().x / 2.f, -1000), Point(GetPos().x - GetScale().x / 2.f, 3000));
 }
 
 void CPlayer::show_state(HDC _dc)

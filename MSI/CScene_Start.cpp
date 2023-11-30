@@ -205,10 +205,10 @@ void CScene_Start::Enter()
 	tMonInfo info = {};
 	info.fAtt = 10.f;
 	info.fAttRange = 50.f;
-	info.fRecogRange = 300.f;
+	info.vRecogRange = Vec2(250.f, 50.f);
 	info.fHP = 100.f;
 	info.fSpeed = 100.f;
-	info.mDir = 1;
+	info.iDir = 1;
 
 	pMonLesh->SetMonInfo(info);
 

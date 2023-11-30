@@ -46,8 +46,8 @@ void CMonster::SetAI(AI* _pAI)
 
 void CMonster::SetRandomDir()
 {
-	if (CRandom::GetInst()->GetRandomBool()) m_tInfo.mDir = 1;
-	else m_tInfo.mDir = -1;
+	if (CRandom::GetInst()->GetRandomBool()) m_tInfo.iDir = 1;
+	else m_tInfo.iDir = -1;
 }
 
 
@@ -55,8 +55,8 @@ void CMonster::SetRandomDir()
 void CMonster::update()
 {
 	Vec2 vV = GetComponent()->GetRigidbody()->GetVelocity();
-	if (vV.x < 0) m_tInfo.mDir = -1;
-	else m_tInfo.mDir = 1;
+	if (vV.x < 0) m_tInfo.iDir = -1;
+	else m_tInfo.iDir = 1;
 
 	if (m_pAI)
 	{
@@ -95,7 +95,7 @@ void CMonster::render(HDC _dc)
 	}
 
 	//Vec2 vV = GetComponent()->GetRigidbody()->GetVelocity();
-	tempStr = std::to_wstring(m_fLeftDist) + L" / " + std::to_wstring(m_fRightDist);
+	//tempStr = std::to_wstring(m_fLeftDist) + L" / " + std::to_wstring(m_fRightDist);
 
 	Graphics graphics(_dc);
 
@@ -108,6 +108,17 @@ void CMonster::render(HDC _dc)
 	PointF point(vPos.x + 40.f, vPos.y);
 
 	graphics.DrawString(tempStr.c_str(), -1, &font, point, &brush);
+
+	// 몬스터의 사정거리 그리기
+	Pen pen(Color(255, 0, 0, 255));
+	if (m_tInfo.iDir == 1)
+	{
+		graphics.DrawRectangle(&pen, GetPos().x, GetPos().y - (GetScale().y / 2.f), m_tInfo.vRecogRange.x, GetScale().y);
+	}
+	else
+	{
+		graphics.DrawRectangle(&pen, GetPos().x - m_tInfo.vRecogRange.x, GetPos().y - (GetScale().y / 2.f), m_tInfo.vRecogRange.x, GetScale().y);
+	}
 }
 
 void CMonster::update_animation()
@@ -116,7 +127,7 @@ void CMonster::update_animation()
 
 	MON_STATE curState = m_pAI->GetCurState()->GetType();
 
-	if (m_tInfo.mDir == -1)
+	if (m_tInfo.iDir == -1)
 	{
 		currentChar += L"_LEFT";
 	}
