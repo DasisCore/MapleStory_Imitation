@@ -30,7 +30,10 @@ void CGround::OnCollisionEnter(CCollider* _pOther)
 	CObject* pOtherObj = _pOther->GetObj();
 	if (pOtherObj->GetGroundCheck())
 	{
-		pOtherObj->GetComponent()->GetGravity()->SetGround(true);
+		if (pOtherObj->GetComponent()->GetGravity() != nullptr)
+		{
+			pOtherObj->GetComponent()->GetGravity()->SetGround(true);
+		}
 
 		Vec2 vObjPos = _pOther->GetFinalPos();
 		Vec2 vObjScale = _pOther->GetScale();

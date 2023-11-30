@@ -18,7 +18,7 @@ CObject::CObject()
 	, m_vScale{}
 	, m_pComponent(nullptr)
 	, m_bAlive(true)
-	, m_bGroundCheck(1)
+	, m_bGroundCheck(true)
 {
 }
 
@@ -29,6 +29,7 @@ CObject::CObject(const CObject& _origin)
 	, m_vScale(_origin.m_vScale)
 	, m_pComponent(nullptr)
 	, m_bAlive(true)
+	, m_bGroundCheck(_origin.m_bGroundCheck)
 {
 	if (_origin.m_pComponent)
 	{

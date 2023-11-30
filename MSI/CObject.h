@@ -31,6 +31,7 @@ public:
 
 	bool IsDead() { return !m_bAlive; }
 	bool GetGroundCheck() { return m_bGroundCheck; }
+	void SetGroundCheck(bool _b) { m_bGroundCheck = _b; }
 
 private:
 	void SetDead() { m_bAlive = false; }

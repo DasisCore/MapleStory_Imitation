@@ -45,6 +45,7 @@ enum class GROUP_TYPE
 	PROJ_PLAYER,
 	PROJ_MONSTER,
 	MISSILE,
+	DETECT,
 
 	UI = 31,
 	END = 32,
