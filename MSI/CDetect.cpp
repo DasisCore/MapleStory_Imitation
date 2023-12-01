@@ -15,7 +15,6 @@ CDetect::~CDetect()
 void CDetect::update()
 {
 
-
 }
 
 void CDetect::OnCollisionEnter(CCollider* _pOther)

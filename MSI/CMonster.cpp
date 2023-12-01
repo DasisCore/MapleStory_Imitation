@@ -54,9 +54,9 @@ void CMonster::SetRandomDir()
 
 void CMonster::update()
 {
-	Vec2 vV = GetComponent()->GetRigidbody()->GetVelocity();
-	if (vV.x < 0) m_tInfo.iDir = -1;
-	else m_tInfo.iDir = 1;
+	//Vec2 vV = GetComponent()->GetRigidbody()->GetVelocity();
+	//if (vV.x < 0) m_tInfo.iDir = -1;
+	//else m_tInfo.iDir = 1;
 
 	if (m_pAI)
 	{

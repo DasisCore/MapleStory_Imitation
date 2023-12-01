@@ -27,19 +27,21 @@ void CAttackState::Enter()
 	CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
 
 	CMonster* pMon = GetMonster();
-	Vec2 vPos = pMon->GetPos();
+	Vec2 vMonPos = pMon->GetPos();
+
+	pMon->GetInfo().iDir;
 
 	if (m_pDetect == nullptr)
 	{
 		m_pDetect = new CDetect;
 		m_pDetect->SetScale(Vec2(10.f, 10.f));
-		m_pDetect->SetPos(vPos + Vec2(50.f, 0.f));
+		m_pDetect->SetPos(vMonPos + Vec2(50.f * GetMonster()->GetInfo().iDir, 0.f));
 		m_pDetect->SetName(L"Detect_area");
 		m_pDetect->CreateComponent();
 		m_pDetect->CreateCollider();
-		m_pDetect->GetComponent()->GetCollider()->SetScale(Vec2(50.f, 50.f));
+		m_pDetect->GetComponent()->GetCollider()->SetScale(pMon->GetScale());
 		//m_pObj->GetComponent()->GetCollider()->SetOffsetPos(Vec2(50.f, 0.f));
-		pCurScene->AddObject(m_pDetect, GROUP_TYPE::MONSTER);
+		pCurScene->AddObject(m_pDetect, GROUP_TYPE::DETECT);
 	}
 
 }
@@ -52,7 +54,11 @@ void CAttackState::Exit()
 
 void CAttackState::update()
 {
+	CMonster* pMonster = GetMonster();
 	CLesh* pMon = (CLesh*) GetMonster();
+	Vec2 vMonPos = pMon->GetPos();
+	if (m_pDetect) m_pDetect->SetPos(vMonPos + Vec2(50.f * GetMonster()->GetInfo().iDir, 0.f));
+	
 	pMon->Attack();
 
 	if (pMon->IsFinshAtt())

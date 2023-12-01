@@ -93,21 +93,23 @@ void CTraceState::update()
 	CPlayer* pPlayer = (CPlayer*)CSceneMgr::GetInst()->GetCurScene()->GetPlayer();
 	CCollider* pPlayerCol = pPlayer->GetComponent()->GetCollider();
 
+	Vec2 vPlayerPos = pPlayer->GetPos();
+	Vec2 vMonDir = vPlayerPos - vMonPos;
+
 	// 탐지 사각형 위치 갱신
 	if(m_pDetect) m_pDetect->SetPos(vMonPos + Vec2(50.f * GetMonster()->GetInfo().iDir, 0.f));
 
 	// 공격 범위에 플레이어가 들어왔다면 공격으로 전환
 	if (m_pDetect->IsDetect())
 	{
+		pMonster->GetComponent()->GetRigidbody()->SetVelocity(Vec2((float)m_iDir, 0.f));
 		ChangeAIState(GetAI(), MON_STATE::ATT);
+		return;
 	}
 
 	// =========================================================
 	// 플레이어를 추적 중일 때,
 	// =========================================================
-
-	Vec2 vPlayerPos = pPlayer->GetPos();
-	Vec2 vMonDir = vPlayerPos - vMonPos;
 
 	// 추적의 한 사이클이 끝났다면
 	if (m_fTraceTime < 0)

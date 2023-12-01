@@ -26,7 +26,7 @@ void CIdleState::Enter()
 {
 	// 1.5 ~ 3초 랜덤으로 대기하는 시간을 가짐.
 	m_fWaitTime = CRandom::GetInst()->GetBetweenReal(1.f, 2.f);
-	GetMonster()->SetRandomDir();
+	//GetMonster()->SetRandomDir();
 }
 
 void CIdleState::Exit()
