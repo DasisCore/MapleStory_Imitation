@@ -18,10 +18,14 @@
 #include "CDetect.h"
 #include "CEventMgr.h"
 #include "CRigidBody.h"
+#include "CTimeMgr.h"
 
 CTraceState::CTraceState()
 	: CState(MON_STATE::TRACE)
 	, m_pDetect(nullptr)
+	, m_fTraceTime(0.8f)
+	, m_fRemainTraceTime(3.f)
+	, m_iDir(1)
 {
 }
 
@@ -37,6 +41,25 @@ void CTraceState::Enter()
 	CMonster* pMon = GetMonster();
 	Vec2 vPos = pMon->GetPos();
 	Vec2 vScale = pMon->GetScale();
+	m_fRemainTraceTime = 3.f;
+	m_fTraceTime = 0.8f;
+
+	// 플레이어와 몬스터의 거리를 계산해서 몬스터의 방향을 설정한다.
+	Vec2 vMonPos = pMon->GetPos();
+	CPlayer* pPlayer = (CPlayer*)CSceneMgr::GetInst()->GetCurScene()->GetPlayer();
+	Vec2 vPlayerPos = pPlayer->GetPos();
+	Vec2 vMonDir = vPlayerPos - vMonPos;
+
+	if (vMonDir.x >= 0)
+	{
+		m_iDir = 1;
+		pMon->SetMonDir(1);
+	}
+	else
+	{
+		m_iDir = -1;
+		pMon->SetMonDir(-1);
+	}
 
 	if (m_pDetect == nullptr)
 	{
@@ -64,39 +87,96 @@ void CTraceState::Exit()
 
 void CTraceState::update()
 {
-	Vec2 vMonPos = GetMonster()->GetPos();
-	CPlayer* pPlayer = (CPlayer*)CSceneMgr::GetInst()->GetCurScene()->GetPlayer();
+	CMonster* pMonster = GetMonster();
+	Vec2 vMonPos = pMonster->GetPos();
 
+	CPlayer* pPlayer = (CPlayer*)CSceneMgr::GetInst()->GetCurScene()->GetPlayer();
 	CCollider* pPlayerCol = pPlayer->GetComponent()->GetCollider();
 
+	// 탐지 사각형 위치 갱신
 	if(m_pDetect) m_pDetect->SetPos(vMonPos + Vec2(50.f * GetMonster()->GetInfo().iDir, 0.f));
 
+	// 공격 범위에 플레이어가 들어왔다면 공격으로 전환
 	if (m_pDetect->IsDetect())
 	{
 		ChangeAIState(GetAI(), MON_STATE::ATT);
 	}
 
-	// 플레이어 추적
-	HDC dc = CCore::GetInst()->GetMemTex()->GetDC();
+	// =========================================================
+	// 플레이어를 추적 중일 때,
+	// =========================================================
+
 	Vec2 vPlayerPos = pPlayer->GetPos();
 	Vec2 vMonDir = vPlayerPos - vMonPos;
+
+	// 추적의 한 사이클이 끝났다면
+	if (m_fTraceTime < 0)
+	{
+		m_fTraceTime = 0.8f;
+		if (vMonDir.x >= 0)
+		{
+			pMonster->SetMonDir(1);
+			m_iDir = 1;
+		}
+		else if (vMonDir.x < 0)
+		{
+			pMonster->SetMonDir(-1);
+			m_iDir = -1;
+		}
+	}
+
+	CRigidBody* pMonRigid = pMonster->GetComponent()->GetRigidbody();
+
+	float vRemainLeft = pMonster->GetRemainDist().x;
+	float vRemainRight = pMonster->GetRemainDist().y;
+
+	float speed = pMonster->GetSpeed();
+
+	if (m_iDir == -1)
+	{
+		pMonRigid->SetVelocity(Vec2(speed * m_iDir , 0.f));
+
+		if (vRemainLeft < pMonster->GetScale().x)
+		{
+			m_iDir = 1;
+			pMonster->SetMonDir(1);
+			pMonRigid->SetVelocity(Vec2(speed * m_iDir, 0.f));
+		}
+	}
+	else if (m_iDir == 1)
+	{
+		pMonRigid->SetVelocity(Vec2(speed * m_iDir, 0.f));
+
+		if (vRemainRight < pMonster->GetScale().x)
+		{
+			m_iDir = -1;
+			pMonster->SetMonDir(-1);
+			pMonRigid->SetVelocity(Vec2(speed * m_iDir, 0.f));
+		}
+	}
+
+	m_fTraceTime -= fDT;
+	
+	// 안전장치 (Detect에 의해 걸릴 이유가 없음.)
 	if (vMonDir.IsZero()) return;
 
-
-	vMonDir.Normalize();
-
-	vMonPos += vMonDir * GetMonster()->GetInfo().fSpeed * fDT;
-
-	GetMonster()->SetPos(vMonPos);
-	GetMonster()->GetComponent()->GetRigidbody()->SetVelocity(Vec2((vPlayerPos - vMonPos).x, 0.f));
-
 	// 플레이어가 탐지거리 이상으로 멀어진다면 추적을 멈춘다.
-	CMonster* pMonster = GetMonster();
+	//CMonster* pMonster = GetMonster();
 	Vec2 vDiff = (vPlayerPos - vMonPos);
 	float fLen = vDiff.Length();
 
-	//if (fLen > pMonster->GetInfo().vRecogRange)
-	//{
-	//	ChangeAIState(GetAI(), MON_STATE::IDLE);
-	//}
+	// 플레이어가 탐지 거리 이상으로 멀어진다면
+	if (fLen > pMonster->GetInfo().fRecogRange)
+	{
+		m_fRemainTraceTime -= fDT;
+
+		if (m_fRemainTraceTime < 0)
+		{
+			ChangeAIState(GetAI(), MON_STATE::IDLE);
+		}
+	}
+	else
+	{
+		m_fRemainTraceTime = 3.f;
+	}
 }

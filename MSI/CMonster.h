@@ -3,12 +3,13 @@
 
 struct tMonInfo
 {
-    float fHP;            // 체력
-    float fSpeed;         // 속도
-    Vec2 vRecogRange;    // 인지 범위
-    float fAttRange;      // 공격 사거리
-    float fAtt;           // 공격력
-    int iDir;             // 방향
+    float fHP;              // 체력
+    float fSpeed;           // 속도
+    Vec2 vRecogRange;       // 인지 범위
+    float fRecogRange;       // 추적 범위
+    float fAttRange;        // 공격 사거리
+    float fAtt;             // 공격력
+    int iDir;               // 방향
 };
 
 class AI;
@@ -36,7 +37,7 @@ public:
     void SetMonDir(int _iDir) { m_tInfo.iDir = _iDir; }
 
     void SetRemainDist(float _fLeft, float _fRight) { m_fLeftDist = _fLeft; m_fRightDist = _fRight; }
-    // 편의상 Vec2로 리턴해줌.
+    // 편의상 Vec2로 리턴해줌. 몬스터가 접촉한 Ground의 남은 거리 (왼쪽, 오른쪽)
     Vec2 GetRemainDist() { return Vec2(m_fLeftDist, m_fRightDist); }
 
 public:

@@ -70,6 +70,7 @@ public:
 	{
 		x += _f;
 		y += _f;
+		return Vec2(x, y);
 	}
 
 	void operator += (Vec2 _vOther)

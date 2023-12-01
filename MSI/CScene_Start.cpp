@@ -158,15 +158,15 @@ void CScene_Start::render(HDC _dc)
 void CScene_Start::Enter()
 {
 	// 진입시 오브젝트 추가
-	CObject* pPlayer = new CPlayer;
-	pPlayer->SetName(L"Player");
-	pPlayer->SetPos(Vec2(10040.f, 384.f));
-	//pPlayer->SetPos(Vec2(640.f, 384.f));
-	pPlayer->SetScale(Vec2(45.f, 70.f)); 
+	//CObject* pPlayer = new CPlayer;
+	//pPlayer->SetName(L"Player");
+	//pPlayer->SetPos(Vec2(10040.f, 384.f));
+	////pPlayer->SetPos(Vec2(640.f, 384.f));
+	//pPlayer->SetScale(Vec2(45.f, 70.f)); 
 
-	RegisterPlayer(pPlayer);
+	//RegisterPlayer(pPlayer);
 
-	AddObject(pPlayer, GROUP_TYPE::PLAYER);
+	//AddObject(pPlayer, GROUP_TYPE::PLAYER);
 	//CreateObject(pPlayer, GROUP_TYPE::PLAYER);
 
 	//CObject* pOtherPlayer = pPlayer->Clone();
@@ -206,8 +206,9 @@ void CScene_Start::Enter()
 	info.fAtt = 10.f;
 	info.fAttRange = 50.f;
 	info.vRecogRange = Vec2(250.f, 50.f);
+	info.fRecogRange = 300.f;
 	info.fHP = 100.f;
-	info.fSpeed = 100.f;
+	info.fSpeed = 300.f;
 	info.iDir = 1;
 
 	pMonLesh->SetMonInfo(info);
@@ -228,8 +229,8 @@ void CScene_Start::Enter()
 	// 땅 물체 배치
 	CObject* pGround = new CGround;
 	pGround->SetName(L"Ground");
-	pGround->SetPos(Vec2(640.f, 584.f));
-	pGround->SetScale(Vec2(1000.f, 60.f));
+	pGround->SetPos(Vec2(400.f, 584.f));
+	pGround->SetScale(Vec2(700.f, 60.f));
 	AddObject(pGround, GROUP_TYPE::GROUND);
 
 
