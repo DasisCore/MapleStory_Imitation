@@ -48,6 +48,8 @@ private:
 public:
 	void init();
 	void update();
+	// 해당 윈도우 안에서 마우스를 클릭했는지를 알려주는 함수
+	bool IsMouseInsideClinet(HWND _hWnd = CCore::GetInst()->GetMainHwnd());
 
 public:
 	// 해당 키가 무슨 상태인지 체크하여 리턴해준다.

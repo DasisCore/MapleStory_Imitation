@@ -50,6 +50,7 @@ void CKeyMgr::init()
 void CKeyMgr::update()
 {
 	HWND hWnd = GetFocus();
+	HWND MainhWnd = CCore::GetInst()->GetMainHwnd();
 
 	if (hWnd != nullptr)
 	{
@@ -85,11 +86,10 @@ void CKeyMgr::update()
 		// Mouse 위치 계산	// 해당 윈도우가 포커싱 중일 때, 한번은 창 밖이 클릭이 가능함. 버그 고쳐야 함.
 		POINT ptPos = {};
 		GetCursorPos(&ptPos);
-
 		ScreenToClient(CCore::GetInst()->GetMainHwnd(), &ptPos);
 
 		m_vCurMousePos = Vec2(ptPos);
-	}
+		}
 	// 윈도우 포커싱 해제 상태
 	else
 	{
@@ -107,4 +107,16 @@ void CKeyMgr::update()
 		}
 
 	}
+}
+
+bool CKeyMgr::IsMouseInsideClinet(HWND _hWnd)
+{
+	POINT ptPos = {};
+	GetCursorPos(&ptPos);
+	ScreenToClient(_hWnd, &ptPos);
+
+	RECT clientRect;
+	GetClientRect(_hWnd, &clientRect);
+
+	return PtInRect(&clientRect, ptPos);
 }
