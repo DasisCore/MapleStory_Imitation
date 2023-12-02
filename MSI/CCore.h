@@ -45,6 +45,7 @@ public:
 	HDC GetMainDC() { return m_hDC; }
 	HINSTANCE GetMainhInstance() { return m_hInstance; }
 	CTexture* GetMemTex() { return m_pMemTex; }
+	void SetMemTex(CTexture* _pTex) { m_pMemTex = _pTex; }
 
 	HBRUSH GetBrush(BRUSH_TYPE _eType) { return m_arrBrush[(UINT)_eType]; }
 	HPEN GetPen(PEN_TYPE _eType) { return m_arrPen[(UINT)_eType]; }

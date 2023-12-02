@@ -161,6 +161,9 @@
     <Filter Include="Engine\04. Object\Detect">
       <UniqueIdentifier>{ecbb9bd9-d76b-4a90-b57b-4d443767d5c7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\05. Scene\Scene_Ani_Workshop">
+      <UniqueIdentifier>{bafdab20-f3f3-42fd-b38e-0641cd680d01}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -323,6 +326,9 @@
     <ClInclude Include="CDetect.h">
       <Filter>Engine\04. Object\Detect</Filter>
     </ClInclude>
+    <ClInclude Include="CScene_Ani_Workshop.h">
+      <Filter>Engine\05. Scene\Scene_Ani_Workshop</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CCore.cpp">
@@ -466,6 +472,9 @@
     </ClCompile>
     <ClCompile Include="CDetect.cpp">
       <Filter>Engine\04. Object\Detect</Filter>
+    </ClCompile>
+    <ClCompile Include="CScene_Ani_Workshop.cpp">
+      <Filter>Engine\05. Scene\Scene_Ani_Workshop</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

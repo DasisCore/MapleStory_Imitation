@@ -20,6 +20,9 @@
 #include "SelectGDI.h"
 #include "resource.h"
 
+#include "CScene.h"
+#include "CScene_Ani_Workshop.h"
+
 CCore::CCore()
 	: m_hWnd{0}
 	, m_ptResolution{0}
@@ -140,7 +143,18 @@ void CCore::progress()
 	CSceneMgr::GetInst()->render(currentDC);
 	CCamera::GetInst()->render(currentDC);
 
-	BitBlt(m_hDC, 0, 0, m_ptResolution.x, m_ptResolution.y, currentDC, 0, 0, SRCCOPY);
+	int screenWidth = GetSystemMetrics(SM_CXSCREEN) - 0.7f;
+	int screenHeight = GetSystemMetrics(SM_CYSCREEN) - 0.7f;
+
+	// Ani_workshop씬인 경우에는 화면이 커지므로 더블버퍼링의 해상도 크기도 달라져야한다.
+	if (CSceneMgr::GetInst()->GetCurScene()->GetName() == L"Animation Workshop Scene")
+	{
+		BitBlt(m_hDC, 0, 0, screenWidth, screenHeight, currentDC, 0, 0, SRCCOPY);
+	}
+	else
+	{
+		BitBlt(m_hDC, 0, 0, m_ptResolution.x, m_ptResolution.y, currentDC, 0, 0, SRCCOPY);
+	}
 
 	// =======================================
 	// 이벤트 지연처리
@@ -162,7 +176,16 @@ void CCore::Clear()
 {
 	HDC currentDC = m_pMemTex->GetDC();
 	//SelectGDI a(currentDC, BRUSH_TYPE::BLACK);
-	Rectangle(currentDC, -1, -1, m_ptResolution.x + 11, m_ptResolution.y + 1);
+	
+	if (CSceneMgr::GetInst()->GetCurScene()->GetName() == L"Animation Workshop Scene")
+	{
+		Rectangle(currentDC, -1, -1, GetSystemMetrics(SM_CXSCREEN) + 11, GetSystemMetrics(SM_CYSCREEN) + 1);
+	}
+	else
+	{
+		Rectangle(currentDC, -1, -1, m_ptResolution.x + 11, m_ptResolution.y + 1);
+	}
+
 }
 
 void CCore::DockMenu()

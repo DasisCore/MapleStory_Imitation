@@ -16,6 +16,7 @@ CBtnUI::CBtnUI()
 CBtnUI::~CBtnUI()
 {
 }
+
 void CBtnUI::MouseOn()
 {
 }

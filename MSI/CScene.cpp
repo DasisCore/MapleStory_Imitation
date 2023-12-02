@@ -97,8 +97,10 @@ void CScene::render(HDC _dc)
 		}
 	}
 
-	RECT rc = { 0, 0, 100, 50 };
-	DrawText(_dc, m_strName.c_str(), -1, &rc, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
+	Graphics graphics(_dc);
+	Font font(L"Arial", 12, FontStyleBold);
+	SolidBrush brush(Color(255, 0, 0, 0));
+	graphics.DrawString(m_strName.c_str(), -1, &font, PointF(10, 10), &brush);
 }
 
 void CScene::render_tile(HDC _dc)

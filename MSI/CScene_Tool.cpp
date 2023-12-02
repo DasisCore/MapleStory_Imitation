@@ -98,6 +98,11 @@ void CScene_Tool::update()
 		CToolWindow::GetInst()->showWindow();
 	}
 
+	if (KEY_TAP(KEY::F2))
+	{
+		ChangeScene(SCENE_TYPE::ANIMATION_WORKSHOP);
+	}
+
 	if (KEY_TAP(KEY::LBTN) && CKeyMgr::GetInst()->IsMouseInsideClinet(CToolWindow::GetInst()->GetToolhWnd()))
 	{
 		Vec2 vPos = MOUSE_POS;

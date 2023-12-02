@@ -24,6 +24,7 @@ void CPanelUI::render(HDC _dc)
 
 void CPanelUI::MouseOn()
 {
+	CUI::MouseOn();
 	if (IsLbtnDown())
 	{
 		Vec2 vDiff = MOUSE_POS - m_vDragStart;

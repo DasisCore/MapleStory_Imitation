@@ -111,6 +111,7 @@ void CUI::MouseOnCheck()
 		&& m_vFinalPos.y <= vMousePos.y && vMousePos.y <= m_vFinalPos.y + vScale.y)
 	{
 		m_bMouseOn = true;
+		MouseOn();
 	}
 	else
 	{
@@ -146,6 +147,7 @@ void CUI::finalupdate_child()
 void CUI::MouseOn()
 {
 }
+
 
 void CUI::MouseLbtnDown()
 {
