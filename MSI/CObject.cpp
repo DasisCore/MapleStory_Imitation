@@ -75,9 +75,12 @@ void CObject::render(HDC _dc)
 
 void CObject::component_render(HDC _dc)
 {
-	if (m_pComponent->GetAnimator() != nullptr) m_pComponent->GetAnimator()->render(_dc);
-	
-	if (m_pComponent->GetCollider() != nullptr) m_pComponent->GetCollider()->render(_dc);
+	if (m_pComponent)
+	{
+		if (m_pComponent->GetAnimator() != nullptr) m_pComponent->GetAnimator()->render(_dc);
+
+		if (m_pComponent->GetCollider() != nullptr) m_pComponent->GetCollider()->render(_dc);
+	}
 }
 
 

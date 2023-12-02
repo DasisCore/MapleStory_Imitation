@@ -39,6 +39,7 @@ enum class SCENE_TYPE
 enum class GROUP_TYPE
 {
 	DEFAULT,
+	SPRITE,
 	TILE,
 	GROUND,
 	PLAYER,

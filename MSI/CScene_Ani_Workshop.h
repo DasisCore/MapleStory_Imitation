@@ -1,11 +1,12 @@
 #pragma once
 #include "CScene.h"
+
 class CScene_Ani_Workshop :
     public CScene
 {
 private:
-    HDC m_MainHDC;
     Image* m_pImage;
+
 
     // Workshop에서 사용하는 해상도 (좀 더 커지므로 따로 보관함)
     int m_iScreenWidth;
@@ -24,7 +25,9 @@ public:
 public:
     void LoadTexture();
 
-public:
+private:
+    // 이미지를 불러올 때, 확장자를 확인하는 함수.
+    bool CheckImageFormat(wstring _wStr);
 
 
 public:

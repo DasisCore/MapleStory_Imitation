@@ -164,6 +164,9 @@
     <Filter Include="Engine\05. Scene\Scene_Ani_Workshop">
       <UniqueIdentifier>{bafdab20-f3f3-42fd-b38e-0641cd680d01}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\04. Object\Sprite">
+      <UniqueIdentifier>{df0eaf0f-f2f1-42eb-a73c-428ea2b4a235}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -329,6 +332,9 @@
     <ClInclude Include="CScene_Ani_Workshop.h">
       <Filter>Engine\05. Scene\Scene_Ani_Workshop</Filter>
     </ClInclude>
+    <ClInclude Include="CSprite.h">
+      <Filter>Engine\04. Object\Sprite</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CCore.cpp">
@@ -475,6 +481,9 @@
     </ClCompile>
     <ClCompile Include="CScene_Ani_Workshop.cpp">
       <Filter>Engine\05. Scene\Scene_Ani_Workshop</Filter>
+    </ClCompile>
+    <ClCompile Include="CSprite.cpp">
+      <Filter>Engine\04. Object\Sprite</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

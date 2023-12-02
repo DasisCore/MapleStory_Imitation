@@ -1,6 +1,7 @@
 #include "global.h"
 #include "CKeyMgr.h"
 #include "CCore.h"
+#include "CObject.h"
 
 // KEY와 같은 순서로 만들어진 배열
 int g_arrVK[int(KEY::LAST)] =
@@ -120,4 +121,23 @@ bool CKeyMgr::IsMouseInsideClinet(HWND _hWnd)
 	GetClientRect(_hWnd, &clientRect);
 
 	return PtInRect(&clientRect, ptPos);
+}
+
+bool CKeyMgr::IsMouseInObj(CObject* _pObj)
+{
+	Vec2 vPos = _pObj->GetPos();
+	Vec2 vScale = _pObj->GetScale();
+
+	Vec2 vLT = Vec2(vPos.x - (vScale.x / 2.f), vPos.y - (vScale.y / 2.f)); // 왼쪽 위 꼭지점
+	Vec2 vRB = Vec2(vPos.x + (vScale.x / 2.f), vPos.y + (vScale.y / 2.f)); // 오른쪽 아래 꼭지점
+
+	if (vLT.x <= m_vCurMousePos.x && m_vCurMousePos.x <= vRB.x)
+	{
+		if (vLT.y <= m_vCurMousePos.y && m_vCurMousePos.y <= vRB.y)
+		{
+			return true;
+		}
+	}
+
+	return false;
 }

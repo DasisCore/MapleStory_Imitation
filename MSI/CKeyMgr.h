@@ -38,6 +38,8 @@ struct tKeyInfo
 	bool bPrevPush;
 };
 
+class CObject;
+
 class CKeyMgr
 {
 	SINGLE(CKeyMgr);
@@ -51,6 +53,9 @@ public:
 	void update();
 	// 해당 윈도우 안에서 마우스를 클릭했는지를 알려주는 함수
 	bool IsMouseInsideClinet(HWND _hWnd = CCore::GetInst()->GetMainHwnd());
+
+	// 마우스가 해당 object 위에 있는지 확인하는 함수.
+	bool IsMouseInObj(CObject* _pObj);
 
 public:
 	// 해당 키가 무슨 상태인지 체크하여 리턴해준다.

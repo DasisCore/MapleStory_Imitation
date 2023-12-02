@@ -11,9 +11,10 @@
 #include "CResMgr.h"
 #include "CKeyMgr.h"
 
+#include "CSprite.h"
+
 CScene_Ani_Workshop::CScene_Ani_Workshop()
-	: m_MainHDC(nullptr)
-	, m_pImage(nullptr)
+	: m_pImage(nullptr)
 	, m_iScreenWidth(0)
 	, m_iScreenHeight(0)
 {
@@ -41,17 +42,14 @@ void CScene_Ani_Workshop::Enter()
 	pPanelUI->AddChild(pBtnUI);
 	AddObject(pPanelUI, GROUP_TYPE::UI);
 	
-	// 메인 DC 저장.
-	m_MainHDC = CCore::GetInst()->GetMainDC();
 
-
+	// ============================================================
+	// 윈도우 창의 해상도 변경을 위한 작업
+	// ============================================================
+	// 
 	// 모니터의 해상도 얻기
 	m_iScreenWidth = GetSystemMetrics(SM_CXSCREEN) * 0.7f;
 	m_iScreenHeight = GetSystemMetrics(SM_CYSCREEN) * 0.7f;
-
-	HBITMAP hBit = CreateCompatibleBitmap(m_MainHDC, m_iScreenWidth, m_iScreenHeight);
-	HBITMAP hOldBit = (HBITMAP)SelectObject(m_MainHDC, hBit);
-	DeleteObject(hOldBit);
 
 	// workshop 백버퍼를 생성하고 기존 백버퍼와 교체한다.
 	CTexture* pTex = CResMgr::GetInst()->CreateTexture(L"Workshop", (UINT)m_iScreenWidth, (UINT)m_iScreenHeight);
@@ -59,12 +57,12 @@ void CScene_Ani_Workshop::Enter()
 	
 	CCore::GetInst()->ChangeWindowSize(Vec2(m_iScreenWidth, m_iScreenHeight), false);
 
-	// 화면 정 중앙의 값 계산
-	int centerX = (m_iScreenWidth) / 2;
-	int centerY = (m_iScreenHeight) / 2;
+	// 화면 정 중앙의 값 계산 (씬 변경시, 윈도우를 모니터의 중앙에 위치시키기 위함)
+	int centerX = GetSystemMetrics(SM_CXSCREEN) / 2;
+	int centerY = GetSystemMetrics(SM_CYSCREEN) / 2;
 
 	RECT rt = { 0, 0, (long)m_iScreenWidth, (long)m_iScreenHeight };
-	SetWindowPos(CCore::GetInst()->GetMainHwnd(), nullptr, 0, 0, rt.right - rt.left, rt.bottom - rt.top, SWP_NOSIZE);
+	SetWindowPos(CCore::GetInst()->GetMainHwnd(), nullptr, centerX - (m_iScreenWidth / 2.f), centerY - (m_iScreenHeight / 2.f), rt.right - rt.left, rt.bottom - rt.top, SWP_NOSIZE);
 }
 
 void CScene_Ani_Workshop::Exit()
@@ -85,7 +83,7 @@ void CScene_Ani_Workshop::LoadTexture()
 	ofn.lpstrFile = szName;
 	ofn.nMaxFile = sizeof(szName);
 	//ofn.lpstrFilter = L"ALL\0*.*\0png\0*.png\0";
-	ofn.lpstrFilter = L"ALL\0*.*\0png\0*.png\0bmp\0*.bmp\0";
+	ofn.lpstrFilter = L"ALL\0*.*\0png\0*.png\0bmp\0*.bmp\0jpeg\0*.jpeg\0gif\0*.gif\0";
 	ofn.nFilterIndex = 1;
 	ofn.lpstrFileTitle = nullptr;
 	ofn.nMaxFileTitle = 0;
@@ -100,10 +98,35 @@ void CScene_Ani_Workshop::LoadTexture()
 	// 파일 읽기가 성공했다면.
 	if (GetOpenFileName(&ofn))
 	{
-		wstring strRelativePath = CPathMgr::GetInst()->GetRelativePath(szName);
-		m_pImage = Image::FromFile(szName);
-	};
+		wstring temp(szName);
+		if (!CheckImageFormat(temp))
+		{
+			MessageBox(nullptr, L"bmp, png, jpeg, gif 확장자만 지원합니다.", L"Error Message", MB_OK);
+			return;
+		}
 
+		wstring strAbsolutePath(szName);
+
+		CSprite* pSprite = new CSprite(strAbsolutePath);
+		pSprite->SetPos(Vec2(100.f, 100.f));
+		AddObject(pSprite, GROUP_TYPE::SPRITE);
+	}
+}
+
+bool CScene_Ani_Workshop::CheckImageFormat(wstring _wStr)
+{
+	wstring e = L"";
+
+	bool flag = 0;
+	int iLen = _wStr.length();
+	for (int i = 0; i < iLen; i++)
+	{
+		if (_wStr[i] == L'.') flag = 1;
+		if (flag == 1) e += _wStr[i];
+	}
+
+	if (e == L".png" || e == L".bmp" || e == L".gif" || e == L".jpeg") return true;
+	return false;
 }
 
 void CScene_Ani_Workshop::update()
