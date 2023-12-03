@@ -14,16 +14,14 @@
 #include "CSprite.h"
 
 CScene_Ani_Workshop::CScene_Ani_Workshop()
-	: m_pImage(nullptr)
-	, m_iScreenWidth(0)
+	: m_iScreenWidth(0)
 	, m_iScreenHeight(0)
+	, m_pMainSprite(nullptr)
 {
 }
 
 CScene_Ani_Workshop::~CScene_Ani_Workshop()
 {
-	if (m_pImage) delete m_pImage;
-
 }
 
 void CScene_Ani_Workshop::Enter()
@@ -106,10 +104,18 @@ void CScene_Ani_Workshop::LoadTexture()
 		}
 
 		wstring strAbsolutePath(szName);
+		
+		// 작업은 한번에 하나의 스프라이트만 가능하다.
+		if (m_pMainSprite != nullptr)
+		{
+			DeleteObject(m_pMainSprite);
+		}
 
 		CSprite* pSprite = new CSprite(strAbsolutePath);
 		pSprite->SetPos(Vec2(100.f, 100.f));
 		AddObject(pSprite, GROUP_TYPE::SPRITE);
+
+		m_pMainSprite = pSprite;
 	}
 }
 
@@ -142,12 +148,6 @@ void CScene_Ani_Workshop::update()
 void CScene_Ani_Workshop::render(HDC _dc)
 {
 	CScene::render(_dc);
-
-	Graphics graphics(_dc);
-	if (m_pImage)
-	{
-		graphics.DrawImage(m_pImage, 0, 0);
-	}
 }
 
 

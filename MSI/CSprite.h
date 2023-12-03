@@ -2,19 +2,59 @@
 #include "CObject.h"
 
 
+struct tSpriteInfo
+{
+    // 해당 이미지가 타겟팅 되었는지
+    bool bTarget;
+    
+    // 이미지의 원래 크기
+    float fOriginWidth;
+    float fOriginHeight;
+
+    // 이미지의 현재 비율
+    float fWidthRatio;
+    float fHeightRatio;
+
+    // 이미지의 현재 크기
+    float fCurWidth;
+    float fCurHeight;
+};
+
 class CSprite :
     public CObject
 {
     Image* m_pImage;
-    // 해당 이미지가 타겟팅 되었는지 확인
-    bool m_bTarget;
-    float m_fRatio;
+    tSpriteInfo m_tInfo;
+    
 
-    Vec2 m_vPrevPos;
+    bool m_bMouseOn;
+    int m_iHandle;
+    Vec2 m_vDragStart;
 
 private:
     // 이미지의 테두리를 그리는 함수.
-    void DrawLine(HDC _dc);
+    void DrawBorder(HDC _dc);
+
+    // 이미지를 클릭했을 경우 처리
+    void IsLbtnDown();
+
+    // 이미지를 드래그 했을 경우 처리
+    void IsLbtnDrag();
+
+    // 마우스가 테두리 영역에 있는지 확인하는 함수
+    bool IsPointInBorder();
+
+    // 테두리 핸들 그리기
+    void renderImageHandle(HDC _dc);
+
+    // 테두리 핸들에 마우스가 위치해있는지 
+    int IsHandleIn();
+
+    // 테두리 핸들을 잡고 드래그 했을 경우.
+    void HandleDrag(int _point);
+
+public:
+    void update_tInfo();
 
 
 public:
