@@ -2,7 +2,10 @@
 #include "CMarquee.h"
 #include "CCamera.h"
 
+#include "CKeyMgr.h"
+
 CMarquee::CMarquee()
+	: m_bTarget(1)
 {
 }
 
@@ -12,6 +15,30 @@ CMarquee::~CMarquee()
 
 void CMarquee::update()
 {
+	if(KEY_TAP(KEY::LBTN))
+	{
+		m_vDragStart = CCamera::GetInst()->GetRealPos(MOUSE_POS);
+	}
+
+	if (m_bTarget)
+	{
+		bool bMouseOn = CKeyMgr::GetInst()->IsMouseInObj(this);
+
+		if (bMouseOn && KEY_TAP(KEY::LBTN))
+		{
+			m_vDragStart = CCamera::GetInst()->GetRealPos(MOUSE_POS);
+		}
+
+		if (bMouseOn && KEY_HOLD(KEY::LBTN))
+		{
+			Vec2 vCurPos = GetPos();
+			Vec2 vDiff = CCamera::GetInst()->GetRealPos(MOUSE_POS) - m_vDragStart;
+
+			vCurPos += vDiff;
+			SetPos(vCurPos);
+			m_vDragStart = CCamera::GetInst()->GetRealPos(MOUSE_POS);
+		}
+	}
 }
 
 void CMarquee::render(HDC _dc)
@@ -20,6 +47,7 @@ void CMarquee::render(HDC _dc)
 	
 	Graphics graphics(_dc);
 	Pen pen(Color(255, 0, 0), 3);
+	if (m_bTarget) pen.SetColor(Color(0, 0, 255));
 	pen.SetDashStyle(DashStyleDash);
 
 	Vec2 vPos = GetPos();
@@ -28,4 +56,3 @@ void CMarquee::render(HDC _dc)
 
 	graphics.DrawRectangle(&pen, vPos.x - (vScale.x / 2.f), vPos.y - (vScale.y / 2.f), vScale.x, vScale.y);
 }
-

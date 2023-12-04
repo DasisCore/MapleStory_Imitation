@@ -20,6 +20,9 @@ int g_arrVK[int(KEY::LAST)] =
 	VK_CONTROL,	//CTRL,
 	VK_ESCAPE,	//ESC,
 
+	VK_BACK,	// BACKSPACE
+	VK_DELETE,	// DELETE Ű
+
 	VK_LBUTTON,
 	VK_RBUTTON,
 	VK_F1,
@@ -125,7 +128,6 @@ bool CKeyMgr::IsMouseInsideClinet(HWND _hWnd)
 
 bool CKeyMgr::IsMouseInObj(CObject* _pObj)
 {
-	
 	Vec2 vPos = CCamera::GetInst()->GetRenderPos(_pObj->GetPos());
 	Vec2 vScale = _pObj->GetScale();
 

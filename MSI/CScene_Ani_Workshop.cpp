@@ -22,6 +22,7 @@ CScene_Ani_Workshop::CScene_Ani_Workshop()
 	, m_pMainSprite(nullptr)
 	, m_bDrag(false)
 	, m_pMainUI(nullptr)
+	, m_pTargetMQ(nullptr)
 {
 }
 
@@ -192,11 +193,20 @@ void CScene_Ani_Workshop::update()
 		}
 	}
 
+	if (m_eState == TOOL_TYPE::DEFAULT)
+	{
+		SearchMarquee();
+
+		if (m_pTargetMQ && (KEY_TAP(KEY::BACKSPACE) || KEY_TAP(KEY::DEL)))
+		{
+			DeleteMarquee();
+		}
+	}
+
 	if (m_eState == TOOL_TYPE::MARQUEE)
 	{
 		update_MQ();
 	}
-
 }
 
 void CScene_Ani_Workshop::render(HDC _dc)
@@ -223,11 +233,9 @@ void CScene_Ani_Workshop::render(HDC _dc)
 	}
 }
 
-/// <summary>
-/// Marquee 기능 관련
-/// </summary>
-
-
+/// =======================================================================
+/// Marquee 관련 기능 
+/// =======================================================================
 
 void CScene_Ani_Workshop::update_MQ()
 {
@@ -267,12 +275,77 @@ void CScene_Ani_Workshop::CreateMQObj()
 	float rectWidth = abs(m_vDragEnd.x - m_vDragStart.x);
 	float rectHeight = abs(m_vDragEnd.y - m_vDragStart.y);
 
+	if (rectWidth < 10.f || rectHeight < 10.f) return;
+
+	// 이전의 marquee들의 타겟팅을 제거해준다.
+	
+	list<CMarquee*>::iterator iter = m_lMarquee.begin();
+	for (; iter != m_lMarquee.end(); iter++)
+	{
+		CMarquee* pMarquee = *iter;
+		pMarquee->SetTarget(false);
+	}
+
 	CMarquee* pMarquee = new CMarquee;
-	pMarquee->SetName(L"Marquee");
+	pMarquee->SetName(L"Marquee" + std::to_wstring(m_lMarquee.size() + 1));
 	pMarquee->SetScale(Vec2(rectWidth, rectHeight));
 	pMarquee->SetPos(vCenter);
+	pMarquee->SetTarget(true);
+	AddMarquee(pMarquee);
 
 	AddObject(pMarquee, GROUP_TYPE::MARQUEE);
+}
+
+void CScene_Ani_Workshop::SearchMarquee()
+{
+	if (m_eState == TOOL_TYPE::DEFAULT && KEY_TAP(KEY::LBTN))
+	{
+		bool flag = 0;
+
+		list<CMarquee*>::iterator iter = m_lMarquee.begin();
+
+		for(; iter != m_lMarquee.end(); iter++)
+		{
+			CMarquee* pMarquee = *iter;
+
+			if (flag)
+			{
+				pMarquee->SetTarget(false);
+				continue;
+			}
+
+			pMarquee->SetTarget(false);
+			m_pTargetMQ = nullptr;
+			
+			if (CKeyMgr::GetInst()->IsMouseInObj(pMarquee))
+			{
+				pMarquee->SetTarget(true);
+				m_pTargetMQ = pMarquee;
+				flag = 1;
+			}
+		}
+	}
+}
+
+void CScene_Ani_Workshop::DeleteMarquee()
+{
+	// 현재 타겟팅 된 Marquee를 지워야 한다.
+	int idx = 1;
+	list<CMarquee*>::iterator iter = m_lMarquee.begin();
+	for (; iter != m_lMarquee.end();)
+	{
+		if (*iter != m_pTargetMQ)
+		{
+			(*iter)->SetName(L"Marquee" + std::to_wstring(idx));
+			idx++;
+			iter++;
+		}
+		else
+		{
+			DeleteObject(*iter);
+			iter = m_lMarquee.erase(iter);
+		}
+	}
 }
 
 

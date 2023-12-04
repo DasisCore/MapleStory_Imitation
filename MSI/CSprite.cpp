@@ -103,9 +103,8 @@ void CSprite::update()
 		{
 			m_iHandle = IsHandleIn();
 		}
-		
 
-		if (m_iHandle > 0 )
+		if (m_iHandle > 0)
 		{
 			if (KEY_TAP(KEY::LBTN))
 			{

@@ -24,6 +24,9 @@ enum class KEY
 	CTRL,
 	ESC,
 
+	BACKSPACE,
+	DEL,
+
 	LBTN,
 	RBTN,
 	F1,

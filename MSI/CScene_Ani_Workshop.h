@@ -10,6 +10,7 @@ enum class TOOL_TYPE
 };
 
 class CSprite;
+class CMarquee;
 class CUI;
 
 class CScene_Ani_Workshop :
@@ -18,7 +19,13 @@ class CScene_Ani_Workshop :
 private:
     TOOL_TYPE m_eState;
     TOOL_TYPE m_ePrevState;
+
     CSprite* m_pMainSprite;
+    
+    list<CMarquee*> m_lMarquee;
+    
+    CMarquee* m_pTargetMQ;
+
     CUI* m_pMainUI;
 
     // Workshop에서 사용하는 해상도 (좀 더 커지므로 따로 보관함)
@@ -57,9 +64,10 @@ private:
     void DrawMQRect(HDC _dc);
     void update_MQ();
     void CreateMQObj();
+    void AddMarquee(CMarquee* _pMarquee) { m_lMarquee.push_back(_pMarquee); };
+    void SearchMarquee();
+    void DeleteMarquee();
 
-
-    
 
 
 public:
