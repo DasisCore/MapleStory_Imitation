@@ -18,6 +18,9 @@ struct tSpriteInfo
     // 이미지의 현재 크기
     float fCurWidth;
     float fCurHeight;
+
+    // 이미지의 가로 세로 비율
+    double dRatio;
 };
 
 class CSprite :

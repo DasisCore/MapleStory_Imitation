@@ -18,6 +18,7 @@ CSprite::CSprite(wstring _strAbsolutePath)
 	m_tInfo.fWidthRatio = 1.f;
 	m_tInfo.fCurWidth = image->GetWidth();
 	m_tInfo.fCurHeight = image->GetHeight();
+	m_tInfo.dRatio = (double)m_tInfo.fOriginWidth / (double)m_tInfo.fOriginHeight;
 
 	SetScale(Vec2(m_tInfo.fOriginWidth, m_tInfo.fOriginHeight));
 }
@@ -33,20 +34,22 @@ void CSprite::DrawBorder(HDC _dc)
 	float borderWidth = 1.5f;
 	Pen borderPen(Color(99, 189, 255), borderWidth);
 
-	float centerX = GetPos().x - m_tInfo.fOriginWidth / 2;
-	float centerY = GetPos().y - m_tInfo.fOriginHeight / 2;
+	float centerX = GetPos().x - m_tInfo.fCurWidth / 2;
+	float centerY = GetPos().y - m_tInfo.fCurHeight / 2;
+
+	Vec2 vRenderPos = CCamera::GetInst()->GetRenderPos(Vec2(centerX, centerY));
 
 	float lineWidth = (m_tInfo.fOriginWidth * m_tInfo.fWidthRatio) + borderWidth;
 	float lineHeight = (m_tInfo.fOriginHeight * m_tInfo.fHeightRatio) + borderWidth;
 
-	graphics.DrawRectangle(&borderPen, centerX, centerY, lineWidth, lineHeight);
+	graphics.DrawRectangle(&borderPen, vRenderPos.x, vRenderPos.y, lineWidth, lineHeight);
 }
 
 void CSprite::IsLbtnDown()
 {
 	if (m_tInfo.bTarget && CKeyMgr::GetInst()->IsMouseInObj(this) && KEY_TAP(KEY::LBTN))
 	{
-		m_vDragStart = CKeyMgr::GetInst()->GetMousePos();
+		m_vDragStart = CCamera::GetInst()->GetRealPos(MOUSE_POS);
 	}
 }
 
@@ -55,11 +58,11 @@ void CSprite::IsLbtnDrag()
 	if (m_tInfo.bTarget && CKeyMgr::GetInst()->IsMouseInObj(this) && KEY_HOLD(KEY::LBTN))
 	{
 		Vec2 vCurPos = GetPos();
-		Vec2 vDiff = MOUSE_POS - m_vDragStart;
+		Vec2 vDiff = CCamera::GetInst()->GetRealPos(MOUSE_POS) - m_vDragStart;
 
 		vCurPos += vDiff;
 		SetPos(vCurPos);
-		m_vDragStart = MOUSE_POS;
+		m_vDragStart = CCamera::GetInst()->GetRealPos(MOUSE_POS);
 	}
 }
 
@@ -96,26 +99,35 @@ void CSprite::update()
 {
 	if (m_tInfo.bTarget)
 	{
-		IsLbtnDown();
-		IsLbtnDrag();
-
-		int curHandle = IsHandleIn();
-
-		if (curHandle > 0 && KEY_TAP(KEY::LBTN))
+		if (IsHandleIn() && KEY_TAP(KEY::LBTN))
 		{
-			m_vDragStart = MOUSE_POS;
-			m_iHandle = curHandle;
-			m_bMouseOn = true;
+			m_iHandle = IsHandleIn();
 		}
-		if (curHandle > 0 && KEY_HOLD(KEY::LBTN))
-		{
-			HandleDrag(curHandle);
-		}
+		
 
-		if (KEY_AWAY(KEY::LBTN))
+		if (m_iHandle > 0 )
 		{
-			m_iHandle = 0;
-			m_bMouseOn = false;
+			if (KEY_TAP(KEY::LBTN))
+			{
+				m_vDragStart = CCamera::GetInst()->GetRealPos(MOUSE_POS);
+				m_bMouseOn = true;
+			}
+
+			else if (m_bMouseOn && KEY_HOLD(KEY::LBTN))
+			{
+				HandleDrag(m_iHandle);
+			}
+
+			else if (KEY_AWAY(KEY::LBTN))
+			{
+				m_iHandle = 0;
+				m_bMouseOn = false;
+			}
+		}
+		else
+		{
+			IsLbtnDown();
+			IsLbtnDrag();
 		}
 	}
 
@@ -124,16 +136,18 @@ void CSprite::update()
 void CSprite::render(HDC _dc)
 {
 	// CObject가 하는 render는 기본적으로 모두 함.
-	/*CObject::render(_dc);*/
+	//CObject::render(_dc);
 
 	float imageWidth = m_tInfo.fOriginWidth * m_tInfo.fWidthRatio;
 	float imageHeight = m_tInfo.fOriginHeight * m_tInfo.fHeightRatio;
 
-	float centerX = GetPos().x - m_tInfo.fOriginWidth / 2;
-	float centerY = GetPos().y - m_tInfo.fOriginHeight / 2;
+	float centerX = GetPos().x - m_tInfo.fCurWidth / 2;
+	float centerY = GetPos().y - m_tInfo.fCurHeight / 2;
+
+	Vec2 vRenderPos = CCamera::GetInst()->GetRenderPos(Vec2(centerX, centerY));
 
 	Graphics graphics(_dc);
-	graphics.DrawImage(m_pImage, centerX, centerY, imageWidth, imageHeight);
+	graphics.DrawImage(m_pImage, vRenderPos.x, vRenderPos.y, imageWidth, imageHeight);
 
 	if (m_tInfo.bTarget)
 	{
@@ -147,6 +161,8 @@ void CSprite::render(HDC _dc)
 	graphics.DrawString((L"현재 높이 / " + std::to_wstring(m_tInfo.fCurHeight)).c_str(), -1, &font, PointF(10, 120), &brush);
 	graphics.DrawString((L"너비 비율 / " + std::to_wstring(m_tInfo.fWidthRatio)).c_str(), -1, &font, PointF(10, 140), &brush);
 	graphics.DrawString((L"높이 비율 / " + std::to_wstring(m_tInfo.fHeightRatio)).c_str(), -1, &font, PointF(10, 160), &brush);
+	graphics.DrawString((L"가로세로 비율 / " + std::to_wstring(m_tInfo.dRatio)).c_str(), -1, &font, PointF(10, 180), &brush);
+	graphics.DrawString((L"현재 비율 / " + std::to_wstring(m_tInfo.fCurWidth / m_tInfo.fCurHeight)).c_str(), -1, &font, PointF(10, 200), &brush);
 }
 
 
@@ -159,6 +175,9 @@ void CSprite::renderImageHandle(HDC _dc)
 	// 테두리의 좌상단 좌표
 	Vec2 vLT = Vec2(GetPos().x - (imageWidth / 2.f), GetPos().y - (imageHeight / 2.f));
 	Vec2 vRB = Vec2(GetPos().x + (imageWidth / 2.f), GetPos().y + (imageHeight / 2.f));
+
+	vLT = CCamera::GetInst()->GetRenderPos(vLT);
+	vRB = CCamera::GetInst()->GetRenderPos(vRB);
 
 	Graphics graphics(_dc);
 	
@@ -193,6 +212,9 @@ int CSprite::IsHandleIn()
 	Vec2 vLT = Vec2(GetPos().x - (imageWidth / 2.f), GetPos().y - (imageHeight / 2.f));
 	Vec2 vRB = Vec2(GetPos().x + (imageWidth / 2.f), GetPos().y + (imageHeight / 2.f));
 
+	vLT = CCamera::GetInst()->GetRenderPos(vLT);
+	vRB = CCamera::GetInst()->GetRenderPos(vRB);
+
 	// 좌상단 핸들
 	if (vLT.x - 3.f <= MOUSE_POS.x && MOUSE_POS.x <= vLT.x + 5.f
 		&& vLT.y - 3.f <= MOUSE_POS.y && MOUSE_POS.y <= vLT.y + 5.f) return 1;
@@ -214,32 +236,55 @@ int CSprite::IsHandleIn()
 
 void CSprite::HandleDrag(int _point)
 {
-	Vec2 vDelta = MOUSE_POS - m_vDragStart;
+	
+	// 마우스가 위로 올라가면 y값은 작아지므로 반전시켜줘야한다.
+	bool flag = 0;
+	Vec2 vDelta = CCamera::GetInst()->GetRealPos(MOUSE_POS) - m_vDragStart;
+
+	// sprite의 크기 변환은 정 비율로만 가능하게 했다.
+	if (abs(vDelta.x) > abs(vDelta.y)) vDelta = Vec2(vDelta.x, vDelta.x);
+	else
+	{
+		flag = 1;
+		vDelta = Vec2(vDelta.y, vDelta.y);
+	}
 
 	Vec2 vScale = GetScale();
 
-	
-
+	// 좌상단 핸들
 	if (_point == 1)
 	{
-		update_tInfo();
-		vScale += (vDelta.x * -1);
-		vScale += (vDelta.y);
-		SetScale(vScale);
-		m_vDragStart = MOUSE_POS;
+		vScale -= vDelta;
 	}
+	// 우상단 핸들
 	else if (_point == 2)
 	{
-
+		if (flag) vDelta *= -1;
+		vScale += vDelta;
 	}
+	// 우하단 핸들
 	else if (_point == 3)
 	{
-
+		if (flag) vDelta *= -1;
+		vScale -= vDelta;
 	}
+	// 좌하단 핸들
 	else if (_point == 4)
 	{
-
+		vScale += vDelta;
 	}
+
+	// 최소 크기
+	if (vScale.x <= 30.f) vScale.x = max(30.f, vScale.x);
+	if (vScale.y <= 30.f) vScale.y = max(30.f, vScale.y);
+
+	// 높이를 기준으로 후보정
+	
+	vScale.x = vScale.y * m_tInfo.dRatio;
+
+	update_tInfo();
+	SetScale(vScale);
+	m_vDragStart = CCamera::GetInst()->GetRealPos(MOUSE_POS);
 }
 
 void CSprite::update_tInfo()
@@ -248,9 +293,6 @@ void CSprite::update_tInfo()
 
 	m_tInfo.fCurWidth = vScale.x;
 	m_tInfo.fCurHeight = vScale.y;
-	m_tInfo.fWidthRatio = m_tInfo.fOriginWidth / vScale.x;
-	m_tInfo.fHeightRatio = m_tInfo.fOriginHeight / vScale.y;
+	m_tInfo.fWidthRatio = vScale.x / m_tInfo.fOriginWidth;
+	m_tInfo.fHeightRatio = vScale.y / m_tInfo.fOriginHeight;
 }
-
-
-

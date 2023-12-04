@@ -125,7 +125,8 @@ bool CKeyMgr::IsMouseInsideClinet(HWND _hWnd)
 
 bool CKeyMgr::IsMouseInObj(CObject* _pObj)
 {
-	Vec2 vPos = _pObj->GetPos();
+	
+	Vec2 vPos = CCamera::GetInst()->GetRenderPos(_pObj->GetPos());
 	Vec2 vScale = _pObj->GetScale();
 
 	Vec2 vLT = Vec2(vPos.x - (vScale.x / 2.f), vPos.y - (vScale.y / 2.f)); // 왼쪽 위 꼭지점
