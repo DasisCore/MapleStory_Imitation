@@ -11,7 +11,7 @@ CSprite::CSprite(wstring _strAbsolutePath)
 	Image* image = Image::FromFile(_strAbsolutePath.c_str());
 	m_pImage = image;
 
-	m_tInfo.bTarget = true;
+	m_tInfo.bTarget = false;
 	m_tInfo.fOriginWidth = image->GetWidth();
 	m_tInfo.fOriginHeight = image->GetHeight();
 	m_tInfo.fHeightRatio = 1.f;

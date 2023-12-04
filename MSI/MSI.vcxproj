@@ -153,6 +153,7 @@
     <ClInclude Include="CIdleState.h" />
     <ClInclude Include="CKeyMgr.h" />
     <ClInclude Include="CLesh.h" />
+    <ClInclude Include="CMarquee.h" />
     <ClInclude Include="CMissile.h" />
     <ClInclude Include="CMonFactory.h" />
     <ClInclude Include="CMonster.h" />
@@ -211,6 +212,7 @@
     <ClCompile Include="CIdleState.cpp" />
     <ClCompile Include="CKeyMgr.cpp" />
     <ClCompile Include="CLesh.cpp" />
+    <ClCompile Include="CMarquee.cpp" />
     <ClCompile Include="CMissile.cpp" />
     <ClCompile Include="CMonFactory.cpp" />
     <ClCompile Include="CMonster.cpp" />

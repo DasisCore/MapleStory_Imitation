@@ -167,6 +167,9 @@
     <Filter Include="Engine\04. Object\Sprite">
       <UniqueIdentifier>{df0eaf0f-f2f1-42eb-a73c-428ea2b4a235}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\04. Object\Marquee">
+      <UniqueIdentifier>{0d99eb83-f0bf-482b-80c4-15b575044845}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -335,6 +338,9 @@
     <ClInclude Include="CSprite.h">
       <Filter>Engine\04. Object\Sprite</Filter>
     </ClInclude>
+    <ClInclude Include="CMarquee.h">
+      <Filter>Engine\04. Object\Marquee</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CCore.cpp">
@@ -484,6 +490,9 @@
     </ClCompile>
     <ClCompile Include="CSprite.cpp">
       <Filter>Engine\04. Object\Sprite</Filter>
+    </ClCompile>
+    <ClCompile Include="CMarquee.cpp">
+      <Filter>Engine\04. Object\Marquee</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

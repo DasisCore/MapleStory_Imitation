@@ -3,6 +3,21 @@
 #include "CScene.h"
 #include "CObject.h"
 
+#include "CCamera.h"
+
+void CBtnUI::render(HDC _dc)
+{
+	CUI::render(_dc);
+
+	Graphics graphics(_dc);
+	Font font(L"Arial", 8);
+	SolidBrush brush(Color(255, 0, 0, 0));
+
+	Vec2 vPos = GetFinalPos() + Vec2(0.f, 5.f);
+
+	graphics.DrawString(GetName().c_str(), -1, &font, PointF(vPos.x, vPos.y), &brush);
+}
+
 CBtnUI::CBtnUI()
 	: CUI(false)
 	, m_pFunc(nullptr)

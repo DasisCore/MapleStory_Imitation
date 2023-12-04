@@ -46,6 +46,9 @@ public:
 
     virtual CBtnUI* Clone() override { return new CBtnUI(*this); }
 
+public:
+    // 임시로 넣어놓음. 자신의 이름 출력
+    virtual void render(HDC _dc) override;
 
 public:
     CBtnUI();

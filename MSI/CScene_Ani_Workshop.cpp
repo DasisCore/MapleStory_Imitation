@@ -12,11 +12,16 @@
 #include "CKeyMgr.h"
 
 #include "CSprite.h"
+#include "CMarquee.h"
 
 CScene_Ani_Workshop::CScene_Ani_Workshop()
-	: m_iScreenWidth(0)
+	: m_eState(TOOL_TYPE::DEFAULT)
+	, m_ePrevState(TOOL_TYPE::DEFAULT)
+	, m_iScreenWidth(0)
 	, m_iScreenHeight(0)
 	, m_pMainSprite(nullptr)
+	, m_bDrag(false)
+	, m_pMainUI(nullptr)
 {
 }
 
@@ -30,14 +35,29 @@ void CScene_Ani_Workshop::Enter()
 	pPanelUI->SetName(L"Panel UI");
 	pPanelUI->SetScale(Vec2(300.f, 100.f));
 	pPanelUI->SetPos(Vec2(300.f, 300.f));
+	m_pMainUI = pPanelUI;
 
-	CBtnUI* pBtnUI = new CBtnUI;
-	pBtnUI->SetName(L"Btn UI");
-	pBtnUI->SetScale(Vec2(50.f, 25.f));
-	pBtnUI->SetPos(Vec2(0.f, 0.f));
-	pBtnUI->SetClickCallBack(this, (SCENE_MEMFUNC)&CScene_Ani_Workshop::LoadTexture);
+	CBtnUI* pLoadUI = new CBtnUI;
+	pLoadUI->SetName(L"불러오기");
+	pLoadUI->SetScale(Vec2(50.f, 25.f));
+	pLoadUI->SetPos(Vec2(0.f, 0.f));
+	pLoadUI->SetClickCallBack(this, (SCENE_MEMFUNC)&CScene_Ani_Workshop::LoadTexture);
+	pPanelUI->AddChild(pLoadUI);
+	
+	CBtnUI* pMarqueeOnBtn = new CBtnUI;
+	pMarqueeOnBtn->SetName(L"▷");
+	pMarqueeOnBtn->SetScale(Vec2(25.f, 25.f));
+	pMarqueeOnBtn->SetPos(Vec2(70.f, 0.f));
+	pMarqueeOnBtn->SetClickCallBack(this, (SCENE_MEMFUNC)&CScene_Ani_Workshop::SetMarqueeState);
+	pPanelUI->AddChild(pMarqueeOnBtn);
 
-	pPanelUI->AddChild(pBtnUI);
+	CBtnUI* pMarqueeOffBtn = new CBtnUI;
+	pMarqueeOffBtn->SetName(L"▶");
+	pMarqueeOffBtn->SetScale(Vec2(25.f, 25.f));
+	pMarqueeOffBtn->SetPos(Vec2(100.f, 0.f));
+	pMarqueeOffBtn->SetClickCallBack(this, (SCENE_MEMFUNC)&CScene_Ani_Workshop::SetDefaultState);
+	pPanelUI->AddChild(pMarqueeOffBtn);
+
 	AddObject(pPanelUI, GROUP_TYPE::UI);
 	
 
@@ -135,19 +155,124 @@ bool CScene_Ani_Workshop::CheckImageFormat(wstring _wStr)
 	return false;
 }
 
+
+
 void CScene_Ani_Workshop::update()
 {
 	CScene::update();
 
+	if (m_pMainUI->IsLbtnDown() && m_eState == TOOL_TYPE::MARQUEE)
+	{
+		m_eState = TOOL_TYPE::DEFAULT;
+		m_bDrag = false;
+	}
+	
 	if (KEY_TAP(KEY::ENTER))
 	{
 		ChangeScene(SCENE_TYPE::TOOL);
 	}
+
+	if (m_pMainSprite != nullptr)
+	{
+		if (KEY_TAP(KEY::SPACE))
+		{
+			m_ePrevState = m_eState;
+			m_eState = TOOL_TYPE::DEFAULT;
+		}
+
+		if (KEY_HOLD(KEY::SPACE))
+		{
+			m_pMainSprite->SetTarget(true);
+		}
+
+		if (KEY_AWAY(KEY::SPACE))
+		{
+			m_pMainSprite->SetTarget(false);
+			m_eState = m_ePrevState;
+		}
+	}
+
+	if (m_eState == TOOL_TYPE::MARQUEE)
+	{
+		update_MQ();
+	}
+
 }
 
 void CScene_Ani_Workshop::render(HDC _dc)
 {
 	CScene::render(_dc);
+
+	Vec2 vPos = Vec2(250.f, 13.f);
+
+	Graphics graphics(_dc);
+	Font font(L"Arial", 8);
+	SolidBrush brush(Color(255, 0, 0, 0));
+
+	switch (m_eState)
+	{
+	case TOOL_TYPE::DEFAULT:
+		graphics.DrawString(L"Default", -1, &font, PointF(vPos.x, vPos.y), &brush);
+		break;
+	case TOOL_TYPE::MARQUEE:
+		graphics.DrawString(L"Marquee", -1, &font, PointF(vPos.x, vPos.y), &brush);
+		if (m_bDrag) DrawMQRect(_dc);
+		break;
+	case TOOL_TYPE::END:
+		break;
+	}
+}
+
+/// <summary>
+/// Marquee 기능 관련
+/// </summary>
+
+
+
+void CScene_Ani_Workshop::update_MQ()
+{
+	if (KEY_TAP(KEY::LBTN))
+	{
+		m_vDragStart = MOUSE_POS;
+		m_bDrag = true;
+	}
+
+	if (KEY_AWAY(KEY::LBTN))
+	{
+		m_vDragEnd = MOUSE_POS;
+		m_bDrag = false;
+		CreateMQObj();
+	}
+}
+
+void CScene_Ani_Workshop::DrawMQRect(HDC _dc)
+{
+	Vec2 vCurPos = MOUSE_POS;
+
+	Graphics graphics(_dc);
+	Pen pen(Color(0, 255, 0), 3);
+	pen.SetDashStyle(DashStyleDash);
+
+	float rectWidth = abs(vCurPos.x - m_vDragStart.x);
+	float rectHeight = abs(vCurPos.y - m_vDragStart.y);
+
+	graphics.DrawRectangle(&pen, min(vCurPos.x, m_vDragStart.x), min(vCurPos.y, m_vDragStart.y), rectWidth, rectHeight);
+}
+
+void CScene_Ani_Workshop::CreateMQObj()
+{
+	Vec2 vCenter = (m_vDragStart + m_vDragEnd) / 2.f;
+	vCenter = CCamera::GetInst()->GetRealPos(vCenter);
+
+	float rectWidth = abs(m_vDragEnd.x - m_vDragStart.x);
+	float rectHeight = abs(m_vDragEnd.y - m_vDragStart.y);
+
+	CMarquee* pMarquee = new CMarquee;
+	pMarquee->SetName(L"Marquee");
+	pMarquee->SetScale(Vec2(rectWidth, rectHeight));
+	pMarquee->SetPos(vCenter);
+
+	AddObject(pMarquee, GROUP_TYPE::MARQUEE);
 }
 
 

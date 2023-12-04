@@ -29,7 +29,6 @@ class CSprite :
     Image* m_pImage;
     tSpriteInfo m_tInfo;
     
-
     bool m_bMouseOn;
     int m_iHandle;
     Vec2 m_vDragStart;
@@ -58,6 +57,7 @@ private:
 
 public:
     void update_tInfo();
+    void SetTarget(bool _b) { m_tInfo.bTarget = _b; }
 
 
 public:

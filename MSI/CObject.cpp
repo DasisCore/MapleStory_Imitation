@@ -65,6 +65,7 @@ void CObject::render(HDC _dc)
 	SolidBrush brush(Color(255, 0, 0, 0));
 
 	Vec2 vPos = GetPos();
+	vPos = CCamera::GetInst()->GetRenderPos(vPos);
 
 	PointF point((int)(vRenderPos.x - m_vScale.x / 2.f), vPos.y - 70.f);
 

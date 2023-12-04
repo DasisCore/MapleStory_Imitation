@@ -40,6 +40,7 @@ enum class GROUP_TYPE
 {
 	DEFAULT,
 	SPRITE,
+	MARQUEE,
 	TILE,
 	GROUND,
 	PLAYER,
