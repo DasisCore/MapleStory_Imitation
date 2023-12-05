@@ -61,6 +61,14 @@ void CScene_Ani_Workshop::Enter()
 	pMarqueeOffBtn->SetClickCallBack(this, (SCENE_MEMFUNC)&CScene_Ani_Workshop::SetDefaultState);
 	pPanelUI->AddChild(pMarqueeOffBtn);
 
+	CBtnUI* pSaveBtn = new CBtnUI;
+	pSaveBtn->SetName(L"추출");
+	pSaveBtn->SetScale(Vec2(30.f, 25.f));
+	pSaveBtn->SetPos(Vec2(130.f, 0.f));
+	//pSaveBtn->SetClickCallBack(this, (SCENE_MEMFUNC)&CScene_Ani_Workshop::AddFrameInfo);
+	pPanelUI->AddChild(pSaveBtn);
+
+
 	AddObject(pPanelUI, GROUP_TYPE::UI);
 	
 
@@ -145,6 +153,74 @@ void CScene_Ani_Workshop::LoadTexture()
 		AddObject(pSprite, GROUP_TYPE::SPRITE);
 
 		m_pMainSprite = pSprite;
+	}
+}
+
+void CScene_Ani_Workshop::AddFrameInfo(CMarquee* _pMarquee)
+{
+	// 스프라이트의 위치 및 크기 정보
+	Vec2 vSpritePos = m_pMainSprite->GetPos();
+	Vec2 vSpriteScale = m_pMainSprite->GetScale();
+	
+	// 스프라이트의 좌상단, 우하단 벡터
+	Vec2 vSpriteLT = Vec2(vSpritePos.x - (vSpriteScale.x / 2.f), vSpritePos.y - (vSpriteScale.y / 2.f));
+	Vec2 vSpriteRB = Vec2(vSpritePos.x + (vSpriteScale.x / 2.f), vSpritePos.y + (vSpriteScale.y / 2.f));
+
+	// Marquee의 위치와 크기 벡터
+	Vec2 vPos = _pMarquee->GetPos();
+	Vec2 vScale = _pMarquee->GetScale();
+
+	// Marquee의 좌상단, 우하단 벡터
+	Vec2 vMQLT = Vec2(vPos.x - (vScale.x / 2.f), vPos.y - (vScale.y / 2.f));
+	Vec2 vMQRB = Vec2(vPos.x + (vScale.x / 2.f), vPos.y + (vScale.y / 2.f));
+
+	// 스프라이트를 기준으로 Marquee의 벡터가 어떻게 위치하는지
+	Vec2 vLT = vMQLT - vSpriteLT;
+	Vec2 vRB = vMQRB - vSpriteLT;
+
+	// 최소 최대값 보정 -> 좌상단, 우하단이 스프라이트의 밖으로 나갔을 때를 보정
+	if (vLT.x < 0) vLT.x = 0.f;
+	if (vLT.y < 0) vLT.y = 0.f	;
+	if (vRB.x >= vSpriteScale.x) vRB.x = vSpriteScale.x;
+	if (vRB.y >= vSpriteScale.y) vRB.y = vSpriteScale.y;
+
+	tFrame tf = {};
+	tf.vLT = vLT;
+	tf.vSliceSize = vRB - vLT;
+		
+	m_lFrame.push_back(tf);
+}
+
+void CScene_Ani_Workshop::temp_render(HDC _dc)
+{
+	Graphics graphics(_dc);
+
+	Vec2 vMousePos = MOUSE_POS;
+
+	Font font(L"Arial", 8);
+	SolidBrush brush(Gdiplus::Color(255, 0, 0, 0)); // 검은색 브러시
+
+	wstring mousePos = L"『" + std::to_wstring(vMousePos.x) + L" / " + std::to_wstring(vMousePos.y) + L"』";
+	graphics.DrawString(L"마우스 위치", -1, &font, PointF(1512.f, 85.f), &brush);
+	graphics.DrawString(mousePos.c_str(), -1, &font, PointF(1510.f, 100.f), &brush);
+
+	int idx = 1;
+
+	for (auto iter = m_lFrame.begin(); iter != m_lFrame.end(); iter++)
+	{
+		mousePos = L"Frame " + std::to_wstring(idx) + L" 정보";
+		graphics.DrawString(mousePos.c_str(), -1, &font, PointF(1512.f, 130.f + 80.f * (idx - 1)), &brush);
+
+		Vec2 vLT = iter->vLT;
+		Vec2 vSliceSize = iter->vSliceSize;
+
+		mousePos = L"『 LT : " + std::to_wstring(vLT.x) + L" / " + std::to_wstring(vLT.y) + L"』";
+		graphics.DrawString(mousePos.c_str(), -1, &font, PointF(1510.f, 145.f + 80.f * (idx - 1)), &brush);
+
+		mousePos = L"『 vSliceSize : " + std::to_wstring(vSliceSize.x) + L" / " + std::to_wstring(vSliceSize.y) + L"』";
+		graphics.DrawString(mousePos.c_str(), -1, &font, PointF(1510.f, 165.f + 80.f * (idx - 1)), &brush);
+		
+		idx++;
 	}
 }
 
@@ -242,6 +318,8 @@ void CScene_Ani_Workshop::render(HDC _dc)
 	case TOOL_TYPE::END:
 		break;
 	}
+
+	temp_render(_dc);
 }
 
 /// =======================================================================
@@ -252,6 +330,7 @@ void CScene_Ani_Workshop::update_MQ()
 {
 	if (KEY_TAP(KEY::LBTN))
 	{
+		ResetMarquee();
 		m_vDragStart = MOUSE_POS;
 		m_bDrag = true;
 	}
@@ -289,13 +368,7 @@ void CScene_Ani_Workshop::CreateMQObj()
 	if (rectWidth < 10.f || rectHeight < 10.f) return;
 
 	// 이전의 marquee들의 타겟팅을 제거해준다.
-	
-	list<CMarquee*>::iterator iter = m_lMarquee.begin();
-	for (; iter != m_lMarquee.end(); iter++)
-	{
-		CMarquee* pMarquee = *iter;
-		pMarquee->SetTarget(false);
-	}
+	ResetMarquee();
 
 	CMarquee* pMarquee = new CMarquee;
 	pMarquee->SetName(L"Marquee" + std::to_wstring(m_lMarquee.size() + 1));
@@ -306,6 +379,7 @@ void CScene_Ani_Workshop::CreateMQObj()
 
 	CWorkshopWindow::GetInst()->AddFrame(UINT(m_lMarquee.size()));
 
+	AddFrameInfo(pMarquee);
 	AddObject(pMarquee, GROUP_TYPE::MARQUEE);
 }
 
@@ -360,6 +434,16 @@ void CScene_Ani_Workshop::DeleteMarquee()
 		}
 	}
 	CWorkshopWindow::GetInst()->DeleteFrame();
+}
+
+void CScene_Ani_Workshop::ResetMarquee()
+{
+	list<CMarquee*>::iterator iter = m_lMarquee.begin();
+
+	for (; iter != m_lMarquee.end(); iter++)
+	{
+		(*iter)->SetTarget(false);
+	}
 }
 
 

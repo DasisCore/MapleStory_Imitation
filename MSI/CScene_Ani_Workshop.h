@@ -9,6 +9,12 @@ enum class TOOL_TYPE
     END,
 };
 
+struct tFrame
+{
+    Vec2 vLT;
+    Vec2 vSliceSize;
+};
+
 class CSprite;
 class CMarquee;
 class CUI;
@@ -39,6 +45,8 @@ private:
     // 현재 드래그 중인지 확인
     bool m_bDrag;
 
+    // 프레임 자르기 임시 자료구조
+    list<tFrame> m_lFrame;
 
 public:
     virtual void update() override;
@@ -50,6 +58,11 @@ public:
     void LoadTexture();
     void SetMarqueeState() { m_eState = TOOL_TYPE::MARQUEE; };
     void SetDefaultState() { m_eState = TOOL_TYPE::DEFAULT; };
+
+public:
+    // 프레임 관련 기능
+    void AddFrameInfo(CMarquee* _pMarquee);
+    void temp_render(HDC _dc);
 
 
 private:
@@ -67,6 +80,8 @@ private:
     void AddMarquee(CMarquee* _pMarquee) { m_lMarquee.push_back(_pMarquee); };
     void SearchMarquee();
     void DeleteMarquee();
+    // 모든 Marquee의 타겟팅을 해제한다.
+    void ResetMarquee();
 
 
 
