@@ -170,6 +170,9 @@
     <Filter Include="Engine\04. Object\Marquee">
       <UniqueIdentifier>{0d99eb83-f0bf-482b-80c4-15b575044845}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\05. Scene\Scene_Ani_Workshop\WorkshopWindow">
+      <UniqueIdentifier>{b1531877-676c-47b4-bb64-412250f2fdfb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -341,6 +344,9 @@
     <ClInclude Include="CMarquee.h">
       <Filter>Engine\04. Object\Marquee</Filter>
     </ClInclude>
+    <ClInclude Include="CWorkshopWindow.h">
+      <Filter>Engine\05. Scene\Scene_Ani_Workshop\WorkshopWindow</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CCore.cpp">
@@ -493,6 +499,9 @@
     </ClCompile>
     <ClCompile Include="CMarquee.cpp">
       <Filter>Engine\04. Object\Marquee</Filter>
+    </ClCompile>
+    <ClCompile Include="CWorkshopWindow.cpp">
+      <Filter>Engine\05. Scene\Scene_Ani_Workshop\WorkshopWindow</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

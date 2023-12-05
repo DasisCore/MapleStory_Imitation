@@ -60,6 +60,46 @@ void CToolWindow::init()
     
     m_hWndTool = subhWnd;
 
+    // 리스트 뷰 생성
+        // 리스트 뷰 초기화
+    InitCommonControls();
+    HWND hWndList = CreateWindowEx(0, WC_LISTVIEW, L"", WS_CHILD | WS_VISIBLE | LVS_REPORT,
+        10, 10, 460, 200, subhWnd, NULL, hInst, NULL);
+
+    // ListView 열 추가
+    LVCOLUMN lvColumn;
+    lvColumn.mask = LVCF_TEXT | LVCF_WIDTH | LVCF_SUBITEM;
+    lvColumn.pszText = (LPWSTR)L"Column 1";
+    lvColumn.cx = 150;
+    lvColumn.iSubItem = 0;
+    ListView_InsertColumn(hWndList, 0, &lvColumn);
+
+    lvColumn.pszText = (LPWSTR)L"Column 2";
+    lvColumn.cx = 150;
+    lvColumn.iSubItem = 1;
+    ListView_InsertColumn(hWndList, 1, &lvColumn);
+
+    // ListView 아이템 추가
+    for (int i = 0; i < 4; ++i) {
+        wstring temp1 = L"Data ";
+        temp1 += std::to_wstring(i);
+        LVITEM lvItem;
+        lvItem.mask = LVIF_TEXT;
+        lvItem.iItem = i;
+        lvItem.iSubItem = 0;
+        lvItem.pszText = const_cast<LPWSTR>(temp1.c_str());
+        ListView_InsertItem(hWndList, &lvItem);
+
+        temp1 = L"Additional Data ";
+        temp1 += std::to_wstring(i);
+        lvItem.iSubItem = 1;
+        lvItem.pszText = const_cast<LPWSTR>(temp1.c_str());
+        ListView_SetItem(hWndList, &lvItem);
+    }
+
+    ShowWindow(hWndList, SW_SHOWNORMAL);
+
+
     shiftWindow();
 }
 

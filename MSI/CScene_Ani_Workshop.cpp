@@ -14,6 +14,8 @@
 #include "CSprite.h"
 #include "CMarquee.h"
 
+#include "CWorkshopWindow.h"
+
 CScene_Ani_Workshop::CScene_Ani_Workshop()
 	: m_eState(TOOL_TYPE::DEFAULT)
 	, m_ePrevState(TOOL_TYPE::DEFAULT)
@@ -82,6 +84,10 @@ void CScene_Ani_Workshop::Enter()
 
 	RECT rt = { 0, 0, (long)m_iScreenWidth, (long)m_iScreenHeight };
 	SetWindowPos(CCore::GetInst()->GetMainHwnd(), nullptr, centerX - (m_iScreenWidth / 2.f), centerY - (m_iScreenHeight / 2.f), rt.right - rt.left, rt.bottom - rt.top, SWP_NOSIZE);
+
+	// CWorkshop window¸¦ »ý¼º
+	CWorkshopWindow::GetInst()->init();
+	CWorkshopWindow::GetInst()->showWindow();
 }
 
 void CScene_Ani_Workshop::Exit()
@@ -89,6 +95,8 @@ void CScene_Ani_Workshop::Exit()
 	CTexture* pMemTex = CResMgr::GetInst()->FindTexture(L"BackBuffer");
 	assert(pMemTex);
 	CCore::GetInst()->SetMemTex(pMemTex);
+
+	CWorkshopWindow::GetInst()->Destroy_window();
 }
 
 void CScene_Ani_Workshop::LoadTexture()
@@ -160,6 +168,8 @@ bool CScene_Ani_Workshop::CheckImageFormat(wstring _wStr)
 
 void CScene_Ani_Workshop::update()
 {
+	CWorkshopWindow::GetInst()->update();
+
 	CScene::update();
 
 	if (m_pMainUI->IsLbtnDown() && m_eState == TOOL_TYPE::MARQUEE)
@@ -212,6 +222,7 @@ void CScene_Ani_Workshop::update()
 void CScene_Ani_Workshop::render(HDC _dc)
 {
 	CScene::render(_dc);
+	CWorkshopWindow::GetInst()->render(_dc);
 
 	Vec2 vPos = Vec2(250.f, 13.f);
 
@@ -293,6 +304,8 @@ void CScene_Ani_Workshop::CreateMQObj()
 	pMarquee->SetTarget(true);
 	AddMarquee(pMarquee);
 
+	CWorkshopWindow::GetInst()->AddFrame(UINT(m_lMarquee.size()));
+
 	AddObject(pMarquee, GROUP_TYPE::MARQUEE);
 }
 
@@ -346,6 +359,7 @@ void CScene_Ani_Workshop::DeleteMarquee()
 			iter = m_lMarquee.erase(iter);
 		}
 	}
+	CWorkshopWindow::GetInst()->DeleteFrame();
 }
 
 
