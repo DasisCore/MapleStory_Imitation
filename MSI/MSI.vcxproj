@@ -185,6 +185,7 @@
     <ClInclude Include="CUI.h" />
     <ClInclude Include="CUIMgr.h" />
     <ClInclude Include="CVoltarix.h" />
+    <ClInclude Include="CWorkshopBtn.h" />
     <ClInclude Include="CWorkshopWindow.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="define.h" />
@@ -245,6 +246,7 @@
     <ClCompile Include="CUI.cpp" />
     <ClCompile Include="CUIMgr.cpp" />
     <ClCompile Include="CVoltarix.cpp" />
+    <ClCompile Include="CWorkshopBtn.cpp" />
     <ClCompile Include="CWorkshopWindow.cpp" />
     <ClCompile Include="func.cpp" />
     <ClCompile Include="main.cpp" />

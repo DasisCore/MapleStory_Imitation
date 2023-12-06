@@ -4,23 +4,34 @@
 #include "CCore.h"
 #include "CSprite.h"
 
+#include "CWorkshopBtn.h"
+
+#include "CKeyMgr.h"
+
+#include "CScene.h"
+#include "CSceneMgr.h"
+
 LRESULT CALLBACK WorkshopWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
 CWorkshopWindow::CWorkshopWindow()
     : m_hWndWorkshop(nullptr)
     , m_WorkshopMainDC(nullptr)
     , m_hWndList(nullptr)
-    , m_memDC(nullptr)
+    , m_memFrameDC(nullptr)
+    , m_memControlDC(nullptr)
     , m_iTargetFrame(-1)
 {
 }
 
 CWorkshopWindow::~CWorkshopWindow()
 {
-    DeleteDC(m_memDC);
+    DeleteDC(m_memFrameDC);
     DeleteDC(m_WorkshopMainDC);
 
     if (m_hWndWorkshop) DestroyWindow(m_hWndWorkshop);
+
+    list<CWorkshopBtn*>::iterator iter = m_lBtn.begin();
+    for (; iter != m_lBtn.end(); iter++) delete (*iter);
 }
 
 void CWorkshopWindow::init()
@@ -88,25 +99,38 @@ void CWorkshopWindow::init()
 
     // 더블 버퍼링 준비
     m_WorkshopMainDC = GetDC(m_hWndWorkshop);
-    m_memDC = CreateCompatibleDC(m_WorkshopMainDC);
-    HBITMAP memBitmap = CreateCompatibleBitmap(m_WorkshopMainDC, 300, 190);
+    m_memFrameDC = CreateCompatibleDC(m_WorkshopMainDC);
+    m_memControlDC = CreateCompatibleDC(m_WorkshopMainDC);
+    HBITMAP memFrameBit = CreateCompatibleBitmap(m_WorkshopMainDC, 300, 190);
+    HBITMAP memControlBit = CreateCompatibleBitmap(m_WorkshopMainDC, 210, 220);
 
-    SelectObject(m_memDC, memBitmap);
-    DeleteObject(memBitmap);
+    SelectObject(m_memFrameDC, memFrameBit);
+    SelectObject(m_memControlDC, memControlBit);
+    DeleteObject(memFrameBit);
+    DeleteObject(memControlBit);
 
-    Graphics graphics(m_memDC);
-
+    // UI 초기화
+    UIinit();
 }
 
 void CWorkshopWindow::update()
 {
-
-
+    UIupdate();
 }
 
 void CWorkshopWindow::render(HDC _dc)
 {
-    Graphics graphics(m_memDC);
+    FrameRender(_dc);
+
+
+    
+    UIrender(m_memControlDC);
+}
+
+void CWorkshopWindow::FrameRender(HDC _dc)
+{
+    // 이 함수에서의 _dc의 경우 메인 윈도우의 DC이기 때문에 CWorkshopWindow에 있는 memDC를 사용해야 한다.
+    Graphics graphics(m_memFrameDC);
 
     // 구분을 위해 일단 연노랑으로 채워놓음
     graphics.Clear(Color(255, 255, 255, 128));
@@ -120,7 +144,7 @@ void CWorkshopWindow::render(HDC _dc)
     if (m_iTargetFrame != -1)
     {
         CScene_Ani_Workshop* pAniWorkshop = (CScene_Ani_Workshop*)CSceneMgr::GetInst()->GetCurScene();
-        
+
         // 스프라이트 이미지 가져오기
         CSprite* pSprite = pAniWorkshop->GetSprite();
         Image* pImage = pSprite->GetSprite();
@@ -129,7 +153,7 @@ void CWorkshopWindow::render(HDC _dc)
 
         Vec2 vLT = tFrm.vLT;
         Vec2 vScale = tFrm.vSliceSize;
-        
+
         // 300, 190 비트맵의 중앙에 그려야 함.
         Vec2 vDrawLT = Vec2(284.f / 2.f, 190.f / 2.f);
 
@@ -162,8 +186,10 @@ void CWorkshopWindow::render(HDC _dc)
         graphics.DrawImage(pImage, destRect, vLT.x, vLT.y, vScale.x, vScale.y, UnitPixel);
     }
 
-    BitBlt(m_WorkshopMainDC, 0, 0, 300, 190, m_memDC, 0, 0, SRCCOPY);
+    BitBlt(m_WorkshopMainDC, 0, 0, 300, 190, m_memFrameDC, 0, 0, SRCCOPY);
 }
+
+
 
 void CWorkshopWindow::AddFrame(UINT _idx)
 {
@@ -214,6 +240,53 @@ void CWorkshopWindow::shiftWindow()
     // 변경된 스타일을 적용
     SetWindowPos(m_hWndWorkshop, nullptr, mainWndX, mainWndY, 0, 0, SWP_NOZORDER | SWP_NOSIZE | SWP_FRAMECHANGED);
 }
+
+
+// =========================================================================================
+// Controller 관련 메소드들
+// =========================================================================================
+
+void CWorkshopWindow::UIinit()
+{
+    // UI의 구조적 한계 때문에 이 부분은 하드코딩.
+    CWorkshopBtn* pBtnUI = new CWorkshopBtn;
+    pBtnUI->SetName(L"Child UI");
+    pBtnUI->SetScale(Vec2(30.f, 30.f));
+    pBtnUI->SetPos(Vec2(50.f, 10.f));
+    m_lBtn.push_back(pBtnUI);
+
+    pBtnUI = new CWorkshopBtn;
+    pBtnUI->SetName(L"Child UI2");
+    pBtnUI->SetScale(Vec2(30.f, 30.f));
+    pBtnUI->SetPos(Vec2(80.f, 10.f));
+
+    m_lBtn.push_back(pBtnUI);
+}
+
+void CWorkshopWindow::UIupdate()
+{
+    // 원래는 UI Object로 Scene안에 넣어야하지만, 
+    // workshop이라는 특수성 때문에 새로운 클래스를 만들어 직접 작동시켜주었다.
+    list<CWorkshopBtn*>::iterator iter = m_lBtn.begin();
+    for (; iter != m_lBtn.end(); iter++) (*iter)->update();
+}
+
+void CWorkshopWindow::UIrender(HDC _dc)
+{
+    Graphics graphics(_dc);
+    graphics.Clear(Color(255, 200, 255));
+
+    Font font(L"Arial", 8);
+    SolidBrush brush(Color(255, 0, 0, 0));
+
+    //graphics.DrawString(L"미세 조정", -1, &font, PointF(10, 10), &brush);
+
+    list<CWorkshopBtn*>::iterator iter = m_lBtn.begin();
+    for (; iter != m_lBtn.end(); iter++) (*iter)->render(_dc);
+
+    BitBlt(m_WorkshopMainDC, 80, 190, 210, 220, _dc, 0, 0, SRCCOPY);
+}
+
 
 // =================================================================
 // 윈도우 프로시저 함수

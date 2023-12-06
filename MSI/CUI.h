@@ -31,7 +31,6 @@ public:
     virtual void update() override;
     virtual void render(HDC _dc) override;
     
-    
     void MouseOnCheck();
     
     virtual CUI* Clone() = 0;

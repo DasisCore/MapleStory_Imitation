@@ -88,13 +88,13 @@ void CKeyMgr::update()
 			}
 		}
 
-		// Mouse 위치 계산	// 해당 윈도우가 포커싱 중일 때, 한번은 창 밖이 클릭이 가능함. 버그 고쳐야 함.
+		// Mouse 위치 계산
 		POINT ptPos = {};
 		GetCursorPos(&ptPos);
 		ScreenToClient(CCore::GetInst()->GetMainHwnd(), &ptPos);
 
 		m_vCurMousePos = Vec2(ptPos);
-		}
+	}
 	// 윈도우 포커싱 해제 상태
 	else
 	{

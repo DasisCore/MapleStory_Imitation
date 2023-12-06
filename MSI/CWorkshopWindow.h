@@ -1,5 +1,7 @@
 #pragma once
 
+class CWorkshopBtn;
+
 class CWorkshopWindow
 {
 	SINGLE(CWorkshopWindow);
@@ -8,16 +10,27 @@ private:
 	HWND m_hWndWorkshop;
 	HDC m_WorkshopMainDC;
 	HWND m_hWndList;
+	
+	// workshop에서 ui를 따로 다루기 위한 리스트
+	list<CWorkshopBtn*> m_lBtn;
 
 	// 더블버퍼링
-	HDC m_memDC;
+	HDC m_memFrameDC;
+	HDC m_memControlDC;
 	int m_iTargetFrame;
-
 
 public:
 	void init();
 	void update();
 	void render(HDC _dc);
+	void FrameRender(HDC _dc);
+
+// UI 오브젝트용 update와 render
+private:
+	void UIinit();
+	void UIupdate();
+	void UIrender(HDC _dc);
+
 
 public:
 	void AddFrame(UINT _idx);

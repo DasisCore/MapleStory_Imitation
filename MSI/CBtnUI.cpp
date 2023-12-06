@@ -18,6 +18,17 @@ void CBtnUI::render(HDC _dc)
 	graphics.DrawString(GetName().c_str(), -1, &font, PointF(vPos.x, vPos.y), &brush);
 }
 
+void CBtnUI::Dedicate_workshop_render(HDC _dc)
+{
+	Graphics graphics(_dc);
+
+	Pen pen(Color(0, 0, 0), 1.f);
+
+	Vec2 vPos = GetPos();
+	Vec2 vScale = GetScale();
+	graphics.DrawRectangle(&pen, Rect(vPos.x, vPos.y, vScale.x, vScale.y));
+}
+
 CBtnUI::CBtnUI()
 	: CUI(false)
 	, m_pFunc(nullptr)

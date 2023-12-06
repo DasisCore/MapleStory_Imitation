@@ -347,6 +347,9 @@
     <ClInclude Include="CWorkshopWindow.h">
       <Filter>Engine\05. Scene\Scene_Ani_Workshop\WorkshopWindow</Filter>
     </ClInclude>
+    <ClInclude Include="CWorkshopBtn.h">
+      <Filter>Engine\05. Scene\Scene_Ani_Workshop\WorkshopWindow</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CCore.cpp">
@@ -501,6 +504,9 @@
       <Filter>Engine\04. Object\Marquee</Filter>
     </ClCompile>
     <ClCompile Include="CWorkshopWindow.cpp">
+      <Filter>Engine\05. Scene\Scene_Ani_Workshop\WorkshopWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="CWorkshopBtn.cpp">
       <Filter>Engine\05. Scene\Scene_Ani_Workshop\WorkshopWindow</Filter>
     </ClCompile>
   </ItemGroup>

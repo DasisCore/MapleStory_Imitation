@@ -49,7 +49,8 @@ public:
 public:
     // 임시로 넣어놓음. 자신의 이름 출력
     virtual void render(HDC _dc) override;
-
+    void Dedicate_workshop_render(HDC _dc);
+    
 public:
     CBtnUI();
     ~CBtnUI();
