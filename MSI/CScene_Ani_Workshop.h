@@ -62,6 +62,8 @@ public:
 public:
     // 프레임 관련 기능
     void AddFrameInfo(CMarquee* _pMarquee);
+    const tFrame GetFrameInfo(UINT _i);
+    CSprite* GetSprite() { return m_pMainSprite; }
     void temp_render(HDC _dc);
 
 
@@ -83,6 +85,8 @@ private:
     // 모든 Marquee의 타겟팅을 해제한다.
     void ResetMarquee();
 
+public:
+    void SetTargetMarquee(UINT _i);
 
 
 public:

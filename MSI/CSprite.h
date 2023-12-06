@@ -58,6 +58,7 @@ private:
 public:
     void update_tInfo();
     void SetTarget(bool _b) { m_tInfo.bTarget = _b; }
+    Image* GetSprite() { return m_pImage; }
 
 
 public:

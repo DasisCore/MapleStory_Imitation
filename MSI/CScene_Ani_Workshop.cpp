@@ -189,6 +189,21 @@ void CScene_Ani_Workshop::AddFrameInfo(CMarquee* _pMarquee)
 	tf.vSliceSize = vRB - vLT;
 		
 	m_lFrame.push_back(tf);
+	CWorkshopWindow::GetInst()->SetTargetFrm(m_lFrame.size() - 1);
+}
+
+const tFrame CScene_Ani_Workshop::GetFrameInfo(UINT _i)
+{
+	list<tFrame>::iterator iter = m_lFrame.begin();
+	int idx = 0;
+
+	for (; iter != m_lFrame.end(); iter++)
+	{
+		if (_i == idx) break;
+		idx++;
+	}
+
+	return *iter;
 }
 
 void CScene_Ani_Workshop::temp_render(HDC _dc)
@@ -391,6 +406,7 @@ void CScene_Ani_Workshop::SearchMarquee()
 
 		list<CMarquee*>::iterator iter = m_lMarquee.begin();
 
+		int idx = 0;
 		for(; iter != m_lMarquee.end(); iter++)
 		{
 			CMarquee* pMarquee = *iter;
@@ -409,7 +425,9 @@ void CScene_Ani_Workshop::SearchMarquee()
 				pMarquee->SetTarget(true);
 				m_pTargetMQ = pMarquee;
 				flag = 1;
+				CWorkshopWindow::GetInst()->SetTargetFrm(idx);
 			}
+			idx++;
 		}
 	}
 }
@@ -443,6 +461,21 @@ void CScene_Ani_Workshop::ResetMarquee()
 	for (; iter != m_lMarquee.end(); iter++)
 	{
 		(*iter)->SetTarget(false);
+	}
+}
+
+void CScene_Ani_Workshop::SetTargetMarquee(UINT _i)
+{
+	ResetMarquee();
+
+	int idx = 0;
+	list<CMarquee*>::iterator iter = m_lMarquee.begin();
+
+	for (; iter != m_lMarquee.end(); iter++)
+	{
+		(*iter)->SetTarget(false);
+		if(idx == _i) (*iter)->SetTarget(true);
+		idx++;
 	}
 }
 

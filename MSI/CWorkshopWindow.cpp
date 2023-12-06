@@ -2,6 +2,7 @@
 #include "main.h"
 #include "CWorkshopWindow.h"
 #include "CCore.h"
+#include "CSprite.h"
 
 LRESULT CALLBACK WorkshopWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
@@ -9,7 +10,8 @@ CWorkshopWindow::CWorkshopWindow()
     : m_hWndWorkshop(nullptr)
     , m_WorkshopMainDC(nullptr)
     , m_hWndList(nullptr)
-    , m_iTargetFrame(0)
+    , m_memDC(nullptr)
+    , m_iTargetFrame(-1)
 {
 }
 
@@ -69,14 +71,14 @@ void CWorkshopWindow::init()
     // 리스트 뷰 생성
     // 리스트 뷰 초기화
     InitCommonControls();
-    m_hWndList = CreateWindowEx(0, WC_LISTVIEW, L"List view", WS_CHILD | WS_VISIBLE | LVS_REPORT,
-        10, 200, 260, 200, subhWnd, NULL, hInst, NULL);
+    m_hWndList = CreateWindowEx(WS_EX_CLIENTEDGE, WC_LISTVIEW, L"List view", WS_CHILD | WS_VISIBLE | WS_BORDER | LVS_REPORT | LVS_SINGLESEL | LVS_EX_DOUBLEBUFFER,
+        10, 200, 70, 200, subhWnd, NULL, hInst, NULL);
 
     // ListView 열 추가
     LVCOLUMN lvColumn;
     lvColumn.mask = LVCF_TEXT | LVCF_WIDTH | LVCF_SUBITEM;
     lvColumn.pszText = (LPWSTR)L"프레임";
-    lvColumn.cx = 260;
+    lvColumn.cx = 65;
     lvColumn.iSubItem = 0;
     ListView_InsertColumn(m_hWndList, 0, &lvColumn);
 
@@ -94,9 +96,6 @@ void CWorkshopWindow::init()
 
     Graphics graphics(m_memDC);
 
-    // 구분을 위해 일단 연노랑으로 채워놓음
-    graphics.Clear(Color(255, 255, 255, 128));
-
 }
 
 void CWorkshopWindow::update()
@@ -107,6 +106,62 @@ void CWorkshopWindow::update()
 
 void CWorkshopWindow::render(HDC _dc)
 {
+    Graphics graphics(m_memDC);
+
+    // 구분을 위해 일단 연노랑으로 채워놓음
+    graphics.Clear(Color(255, 255, 255, 128));
+
+    Font font(L"Arial", 8);
+    SolidBrush brush(Gdiplus::Color(255, 0, 0, 0)); // 검은색 브러시
+
+    wstring temp = L"현재 프레임 : " + std::to_wstring(m_iTargetFrame + 1);
+    graphics.DrawString(temp.c_str(), -1, &font, PointF(5.f, 5.f), &brush);
+
+    if (m_iTargetFrame != -1)
+    {
+        CScene_Ani_Workshop* pAniWorkshop = (CScene_Ani_Workshop*)CSceneMgr::GetInst()->GetCurScene();
+        
+        // 스프라이트 이미지 가져오기
+        CSprite* pSprite = pAniWorkshop->GetSprite();
+        Image* pImage = pSprite->GetSprite();
+
+        tFrame tFrm = pAniWorkshop->GetFrameInfo(m_iTargetFrame);
+
+        Vec2 vLT = tFrm.vLT;
+        Vec2 vScale = tFrm.vSliceSize;
+        
+        // 300, 190 비트맵의 중앙에 그려야 함.
+        Vec2 vDrawLT = Vec2(284.f / 2.f, 190.f / 2.f);
+
+
+
+        // 가로세로 비율
+        float fRatio = vScale.x / vScale.y;
+
+        Vec2 vConvert = vScale;
+
+        if (vConvert.x >= 264.f)
+        {
+            vConvert.x = 264.f;
+            vConvert.y = 264.f / fRatio;
+        }
+
+        if (vConvert.y >= 150.f)
+        {
+            vConvert.y = 150.f;
+            vConvert.x = 150.f * fRatio;
+        }
+
+        vDrawLT.x -= (vConvert.x / 2.f);
+        vDrawLT.y -= (vConvert.y / 2.f);
+
+        // 그릴 위치 및 크기 설정
+        Rect destRect(vDrawLT.x, vDrawLT.y, vConvert.x, vConvert.y);
+
+        //graphics.DrawImage(pImage, destRect, srcRect.X, srcRect.Y, srcRect.Width, srcRect.Height, UnitPixel);
+        graphics.DrawImage(pImage, destRect, vLT.x, vLT.y, vScale.x, vScale.y, UnitPixel);
+    }
+
     BitBlt(m_WorkshopMainDC, 0, 0, 300, 190, m_memDC, 0, 0, SRCCOPY);
 }
 
@@ -164,19 +219,31 @@ void CWorkshopWindow::shiftWindow()
 // 윈도우 프로시저 함수
 // =================================================================
 #include "CWorkshopWindow.h"
+#include "CSceneMgr.h"
+#include "CScene.h";
+#include "CScene_Ani_Workshop.h"
 
 LRESULT CALLBACK WorkshopWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-    HWND ToolhWnd = CWorkshopWindow::GetInst()->GetWorkshophWnd();
-
+    static int selectedItem = -1;
+    HWND WorkshophWnd = CWorkshopWindow::GetInst()->GetWorkshophWnd();
+    HWND ListhWnd = CWorkshopWindow::GetInst()->GetListhWnd();
     switch (message)
     {
+    case WM_LBUTTONDOWN:
+    {
+        CScene_Ani_Workshop* pWorkshop = (CScene_Ani_Workshop*)CSceneMgr::GetInst()->GetCurScene();
+        pWorkshop->SetDefaultState();
+    }
+    break;
     case WM_KEYDOWN:
         switch (wParam)
         {
-        case VK_ESCAPE:
-            ShowWindow(ToolhWnd, SW_HIDE);
-            break;
+            case VK_ESCAPE:
+                ShowWindow(WorkshophWnd, SW_HIDE);
+                break;
+            default:
+                break;
         }
         break;
     case WM_COMMAND:
@@ -186,7 +253,7 @@ LRESULT CALLBACK WorkshopWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
         switch (wmId)
         {
         case IDM_EXIT:
-            ShowWindow(ToolhWnd, SW_HIDE);
+            ShowWindow(WorkshophWnd, SW_HIDE);
             break;
         default:
             return DefWindowProc(hWnd, message, wParam, lParam);
@@ -197,25 +264,46 @@ LRESULT CALLBACK WorkshopWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
     case WM_NOTIFY:
     {
         LPNMHDR pnmh = (LPNMHDR)lParam;
+        NMHDR* nmhdr = reinterpret_cast<NMHDR*>(lParam);
+        CScene_Ani_Workshop* pWorkshop = (CScene_Ani_Workshop*) CSceneMgr::GetInst()->GetCurScene();
+        int itemCount = ListView_GetItemCount(CWorkshopWindow::GetInst()->GetListhWnd());
         if (pnmh->code == NM_CLICK)
         {
             LPNMITEMACTIVATE lpnmia = (LPNMITEMACTIVATE)lParam;
             CWorkshopWindow::GetInst()->SetTargetFrm(lpnmia->iItem);
+            
+            // CScene_Ani_Workshop의 타겟 Marquee 변경
+            pWorkshop->SetTargetMarquee(lpnmia->iItem);
 
-            int itemCount = ListView_GetItemCount(CWorkshopWindow::GetInst()->GetListhWnd());
             for (int i = 0; i < itemCount; i++)
             {
-                UINT state = (i == lpnmia->iItem) ? LVIS_DROPHILITED : 0;
-                ListView_SetItemState(lpnmia->hdr.hwndFrom, i, state, LVIS_DROPHILITED);
+                UINT state = (i == lpnmia->iItem) ? LVIS_SELECTED : LVIF_STATE;
+                ListView_SetItemState(lpnmia->hdr.hwndFrom, i, state, LVIS_SELECTED);
+            }
+        }
+        else if (nmhdr->code == LVN_ITEMCHANGED) {
+            NMLISTVIEW* pnmv = reinterpret_cast<NMLISTVIEW*>(lParam);
+            if ((pnmv->uNewState & LVIS_SELECTED) && !(pnmv->uOldState & LVIS_SELECTED)) {
+                // 선택된 아이템이 변경되었을 때의 처리
+                int selectedItem = pnmv->iItem;
+
+                for (int i = 0; i < itemCount; i++)
+                {
+                    if (i == selectedItem) continue;
+                    UINT state = (i == pnmv->iItem) ? LVIS_SELECTED : LVIF_STATE;
+                    ListView_SetItemState(pnmv->hdr.hwndFrom, i, state, LVIS_SELECTED);
+                }
+                ListView_SetItemState(pnmv->hdr.hwndFrom, selectedItem, LVIS_SELECTED, LVIS_SELECTED);
+                CWorkshopWindow::GetInst()->SetTargetFrm(selectedItem);
             }
         }
     }
     break;
     case WM_CLOSE:
-        ShowWindow(ToolhWnd, SW_HIDE);
+        ShowWindow(WorkshophWnd, SW_HIDE);
         break;
     case WM_DESTROY:
-        ShowWindow(ToolhWnd, SW_HIDE);
+        ShowWindow(WorkshophWnd, SW_HIDE);
         break;
     default:
         return DefWindowProc(hWnd, message, wParam, lParam);

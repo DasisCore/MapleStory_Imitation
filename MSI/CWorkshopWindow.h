@@ -8,10 +8,10 @@ private:
 	HWND m_hWndWorkshop;
 	HDC m_WorkshopMainDC;
 	HWND m_hWndList;
-	UINT m_iTargetFrame;
 
 	// 더블버퍼링
 	HDC m_memDC;
+	int m_iTargetFrame;
 
 
 public:
