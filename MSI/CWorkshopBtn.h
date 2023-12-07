@@ -1,11 +1,8 @@
 #pragma once
 
-#include "CScene.h"
+//#include "CScene.h"
 
-typedef void(*BTN_FUNC) (DWORD_PTR, DWORD_PTR);
-
-typedef void(CScene::* SCENE_MEMFUNC)(void);
-typedef void(CObject::* OBJECT_MEMFUNC)(void);
+typedef void(*BTN_FUNCC) (DWORD_PTR, DWORD_PTR, DWORD_PTR);
 
 class CWorkshopBtn
 {
@@ -17,12 +14,10 @@ private:
 	bool m_bMouseOn;
 	bool m_bLbtnDown;
 
-	BTN_FUNC m_pFunc;
+	BTN_FUNCC m_pFunc;
 	DWORD_PTR m_param1;
 	DWORD_PTR m_param2;
-
-	SCENE_MEMFUNC m_pSceneFunc; // 호출할 함수 // 함수 포인터
-	CScene* m_pSceneInst;       // 호출할 객체
+	DWORD_PTR m_param3;
 
 	// 임시
 	Color color;
@@ -41,17 +36,12 @@ public:
 	void render(HDC _dc);
 	void update();
 
-	void SetClickCallBack(BTN_FUNC _pFunc, DWORD_PTR _param1, DWORD_PTR _param2)
+	void SetClickCallBack(BTN_FUNCC _pFunc, DWORD_PTR _param1, DWORD_PTR _param2, DWORD_PTR _param3)
 	{
 		m_pFunc = _pFunc;
 		m_param1 = _param1;
 		m_param2 = _param2;
-	}
-
-	void SetClickCallBack(CScene* _pScene, SCENE_MEMFUNC _pFunc)
-	{
-		m_pSceneInst = _pScene;
-		m_pSceneFunc = _pFunc;
+		m_param3 = _param3;
 	}
 
 

@@ -60,3 +60,22 @@ void LoadWString(wstring& _str, FILE* _pFile)
 
 	_str = szBuff;
 }
+
+wstring setprecision_float(float _f, int cnt)
+{
+	wstring temp = std::to_wstring(_f);
+
+	wstring result = L"";
+	for (int i = 0; i < temp.length(); i++)
+	{
+		if (temp[i] == L'.')
+		{
+			result += temp[i];
+			for (int j = 0; j < cnt; j++) result += temp[i + j + 1];
+			break;
+		}
+		result += temp[i];
+	}
+
+	return result;
+}

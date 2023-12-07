@@ -8,8 +8,6 @@ CWorkshopBtn::CWorkshopBtn()
 	: m_pFunc(nullptr)
 	, m_param1(0)
 	, m_param2(0)
-	, m_pSceneInst(nullptr)
-	, m_pSceneFunc(nullptr)
 	, m_bMouseOn(false)
 	, m_bLbtnDown(false)
 	, color(Color(0, 0, 0))
@@ -30,9 +28,9 @@ void CWorkshopBtn::render(HDC _dc)
 	Vec2 vScale = GetScale();
 	graphics.DrawRectangle(&pen, Rect(vPos.x, vPos.y, vScale.x, vScale.y));
 
-	Font font(L"Arial", 5);
+	Font font(L"Arial", 8);
 	SolidBrush brush(color);
-	graphics.DrawString(GetName().c_str(), -1, &font, PointF(vPos.x, (vScale.y / 2.f)), &brush);
+	graphics.DrawString(GetName().c_str(), -1, &font, PointF(vPos.x + 3.f, vPos.y), &brush);
 
 }
 
@@ -99,12 +97,7 @@ void CWorkshopBtn::MouseLbtnClicked()
 {
 	if (m_pFunc != nullptr)
 	{
-		m_pFunc(m_param1, m_param2);
-	}
-
-	if (m_pSceneFunc && m_pSceneInst)
-	{	// 둘다 포인터이므로, 원형을 불러옴.
-		((*m_pSceneInst).*m_pSceneFunc)();
+		m_pFunc(m_param1, m_param2, m_param3);
 	}
 }
 

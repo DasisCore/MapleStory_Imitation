@@ -36,3 +36,4 @@ void Safe_Delete_Vector(vector<T>& _vec)
 
 void SaveWString(const wstring& _str, FILE* _pFile);
 void LoadWString(wstring& _str, FILE* _pFile);
+wstring setprecision_float(float _f, int cnt);

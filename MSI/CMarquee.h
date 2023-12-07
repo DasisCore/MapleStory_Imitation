@@ -18,6 +18,7 @@ public:
 
 public:
     void SetTarget(bool _b) { m_bTarget = _b; }
+    void testFunc() {};
 
 public:
     CMarquee();

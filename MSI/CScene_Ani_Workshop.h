@@ -62,7 +62,10 @@ public:
 public:
     // 프레임 관련 기능
     void AddFrameInfo(CMarquee* _pMarquee);
-    const tFrame GetFrameInfo(UINT _i);
+    void AdjustFrameInfo(CMarquee* _pMarquee, tFrame& _tFrame);
+    const list<tFrame> GetFrameList() { return m_lFrame; }
+    list<CMarquee*> GetMarqueeList() { return m_lMarquee; }
+    tFrame GetFrameInfo(UINT _i);
     CSprite* GetSprite() { return m_pMainSprite; }
     void temp_render(HDC _dc);
 
@@ -70,8 +73,6 @@ public:
 private:
     // 이미지를 불러올 때, 확장자를 확인하는 함수.
     bool CheckImageFormat(wstring _wStr);
-
-
 
 
 // marquee 관련 함수들
@@ -84,9 +85,12 @@ private:
     void DeleteMarquee();
     // 모든 Marquee의 타겟팅을 해제한다.
     void ResetMarquee();
+    void finalupdateMarquee();
 
 public:
     void SetTargetMarquee(UINT _i);
+    // _i번째 Marquee를 준다. (0번 인덱스 포함)
+    CMarquee* GetMarquee(int _i);
 
 
 public:

@@ -26,6 +26,7 @@ CScene_Ani_Workshop::CScene_Ani_Workshop()
 	, m_pMainUI(nullptr)
 	, m_pTargetMQ(nullptr)
 {
+	m_lFrame.push_back(tFrame{});
 }
 
 CScene_Ani_Workshop::~CScene_Ani_Workshop()
@@ -192,7 +193,39 @@ void CScene_Ani_Workshop::AddFrameInfo(CMarquee* _pMarquee)
 	CWorkshopWindow::GetInst()->SetTargetFrm(m_lFrame.size() - 1);
 }
 
-const tFrame CScene_Ani_Workshop::GetFrameInfo(UINT _i)
+void CScene_Ani_Workshop::AdjustFrameInfo(CMarquee* _pMarquee, tFrame& _tFrame)
+{
+	// 스프라이트의 위치 및 크기 정보
+	Vec2 vSpritePos = m_pMainSprite->GetPos();
+	Vec2 vSpriteScale = m_pMainSprite->GetScale();
+
+	// 스프라이트의 좌상단, 우하단 벡터
+	Vec2 vSpriteLT = Vec2(vSpritePos.x - (vSpriteScale.x / 2.f), vSpritePos.y - (vSpriteScale.y / 2.f));
+	Vec2 vSpriteRB = Vec2(vSpritePos.x + (vSpriteScale.x / 2.f), vSpritePos.y + (vSpriteScale.y / 2.f));
+
+	// Marquee의 위치와 크기 벡터
+	Vec2 vPos = _pMarquee->GetPos();
+	Vec2 vScale = _pMarquee->GetScale();
+
+	// Marquee의 좌상단, 우하단 벡터
+	Vec2 vMQLT = Vec2(vPos.x - (vScale.x / 2.f), vPos.y - (vScale.y / 2.f));
+	Vec2 vMQRB = Vec2(vPos.x + (vScale.x / 2.f), vPos.y + (vScale.y / 2.f));
+
+	// 스프라이트를 기준으로 Marquee의 벡터가 어떻게 위치하는지
+	Vec2 vLT = vMQLT - vSpriteLT;
+	Vec2 vRB = vMQRB - vSpriteLT;
+
+	// 최소 최대값 보정 -> 좌상단, 우하단이 스프라이트의 밖으로 나갔을 때를 보정
+	if (vLT.x < 0) vLT.x = 0.f;
+	if (vLT.y < 0) vLT.y = 0.f;
+	if (vRB.x >= vSpriteScale.x) vRB.x = vSpriteScale.x;
+	if (vRB.y >= vSpriteScale.y) vRB.y = vSpriteScale.y;
+
+	_tFrame.vLT = vLT;
+	_tFrame.vSliceSize = vRB - vLT;
+}
+
+tFrame CScene_Ani_Workshop::GetFrameInfo(UINT _i)
 {
 	list<tFrame>::iterator iter = m_lFrame.begin();
 	int idx = 0;
@@ -202,6 +235,8 @@ const tFrame CScene_Ani_Workshop::GetFrameInfo(UINT _i)
 		if (_i == idx) break;
 		idx++;
 	}
+
+	if (iter == m_lFrame.end()) return (*--(m_lFrame.end()));
 
 	return *iter;
 }
@@ -308,6 +343,8 @@ void CScene_Ani_Workshop::update()
 	{
 		update_MQ();
 	}
+
+	finalupdateMarquee();
 }
 
 void CScene_Ani_Workshop::render(HDC _dc)
@@ -436,6 +473,7 @@ void CScene_Ani_Workshop::DeleteMarquee()
 {
 	// 현재 타겟팅 된 Marquee를 지워야 한다.
 	int idx = 1;
+	int target = 0;
 	list<CMarquee*>::iterator iter = m_lMarquee.begin();
 	for (; iter != m_lMarquee.end();)
 	{
@@ -449,8 +487,15 @@ void CScene_Ani_Workshop::DeleteMarquee()
 		{
 			DeleteObject(*iter);
 			iter = m_lMarquee.erase(iter);
+			target = idx;
 		}
 	}
+
+	list<tFrame>::iterator eraseIter = m_lFrame.begin()++;
+	for (int i = 0; i < target; i++) eraseIter++;
+	m_lFrame.erase(eraseIter);
+
+	CWorkshopWindow::GetInst()->SetTargetFrm(m_lFrame.size() - 2);
 	CWorkshopWindow::GetInst()->DeleteFrame();
 }
 
@@ -464,6 +509,8 @@ void CScene_Ani_Workshop::ResetMarquee()
 	}
 }
 
+
+
 void CScene_Ani_Workshop::SetTargetMarquee(UINT _i)
 {
 	ResetMarquee();
@@ -476,6 +523,30 @@ void CScene_Ani_Workshop::SetTargetMarquee(UINT _i)
 		(*iter)->SetTarget(false);
 		if(idx == _i) (*iter)->SetTarget(true);
 		idx++;
+	}
+}
+
+CMarquee* CScene_Ani_Workshop::GetMarquee(int _i)
+{
+	int idx = 0;
+	list<CMarquee*>::iterator iter = m_lMarquee.begin();
+	for (; iter != m_lMarquee.end(); iter++)
+	{
+		if (idx == _i) return *iter;
+		idx++;
+	}
+	return nullptr;
+}
+
+void CScene_Ani_Workshop::finalupdateMarquee()
+{
+	list<CMarquee*>::iterator MarqueeIter = m_lMarquee.begin();
+	list<tFrame>::iterator FrameIter = ++m_lFrame.begin();
+
+	for (; MarqueeIter != m_lMarquee.end(); MarqueeIter++)
+	{
+		AdjustFrameInfo(*MarqueeIter, *FrameIter);
+		FrameIter++;
 	}
 }
 

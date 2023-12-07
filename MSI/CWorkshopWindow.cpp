@@ -3,6 +3,7 @@
 #include "CWorkshopWindow.h"
 #include "CCore.h"
 #include "CSprite.h"
+#include "CMarquee.h"
 
 #include "CWorkshopBtn.h"
 
@@ -11,6 +12,7 @@
 #include "CScene.h"
 #include "CSceneMgr.h"
 
+void ControlFrameInfo(DWORD_PTR _param1, DWORD_PTR _param2, DWORD_PTR _param3);
 LRESULT CALLBACK WorkshopWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
 CWorkshopWindow::CWorkshopWindow()
@@ -20,6 +22,7 @@ CWorkshopWindow::CWorkshopWindow()
     , m_memFrameDC(nullptr)
     , m_memControlDC(nullptr)
     , m_iTargetFrame(-1)
+    , m_fDuration(1.f)
 {
 }
 
@@ -115,16 +118,17 @@ void CWorkshopWindow::init()
 
 void CWorkshopWindow::update()
 {
-    UIupdate();
+    // workshop window를 항상 최상위에 위치시킨다.
+    SetWindowPos(m_hWndWorkshop, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+
+    UI_update();
 }
 
 void CWorkshopWindow::render(HDC _dc)
 {
     FrameRender(_dc);
-
-
     
-    UIrender(m_memControlDC);
+    UI_render(m_memControlDC);
 }
 
 void CWorkshopWindow::FrameRender(HDC _dc)
@@ -141,23 +145,24 @@ void CWorkshopWindow::FrameRender(HDC _dc)
     wstring temp = L"현재 프레임 : " + std::to_wstring(m_iTargetFrame + 1);
     graphics.DrawString(temp.c_str(), -1, &font, PointF(5.f, 5.f), &brush);
 
+    CScene_Ani_Workshop* pAniWorkshop = (CScene_Ani_Workshop*)CSceneMgr::GetInst()->GetCurScene();
+
+    // 사이즈가 1개라면 아무 것도 없음.
+    if (pAniWorkshop->GetFrameList().size() == 1) m_iTargetFrame = -1;
+
     if (m_iTargetFrame != -1)
     {
-        CScene_Ani_Workshop* pAniWorkshop = (CScene_Ani_Workshop*)CSceneMgr::GetInst()->GetCurScene();
-
         // 스프라이트 이미지 가져오기
         CSprite* pSprite = pAniWorkshop->GetSprite();
         Image* pImage = pSprite->GetSprite();
 
-        tFrame tFrm = pAniWorkshop->GetFrameInfo(m_iTargetFrame);
+        tFrame tFrm = pAniWorkshop->GetFrameInfo(m_iTargetFrame + 1);
 
         Vec2 vLT = tFrm.vLT;
         Vec2 vScale = tFrm.vSliceSize;
 
         // 300, 190 비트맵의 중앙에 그려야 함.
         Vec2 vDrawLT = Vec2(284.f / 2.f, 190.f / 2.f);
-
-
 
         // 가로세로 비율
         float fRatio = vScale.x / vScale.y;
@@ -250,41 +255,181 @@ void CWorkshopWindow::UIinit()
 {
     // UI의 구조적 한계 때문에 이 부분은 하드코딩.
     CWorkshopBtn* pBtnUI = new CWorkshopBtn;
-    pBtnUI->SetName(L"Child UI");
-    pBtnUI->SetScale(Vec2(30.f, 30.f));
-    pBtnUI->SetPos(Vec2(50.f, 10.f));
+    pBtnUI->SetName(L"▲");
+    pBtnUI->SetScale(Vec2(20.f, 15.f));
+    pBtnUI->SetPos(Vec2(145.f, 40.f));
     m_lBtn.push_back(pBtnUI);
 
     pBtnUI = new CWorkshopBtn;
-    pBtnUI->SetName(L"Child UI2");
-    pBtnUI->SetScale(Vec2(30.f, 30.f));
-    pBtnUI->SetPos(Vec2(80.f, 10.f));
+    pBtnUI->SetName(L"▼");
+    pBtnUI->SetScale(Vec2(20.f, 15.f));
+    pBtnUI->SetPos(Vec2(165.f, 40.f));
+    m_lBtn.push_back(pBtnUI);
 
+    //
+
+    pBtnUI = new CWorkshopBtn;
+    pBtnUI->SetName(L"▲");
+    pBtnUI->SetScale(Vec2(20.f, 15.f));
+    pBtnUI->SetPos(Vec2(145.f, 70.f));
+    m_lBtn.push_back(pBtnUI);
+
+    pBtnUI = new CWorkshopBtn;
+    pBtnUI->SetName(L"▼");
+    pBtnUI->SetScale(Vec2(20.f, 15.f));
+    pBtnUI->SetPos(Vec2(165.f, 70.f));
+    m_lBtn.push_back(pBtnUI);
+
+    //
+
+    pBtnUI = new CWorkshopBtn;
+    pBtnUI->SetName(L"▲");
+    pBtnUI->SetScale(Vec2(20.f, 15.f));
+    pBtnUI->SetPos(Vec2(145.f, 100.f));
+    m_lBtn.push_back(pBtnUI);
+
+    pBtnUI = new CWorkshopBtn;
+    pBtnUI->SetName(L"▼");
+    pBtnUI->SetScale(Vec2(20.f, 15.f));
+    pBtnUI->SetPos(Vec2(165.f, 100.f));
+    m_lBtn.push_back(pBtnUI);
+
+    //
+
+    pBtnUI = new CWorkshopBtn;
+    pBtnUI->SetName(L"▲");
+    pBtnUI->SetScale(Vec2(20.f, 15.f));
+    pBtnUI->SetPos(Vec2(145.f, 130.f));
+    m_lBtn.push_back(pBtnUI);
+
+    pBtnUI = new CWorkshopBtn;
+    pBtnUI->SetName(L"▼");
+    pBtnUI->SetScale(Vec2(20.f, 15.f));
+    pBtnUI->SetPos(Vec2(165.f, 130.f));
+    m_lBtn.push_back(pBtnUI);
+
+    //
+
+    pBtnUI = new CWorkshopBtn;
+    pBtnUI->SetName(L"▲");
+    pBtnUI->SetScale(Vec2(20.f, 15.f));
+    pBtnUI->SetPos(Vec2(145.f, 160.f));
+    m_lBtn.push_back(pBtnUI);
+
+    pBtnUI = new CWorkshopBtn;
+    pBtnUI->SetName(L"▼");
+    pBtnUI->SetScale(Vec2(20.f, 15.f));
+    pBtnUI->SetPos(Vec2(165.f, 160.f));
     m_lBtn.push_back(pBtnUI);
 }
 
-void CWorkshopWindow::UIupdate()
+void CWorkshopWindow::UI_update()
 {
     // 원래는 UI Object로 Scene안에 넣어야하지만, 
     // workshop이라는 특수성 때문에 새로운 클래스를 만들어 직접 작동시켜주었다.
+
+    m_iTargetFrame;
+    CScene_Ani_Workshop* pAniWorkshop = (CScene_Ani_Workshop*)CSceneMgr::GetInst()->GetCurScene();
+
+    int iTargetFrame = m_iTargetFrame - 1;
+    CMarquee* pMarquee = pAniWorkshop->GetMarquee(iTargetFrame);
+
+    // 하드코딩을 하면 안되는 이유... // UI를 이용해 Marquee를 미세조정하는 버튼에 함수 할당.
+    int idx = 0;
     list<CWorkshopBtn*>::iterator iter = m_lBtn.begin();
-    for (; iter != m_lBtn.end(); iter++) (*iter)->update();
+    for (; iter != m_lBtn.end(); iter++)
+    {
+        if      (idx == 0) (*iter)->SetClickCallBack(ControlFrameInfo, (DWORD_PTR)pMarquee, 1, 1);
+        else if (idx == 1) (*iter)->SetClickCallBack(ControlFrameInfo, (DWORD_PTR)pMarquee, 1, -1);
+        else if (idx == 2) (*iter)->SetClickCallBack(ControlFrameInfo, (DWORD_PTR)pMarquee, 2, 1);
+        else if (idx == 3) (*iter)->SetClickCallBack(ControlFrameInfo, (DWORD_PTR)pMarquee, 2, -1);
+        else if (idx == 4) (*iter)->SetClickCallBack(ControlFrameInfo, (DWORD_PTR)pMarquee, 3, 1);
+        else if (idx == 5) (*iter)->SetClickCallBack(ControlFrameInfo, (DWORD_PTR)pMarquee, 3, -1);
+        else if (idx == 6) (*iter)->SetClickCallBack(ControlFrameInfo, (DWORD_PTR)pMarquee, 4, 1);
+        else if (idx == 7) (*iter)->SetClickCallBack(ControlFrameInfo, (DWORD_PTR)pMarquee, 4, -1);
+        else if (idx == 8) (*iter)->SetClickCallBack(ControlFrameInfo, (DWORD_PTR)pMarquee, 5, 1);
+        else if (idx == 9) (*iter)->SetClickCallBack(ControlFrameInfo, (DWORD_PTR)pMarquee, 5, -1);
+        (*iter)->update();
+        idx++;
+    }
+    
 }
 
-void CWorkshopWindow::UIrender(HDC _dc)
+void CWorkshopWindow::UI_render(HDC _dc)
 {
+    CScene_Ani_Workshop* pAniWorkshop = (CScene_Ani_Workshop*)CSceneMgr::GetInst()->GetCurScene();
+
     Graphics graphics(_dc);
     graphics.Clear(Color(255, 200, 255));
+    
+    Font font(L"맑은 고딕", 9);
+    SolidBrush BlackBrush(Color(0, 0, 0));
+    SolidBrush GrayBrush(Color(84, 84, 84));
 
-    Font font(L"Arial", 8);
-    SolidBrush brush(Color(255, 0, 0, 0));
+    int FrameCount = pAniWorkshop->GetFrameList().size() - 1;
 
-    //graphics.DrawString(L"미세 조정", -1, &font, PointF(10, 10), &brush);
+    Vec2 vtargetLT = pAniWorkshop->GetFrameInfo(m_iTargetFrame).vLT;
+    Vec2 vtargetSliceSize = pAniWorkshop->GetFrameInfo(m_iTargetFrame).vSliceSize;
+
+    graphics.DrawString(L"총 프레임 수", -1, &font, PointF(10, 10), &GrayBrush);
+    graphics.DrawString(std::to_wstring(FrameCount).c_str(), -1, &font, PointF(100, 10), &BlackBrush);
+
+    graphics.DrawString(L"X", -1, &font, PointF(10, 40), &GrayBrush);
+    graphics.DrawString(setprecision_float(vtargetLT.x, 1).c_str(), -1, &font, PointF(100, 40), &BlackBrush);
+
+    graphics.DrawString(L"Y", -1, &font, PointF(10, 70), &GrayBrush);
+    graphics.DrawString(setprecision_float(vtargetLT.y, 1).c_str(), -1, &font, PointF(100, 70), &BlackBrush);
+
+    graphics.DrawString(L"너비", -1, &font, PointF(10, 100), &GrayBrush);
+    graphics.DrawString(setprecision_float(vtargetSliceSize.x, 1).c_str(), -1, &font, PointF(100, 100), &BlackBrush);
+
+    graphics.DrawString(L"높이", -1, &font, PointF(10, 130), &GrayBrush);
+    graphics.DrawString(setprecision_float(vtargetSliceSize.y, 1).c_str(), -1, &font, PointF(100, 130), &BlackBrush);
+
+    graphics.DrawString(L"재생 시간", -1, &font, PointF(10, 160), &GrayBrush);
+    graphics.DrawString(setprecision_float(m_fDuration, 1).c_str(), -1, &font, PointF(100, 160), &BlackBrush);
 
     list<CWorkshopBtn*>::iterator iter = m_lBtn.begin();
     for (; iter != m_lBtn.end(); iter++) (*iter)->render(_dc);
 
     BitBlt(m_WorkshopMainDC, 80, 190, 210, 220, _dc, 0, 0, SRCCOPY);
+}
+
+void ControlFrameInfo(DWORD_PTR _param1, DWORD_PTR _param2, DWORD_PTR _param3)
+{
+    int param2 = (int)_param2;
+    int param3 = (int)_param3;
+
+    float _f = 0.f;
+    if (param3 == 1) _f = 0.1f;
+    else _f = -0.1f;
+
+    if (param2 == 5)
+    {
+        CWorkshopWindow::GetInst()->AddDuration(_f);
+        return;
+    }
+
+    CMarquee* pMarquee = (CMarquee*)_param1;
+    Vec2 vPos = pMarquee->GetPos();
+    Vec2 vScale = pMarquee->GetScale();
+
+    if (param2 == 1)
+    {
+        pMarquee->SetPos(Vec2(vPos.x + _f, vPos.y));
+    }
+    else if (param2 == 2)
+    {
+        pMarquee->SetPos(Vec2(vPos.x, vPos.y - _f));
+    }
+    else if (param2 == 3)
+    {
+        pMarquee->SetScale(Vec2(vScale.x + _f, vScale.y));
+    }
+    else if (param2 == 4)
+    {
+        pMarquee->SetScale(Vec2(vScale.x, vScale.y + _f));
+    }
 }
 
 
