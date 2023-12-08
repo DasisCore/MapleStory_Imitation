@@ -227,8 +227,8 @@ void CScene_Ani_Workshop::AdjustFrameInfo(CMarquee* _pMarquee, tFrame& _tFrame)
 
 tFrame CScene_Ani_Workshop::GetFrameInfo(UINT _i)
 {
-	list<tFrame>::iterator iter = m_lFrame.begin();
-	int idx = 0;
+	list<tFrame>::iterator iter = ++m_lFrame.begin();
+	int idx = 1;
 
 	for (; iter != m_lFrame.end(); iter++)
 	{
@@ -462,7 +462,7 @@ void CScene_Ani_Workshop::SearchMarquee()
 				pMarquee->SetTarget(true);
 				m_pTargetMQ = pMarquee;
 				flag = 1;
-				CWorkshopWindow::GetInst()->SetTargetFrm(idx);
+				CWorkshopWindow::GetInst()->SetTargetFrm(idx + 1);
 			}
 			idx++;
 		}

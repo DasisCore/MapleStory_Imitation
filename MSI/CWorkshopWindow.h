@@ -20,12 +20,15 @@ private:
 	int m_iTargetFrame;
 
 	float m_fDuration;
+	float m_fCurTime;
+	bool m_bIsPlay;
 
 public:
 	void init();
 	void update();
 	void render(HDC _dc);
 	void FrameRender(HDC _dc);
+
 
 
 // ===========================================================
@@ -36,8 +39,11 @@ private:
 	void UI_render(HDC _dc);
 
 public:
-	void AddDuration(float _f) { m_fDuration += max(_f, 0.1f); };
-
+	void AddDuration(float _f) 
+	{
+		m_fDuration += _f;
+		m_fDuration = max(0.1f, m_fDuration);
+	};
 
 
 
@@ -45,6 +51,8 @@ public:
 public:
 	void AddFrame(UINT _idx);
 	void DeleteFrame();
+	void PlayAnimation();
+	void IsPlayFlip() { m_bIsPlay = !m_bIsPlay; }
 
 public:
 	void showWindow();

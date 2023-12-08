@@ -8,6 +8,7 @@
 #include "CWorkshopBtn.h"
 
 #include "CKeyMgr.h"
+#include "CTimeMgr.h"
 
 #include "CScene.h"
 #include "CSceneMgr.h"
@@ -22,7 +23,9 @@ CWorkshopWindow::CWorkshopWindow()
     , m_memFrameDC(nullptr)
     , m_memControlDC(nullptr)
     , m_iTargetFrame(-1)
-    , m_fDuration(1.f)
+    , m_fDuration(0.3f)
+    , m_fCurTime(0.f)
+    , m_bIsPlay(false)
 {
 }
 
@@ -122,6 +125,8 @@ void CWorkshopWindow::update()
     SetWindowPos(m_hWndWorkshop, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 
     UI_update();
+
+    if (m_bIsPlay) PlayAnimation();
 }
 
 void CWorkshopWindow::render(HDC _dc)
@@ -142,7 +147,7 @@ void CWorkshopWindow::FrameRender(HDC _dc)
     Font font(L"Arial", 8);
     SolidBrush brush(Gdiplus::Color(255, 0, 0, 0)); // 검은색 브러시
 
-    wstring temp = L"현재 프레임 : " + std::to_wstring(m_iTargetFrame + 1);
+    wstring temp = L"현재 프레임 : " + std::to_wstring(m_iTargetFrame);
     graphics.DrawString(temp.c_str(), -1, &font, PointF(5.f, 5.f), &brush);
 
     CScene_Ani_Workshop* pAniWorkshop = (CScene_Ani_Workshop*)CSceneMgr::GetInst()->GetCurScene();
@@ -156,7 +161,7 @@ void CWorkshopWindow::FrameRender(HDC _dc)
         CSprite* pSprite = pAniWorkshop->GetSprite();
         Image* pImage = pSprite->GetSprite();
 
-        tFrame tFrm = pAniWorkshop->GetFrameInfo(m_iTargetFrame + 1);
+        tFrame tFrm = pAniWorkshop->GetFrameInfo(m_iTargetFrame);
 
         Vec2 vLT = tFrm.vLT;
         Vec2 vScale = tFrm.vSliceSize;
@@ -218,6 +223,30 @@ void CWorkshopWindow::DeleteFrame()
     // 리스트 뷰를 갱신하여 삭제된 아이템을 반영
     ListView_RedrawItems(m_hWndList, 0, ListView_GetItemCount(m_hWndList) - 1);
 }
+
+void CWorkshopWindow::PlayAnimation()
+{
+    CScene_Ani_Workshop* pAniWorkshop = (CScene_Ani_Workshop*)CSceneMgr::GetInst()->GetCurScene();
+
+    int iLen = pAniWorkshop->GetFrameList().size();
+
+    // 사이즈가 1개라면 아무 것도 없음.
+    if (iLen == 1) 
+    {
+        m_bIsPlay = false;
+        return;
+    }
+
+    if (m_fCurTime > m_fDuration)
+    {
+        m_fCurTime = 0.f;
+        m_iTargetFrame++;
+
+        if (m_iTargetFrame == pAniWorkshop->GetFrameList().size()) m_iTargetFrame = 1;
+    }
+    m_fCurTime += fDT;
+}
+
 
 void CWorkshopWindow::showWindow()
 {
@@ -321,6 +350,13 @@ void CWorkshopWindow::UIinit()
     pBtnUI->SetScale(Vec2(20.f, 15.f));
     pBtnUI->SetPos(Vec2(165.f, 160.f));
     m_lBtn.push_back(pBtnUI);
+
+
+    pBtnUI = new CWorkshopBtn;
+    pBtnUI->SetName(L"재생");
+    pBtnUI->SetScale(Vec2(40.f, 15.f));
+    pBtnUI->SetPos(Vec2(145.f, 10.f));
+    m_lBtn.push_back(pBtnUI);
 }
 
 void CWorkshopWindow::UI_update()
@@ -349,6 +385,19 @@ void CWorkshopWindow::UI_update()
         else if (idx == 7) (*iter)->SetClickCallBack(ControlFrameInfo, (DWORD_PTR)pMarquee, 4, -1);
         else if (idx == 8) (*iter)->SetClickCallBack(ControlFrameInfo, (DWORD_PTR)pMarquee, 5, 1);
         else if (idx == 9) (*iter)->SetClickCallBack(ControlFrameInfo, (DWORD_PTR)pMarquee, 5, -1);
+        else if (idx == 10)
+        {
+            if(m_bIsPlay == true)
+            {
+                (*iter)->SetName(L"정지");
+                (*iter)->SetClickCallBack(ControlFrameInfo, (DWORD_PTR)pMarquee, 6, -1);
+            }
+            else
+            {
+                (*iter)->SetName(L"재생");
+                (*iter)->SetClickCallBack(ControlFrameInfo, (DWORD_PTR)pMarquee, 6, -1);
+            }
+        }
         (*iter)->update();
         idx++;
     }
@@ -386,7 +435,7 @@ void CWorkshopWindow::UI_render(HDC _dc)
     graphics.DrawString(L"높이", -1, &font, PointF(10, 130), &GrayBrush);
     graphics.DrawString(setprecision_float(vtargetSliceSize.y, 1).c_str(), -1, &font, PointF(100, 130), &BlackBrush);
 
-    graphics.DrawString(L"재생 시간", -1, &font, PointF(10, 160), &GrayBrush);
+    graphics.DrawString(L"프레임당 시간", -1, &font, PointF(10, 160), &GrayBrush);
     graphics.DrawString(setprecision_float(m_fDuration, 1).c_str(), -1, &font, PointF(100, 160), &BlackBrush);
 
     list<CWorkshopBtn*>::iterator iter = m_lBtn.begin();
@@ -394,6 +443,8 @@ void CWorkshopWindow::UI_render(HDC _dc)
 
     BitBlt(m_WorkshopMainDC, 80, 190, 210, 220, _dc, 0, 0, SRCCOPY);
 }
+
+
 
 void ControlFrameInfo(DWORD_PTR _param1, DWORD_PTR _param2, DWORD_PTR _param3)
 {
@@ -404,9 +455,17 @@ void ControlFrameInfo(DWORD_PTR _param1, DWORD_PTR _param2, DWORD_PTR _param3)
     if (param3 == 1) _f = 0.1f;
     else _f = -0.1f;
 
+    // 프레임당 시간 조절 버튼
     if (param2 == 5)
     {
         CWorkshopWindow::GetInst()->AddDuration(_f);
+        return;
+    }
+
+    // 재생버튼
+    if (param2 == 6)
+    {
+        CWorkshopWindow::GetInst()->IsPlayFlip();
         return;
     }
 
@@ -430,6 +489,7 @@ void ControlFrameInfo(DWORD_PTR _param1, DWORD_PTR _param2, DWORD_PTR _param3)
     {
         pMarquee->SetScale(Vec2(vScale.x, vScale.y + _f));
     }
+
 }
 
 
@@ -488,7 +548,7 @@ LRESULT CALLBACK WorkshopWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
         if (pnmh->code == NM_CLICK)
         {
             LPNMITEMACTIVATE lpnmia = (LPNMITEMACTIVATE)lParam;
-            CWorkshopWindow::GetInst()->SetTargetFrm(lpnmia->iItem);
+            CWorkshopWindow::GetInst()->SetTargetFrm(lpnmia->iItem + 1);
             
             // CScene_Ani_Workshop의 타겟 Marquee 변경
             pWorkshop->SetTargetMarquee(lpnmia->iItem);
@@ -512,7 +572,7 @@ LRESULT CALLBACK WorkshopWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM 
                     ListView_SetItemState(pnmv->hdr.hwndFrom, i, state, LVIS_SELECTED);
                 }
                 ListView_SetItemState(pnmv->hdr.hwndFrom, selectedItem, LVIS_SELECTED, LVIS_SELECTED);
-                CWorkshopWindow::GetInst()->SetTargetFrm(selectedItem);
+                CWorkshopWindow::GetInst()->SetTargetFrm(selectedItem + 1);
             }
         }
     }
