@@ -118,7 +118,7 @@ void CScene_Tool::update()
 	if (KEY_TAP(KEY::CTRL))
 	{
 		//CUIMgr::GetInst()->SetFocusedUI(m_pUI);
-		LoadTileDate();
+		LoadTileData();
 	}
 }
 
@@ -174,7 +174,7 @@ void CScene_Tool::SaveTileData()
 	};
 }
 
-void CScene_Tool::LoadTileDate()
+void CScene_Tool::LoadTileData()
 {
 	OPENFILENAME ofn = {};
 

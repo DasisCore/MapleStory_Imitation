@@ -12,8 +12,17 @@
 
 #include "CScene.h"
 #include "CSceneMgr.h"
+#include "CPathMgr.h"
+#include "CTexture.h"
+#include "CResMgr.h"
+#include "CAnimator.h"
+#include "CAnimation.h"
+
 
 void ControlFrameInfo(DWORD_PTR _param1, DWORD_PTR _param2, DWORD_PTR _param3);
+void SaveData(DWORD_PTR _param1, DWORD_PTR _param2, DWORD_PTR _param3);
+void LoadData(DWORD_PTR _param1, DWORD_PTR _param2, DWORD_PTR _param3);
+
 LRESULT CALLBACK WorkshopWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
 CWorkshopWindow::CWorkshopWindow()
@@ -357,6 +366,19 @@ void CWorkshopWindow::UIinit()
     pBtnUI->SetScale(Vec2(40.f, 15.f));
     pBtnUI->SetPos(Vec2(145.f, 10.f));
     m_lBtn.push_back(pBtnUI);
+
+
+    pBtnUI = new CWorkshopBtn;
+    pBtnUI->SetName(L"불러오기");
+    pBtnUI->SetScale(Vec2(40.f, 15.f));
+    pBtnUI->SetPos(Vec2(95.f, 190.f));
+    m_lBtn.push_back(pBtnUI);
+
+    pBtnUI = new CWorkshopBtn;
+    pBtnUI->SetName(L"저장하기");
+    pBtnUI->SetScale(Vec2(40.f, 15.f));
+    pBtnUI->SetPos(Vec2(145.f, 190.f));
+    m_lBtn.push_back(pBtnUI);
 }
 
 void CWorkshopWindow::UI_update()
@@ -375,7 +397,7 @@ void CWorkshopWindow::UI_update()
     list<CWorkshopBtn*>::iterator iter = m_lBtn.begin();
     for (; iter != m_lBtn.end(); iter++)
     {
-        if      (idx == 0) (*iter)->SetClickCallBack(ControlFrameInfo, (DWORD_PTR)pMarquee, 1, 1);
+        if (idx == 0) (*iter)->SetClickCallBack(ControlFrameInfo, (DWORD_PTR)pMarquee, 1, 1);
         else if (idx == 1) (*iter)->SetClickCallBack(ControlFrameInfo, (DWORD_PTR)pMarquee, 1, -1);
         else if (idx == 2) (*iter)->SetClickCallBack(ControlFrameInfo, (DWORD_PTR)pMarquee, 2, 1);
         else if (idx == 3) (*iter)->SetClickCallBack(ControlFrameInfo, (DWORD_PTR)pMarquee, 2, -1);
@@ -387,7 +409,7 @@ void CWorkshopWindow::UI_update()
         else if (idx == 9) (*iter)->SetClickCallBack(ControlFrameInfo, (DWORD_PTR)pMarquee, 5, -1);
         else if (idx == 10)
         {
-            if(m_bIsPlay == true)
+            if (m_bIsPlay == true)
             {
                 (*iter)->SetName(L"정지");
                 (*iter)->SetClickCallBack(ControlFrameInfo, (DWORD_PTR)pMarquee, 6, -1);
@@ -398,6 +420,8 @@ void CWorkshopWindow::UI_update()
                 (*iter)->SetClickCallBack(ControlFrameInfo, (DWORD_PTR)pMarquee, 6, -1);
             }
         }
+        else if (idx == 11) (*iter)->SetClickCallBack(LoadData, 0, 0, 0);
+        else if (idx == 12) (*iter)->SetClickCallBack(SaveData, 0, 0, 0);
         (*iter)->update();
         idx++;
     }
@@ -444,7 +468,118 @@ void CWorkshopWindow::UI_render(HDC _dc)
     BitBlt(m_WorkshopMainDC, 80, 190, 210, 220, _dc, 0, 0, SRCCOPY);
 }
 
+void CWorkshopWindow::LoadAnimation()
+{
+    OPENFILENAME ofn = {};
 
+    wchar_t szName[256] = {};
+
+    ofn.lStructSize = sizeof(OPENFILENAME);
+    ofn.hwndOwner = CCore::GetInst()->GetMainHwnd();
+    ofn.lpstrFile = szName;
+    ofn.nMaxFile = sizeof(szName);
+    //ofn.lpstrFilter = L"ALL\0*.*\0png\0*.png\0";
+    ofn.lpstrFilter = L"ALL\0*.*\0png\0*.png\0bmp\0*.bmp\0jpeg\0*.jpeg\0gif\0*.gif\0";
+    ofn.nFilterIndex = 1;
+    ofn.lpstrFileTitle = nullptr;
+    ofn.nMaxFileTitle = 0;
+
+    // 컨텐츠 Path를 가져옴
+    wstring strTextureFolder = CPathMgr::GetInst()->GetContentPath();
+    strTextureFolder += L"Texture";
+
+    ofn.lpstrInitialDir = strTextureFolder.c_str();
+    ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+
+    // 파일 읽기가 성공했다면.
+    if (GetOpenFileName(&ofn))
+    {
+
+    }
+}
+
+void CWorkshopWindow::Load()
+{
+
+}
+
+// 만들어진 프레임 데이터 저장
+void CWorkshopWindow::SaveAnimation()
+{
+    CScene_Ani_Workshop* pAniWorkshop = (CScene_Ani_Workshop*)CSceneMgr::GetInst()->GetCurScene();
+    if (pAniWorkshop->GetMarqueeList().size() == 0)
+    {
+        MessageBox(nullptr, L"프레임을 생성해주세요.", L"Error Message", MB_OK);
+        return;
+    }
+
+    OPENFILENAME ofn = {};
+
+    wchar_t szName[256] = {};
+
+    ofn.lStructSize = sizeof(OPENFILENAME);
+    ofn.hwndOwner = CCore::GetInst()->GetMainHwnd();
+    ofn.lpstrFile = szName;
+    ofn.nMaxFile = sizeof(szName);
+    ofn.lpstrFilter = L"anim\0*.anim\0";
+    ofn.nFilterIndex = 1;
+    ofn.lpstrFileTitle = nullptr;
+    ofn.nMaxFileTitle = 0;
+
+    wstring strAnimationFolder = CPathMgr::GetInst()->GetContentPath();
+    strAnimationFolder += L"Animation";
+
+    ofn.lpstrInitialDir = strAnimationFolder.c_str();
+    ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+
+    // Modal 방식
+    if (GetSaveFileName(&ofn))
+    {
+        Save(szName);
+    };
+}
+
+void CWorkshopWindow::Save(const wstring& _strFilePath)
+{
+    wstring strName = L"";
+    for (int i = _strFilePath.length() - 1; i >= 0; i--)
+    {
+        if (_strFilePath[i] == L'\\') break;
+        strName = _strFilePath[i] + strName;
+    }
+
+    CScene_Ani_Workshop* pAniWorkshop = (CScene_Ani_Workshop*)CSceneMgr::GetInst()->GetCurScene();
+    wstring wStrRelativePath = pAniWorkshop->GetAbsolutePath();
+    wStrRelativePath = CPathMgr::GetInst()->GetRelativePath(wStrRelativePath.c_str());
+
+    CTexture* pTex = CResMgr::GetInst()->LoadTexture(strName, wStrRelativePath);
+    
+    CAnimator* pAnimator = new CAnimator;
+    pAnimator->FindAnimation(strName)->Save(wStrRelativePath);
+
+
+    FILE* pFile = nullptr;
+
+    //// 파일스트림 열기
+    _wfopen_s(&pFile, _strFilePath.c_str(), L"wb");
+    assert(pFile);
+
+    //// Animation의 이름을 저장한다. -> 데이터 직렬화
+    SaveWString(strName, pFile);
+
+    // 텍스쳐 키
+    SaveWString(pTex->GetKey(), pFile);
+    SaveWString(pTex->GetRelativePath(), pFile);
+
+    //// 프레임 개수
+    //size_t iFrameCount = m_vecFrm.size(); 
+    //fwrite(&iFrameCount, sizeof(size_t), 1, pFile);
+
+    //// 프레임 정보
+    //fwrite(m_vecFrm.data(), sizeof(tAnimFrm), iFrameCount, pFile);
+
+    //fclose(pFile);
+}
 
 void ControlFrameInfo(DWORD_PTR _param1, DWORD_PTR _param2, DWORD_PTR _param3)
 {
@@ -470,6 +605,8 @@ void ControlFrameInfo(DWORD_PTR _param1, DWORD_PTR _param2, DWORD_PTR _param3)
     }
 
     CMarquee* pMarquee = (CMarquee*)_param1;
+    if (pMarquee == nullptr) return;
+    
     Vec2 vPos = pMarquee->GetPos();
     Vec2 vScale = pMarquee->GetScale();
 
@@ -491,6 +628,18 @@ void ControlFrameInfo(DWORD_PTR _param1, DWORD_PTR _param2, DWORD_PTR _param3)
     }
 
 }
+
+void SaveData(DWORD_PTR _param1, DWORD_PTR _param2, DWORD_PTR _param3)
+{
+    CWorkshopWindow::GetInst()->SaveAnimation();
+}
+
+void LoadData(DWORD_PTR _param1, DWORD_PTR _param2, DWORD_PTR _param3)
+{
+    CWorkshopWindow::GetInst()->SaveAnimation();
+}
+
+
 
 
 // =================================================================

@@ -22,6 +22,7 @@ CScene_Ani_Workshop::CScene_Ani_Workshop()
 	, m_iScreenWidth(0)
 	, m_iScreenHeight(0)
 	, m_pMainSprite(nullptr)
+	, m_wStrPath(L"")
 	, m_bDrag(false)
 	, m_pMainUI(nullptr)
 	, m_pTargetMQ(nullptr)
@@ -142,6 +143,7 @@ void CScene_Ani_Workshop::LoadTexture()
 		}
 
 		wstring strAbsolutePath(szName);
+		m_wStrPath = szName;
 		
 		// 작업은 한번에 하나의 스프라이트만 가능하다.
 		if (m_pMainSprite != nullptr)

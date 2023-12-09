@@ -27,6 +27,7 @@ private:
     TOOL_TYPE m_ePrevState;
 
     CSprite* m_pMainSprite;
+    wstring m_wStrPath;
     
     list<CMarquee*> m_lMarquee;
     
@@ -67,6 +68,7 @@ public:
     list<CMarquee*> GetMarqueeList() { return m_lMarquee; }
     tFrame GetFrameInfo(UINT _i);
     CSprite* GetSprite() { return m_pMainSprite; }
+    wstring GetAbsolutePath() { return m_wStrPath; }
     void temp_render(HDC _dc);
 
 

@@ -29,6 +29,11 @@ public:
 	void render(HDC _dc);
 	void FrameRender(HDC _dc);
 
+public:
+	void LoadAnimation();
+	void SaveAnimation();
+	void Save(const wstring& _strFilePath);
+	void Load();
 
 
 // ===========================================================

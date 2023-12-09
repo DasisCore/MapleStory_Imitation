@@ -10,7 +10,7 @@ public:
     void SetTileIdx();
 
     void SaveTileData();
-    void LoadTileDate();
+    void LoadTileData();
     void SaveTile(const wstring& _strFilePath);
 
 
