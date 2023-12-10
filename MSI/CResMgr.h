@@ -13,7 +13,7 @@ private:
 	map<wstring, CRes*> m_mapSound;
 
 public:
-	CTexture* LoadTexture(const wstring& _strKey, const wstring& _strRelativePath, int _iDir = 0);
+	CTexture* LoadTexture(const wstring& _strKey, const wstring& _strRelativePath, bool _bIsReverse = 0);
 	CTexture* CreateTexture(const wstring& _strKey, UINT _iWidth, UINT _iHeight);
 	CTexture* FindTexture(const wstring& _strKey);
 

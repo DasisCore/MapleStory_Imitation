@@ -176,8 +176,8 @@ void CScene_Start::Enter()
 	//CCamera::GetInst()->SetTarget(pPlayer);
 
 	// Voltarix Ãß°¡
-	CVoltarix* pVoltarix = new CVoltarix;
-	pVoltarix->SetName(L"Voltarix");
+	CPlayer* pVoltarix = new CPlayer;
+	pVoltarix->SetName(L"RAVEN");
 	pVoltarix->SetPos(Vec2(740.f, 383.f));
 	pVoltarix->SetScale(Vec2(45.f, 70.f));
 

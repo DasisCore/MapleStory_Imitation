@@ -173,6 +173,9 @@
     <Filter Include="Engine\05. Scene\Scene_Ani_Workshop\WorkshopWindow">
       <UniqueIdentifier>{b1531877-676c-47b4-bb64-412250f2fdfb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\05. Scene\Scene_Ani_Workshop\WorkshopWindow\BtnUI">
+      <UniqueIdentifier>{1b301de2-8581-4cf8-bd84-a6430cd1eb2a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -348,7 +351,10 @@
       <Filter>Engine\05. Scene\Scene_Ani_Workshop\WorkshopWindow</Filter>
     </ClInclude>
     <ClInclude Include="CWorkshopBtn.h">
-      <Filter>Engine\05. Scene\Scene_Ani_Workshop\WorkshopWindow</Filter>
+      <Filter>Engine\05. Scene\Scene_Ani_Workshop\WorkshopWindow\BtnUI</Filter>
+    </ClInclude>
+    <ClInclude Include="CWorkshopCheckBox.h">
+      <Filter>Engine\05. Scene\Scene_Ani_Workshop\WorkshopWindow\BtnUI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -507,7 +513,10 @@
       <Filter>Engine\05. Scene\Scene_Ani_Workshop\WorkshopWindow</Filter>
     </ClCompile>
     <ClCompile Include="CWorkshopBtn.cpp">
-      <Filter>Engine\05. Scene\Scene_Ani_Workshop\WorkshopWindow</Filter>
+      <Filter>Engine\05. Scene\Scene_Ani_Workshop\WorkshopWindow\BtnUI</Filter>
+    </ClCompile>
+    <ClCompile Include="CWorkshopCheckBox.cpp">
+      <Filter>Engine\05. Scene\Scene_Ani_Workshop\WorkshopWindow\BtnUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

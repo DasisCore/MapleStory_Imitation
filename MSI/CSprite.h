@@ -33,6 +33,8 @@ class CSprite :
     int m_iHandle;
     Vec2 m_vDragStart;
 
+    bool m_bIsReverse;
+
 private:
     // 이미지의 테두리를 그리는 함수.
     void DrawBorder(HDC _dc);
@@ -60,6 +62,8 @@ public:
     void SetTarget(bool _b) { m_tInfo.bTarget = _b; }
     Image* GetSprite() { return m_pImage; }
 
+    void SetImageReverse(bool _b) { m_bIsReverse = _b; }
+    bool GetIsReverse() { return m_bIsReverse; }
 
 public:
     virtual void update() override;

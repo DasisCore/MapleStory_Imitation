@@ -16,6 +16,7 @@ CAnimation::CAnimation()
 	, m_pAnimator(nullptr)
 	, m_iCurFrm(0)
 	, m_bFinish(false)
+	, m_bIsReverse(false)
 {
 }
 
@@ -101,48 +102,37 @@ void CAnimation::render(HDC _dc)
 }
 
 //_inAtlasNxtLine는 아틀라스 이미지에서 2줄 이상을 가져갔을때를 대비함.
-void CAnimation::Create(CTexture* _pTex, Vec2 _vLT, Vec2 _vSliceSize, Vec2 _vStep, float _fDuration, UINT _iFrameCount, int _inAtlasNxtLine)
+void CAnimation::Create(CTexture* _pTex, vector<tAnimFrm> _vFrame, float _fDuration)
 {
 	m_pTex = _pTex;
 
 	tAnimFrm frm = {};
-	for (UINT i = 0; i < _iFrameCount; i++)
+	for (UINT i = 0; i < _vFrame.size(); i++)
 	{
 		frm.fDuration = _fDuration;
-		frm.vSlice = _vSliceSize;
-		frm.vLT = _vLT + _vStep * (float)i;
-
-		if (_inAtlasNxtLine != 0 && abs(_inAtlasNxtLine) <= i)
-		{
-			if (_inAtlasNxtLine > 0) frm.vLT.x -= _pTex->Width();
-			else frm.vLT.x += _pTex->Width();
-			frm.vLT.y += _vSliceSize.y;
-		}
-
+		frm.vSlice = _vFrame[i].vSlice;
+		frm.vLT = _vFrame[i].vLT;
 		m_vecFrm.push_back(frm);
 	}
 }
 
-void CAnimation::Create_rewind(CTexture* _pTex, Vec2 _vLT, Vec2 _vSliceSize, Vec2 _vStep, float _fDuration, UINT _iFrameCount)
+void CAnimation::Create_rewind(CTexture* _pTex, vector<tAnimFrm> _vFrame, float _fDuration)
 {
 	m_pTex = _pTex;
 
 	tAnimFrm frm = {};
-	for (UINT i = 0; i < _iFrameCount; i++)
+	for (UINT i = 0; i < _vFrame.size(); i++)
 	{
 		frm.fDuration = _fDuration;
-		frm.vSlice = _vSliceSize;
-		frm.vLT = _vLT + _vStep * (float)i;
-
+		frm.vSlice = _vFrame[i].vSlice;
+		frm.vLT = _vFrame[i].vLT;
 		m_vecFrm.push_back(frm);
 	}
-
-	for (UINT i = _iFrameCount - 2; i > 0; i--)
+	for (UINT i = _vFrame.size() - 2; i > 0; i--)
 	{
 		frm.fDuration = _fDuration;
-		frm.vSlice = _vSliceSize;
-		frm.vLT = _vLT + _vStep * (float)i;
-
+		frm.vSlice = _vFrame[i].vSlice;
+		frm.vLT = _vFrame[i].vLT;
 		m_vecFrm.push_back(frm);
 	}
 }
@@ -189,7 +179,10 @@ void CAnimation::Load(const wstring& _strRelativePath)
 	wstring strTexKey, strTexPath;
 	LoadWString(strTexKey, pFile);
 	LoadWString(strTexPath, pFile);
-	m_pTex = CResMgr::GetInst()->LoadTexture(strTexKey, strTexPath);
+
+	// 좌우 반전 여부
+	fread(&m_bIsReverse, sizeof(bool), 1, pFile);
+	m_pTex = CResMgr::GetInst()->LoadTexture(strTexKey, strTexPath, m_bIsReverse);
 
 	// 프레임 개수
 	size_t iFrameCount = 0;

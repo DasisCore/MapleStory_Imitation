@@ -292,6 +292,18 @@ bool CScene_Ani_Workshop::CheckImageFormat(wstring _wStr)
 	return false;
 }
 
+void CScene_Ani_Workshop::reset()
+{
+	DeleteObject(m_pMainSprite);
+
+	for (auto iter = m_lMarquee.begin(); iter != m_lMarquee.end(); iter++)
+	{
+		DeleteObject(*iter);
+	}
+
+	m_bResetFlag = true;
+}
+
 
 
 void CScene_Ani_Workshop::update()
@@ -347,6 +359,20 @@ void CScene_Ani_Workshop::update()
 	}
 
 	finalupdateMarquee();
+
+	if (m_bResetFlag)
+	{
+		m_lMarquee.clear();
+		m_lMarquee.resize(0);
+
+		m_lFrame.clear();
+		m_lFrame.resize(0);
+		m_lFrame.push_back(tFrame{});
+
+		m_pMainSprite = nullptr;
+		
+		m_bResetFlag = false;
+	}
 }
 
 void CScene_Ani_Workshop::render(HDC _dc)
@@ -402,7 +428,7 @@ void CScene_Ani_Workshop::DrawMQRect(HDC _dc)
 	Vec2 vCurPos = MOUSE_POS;
 
 	Graphics graphics(_dc);
-	Pen pen(Color(0, 255, 0), 3);
+	Pen pen(Color(0, 255, 0), 2);
 	pen.SetDashStyle(DashStyleDash);
 
 	float rectWidth = abs(vCurPos.x - m_vDragStart.x);

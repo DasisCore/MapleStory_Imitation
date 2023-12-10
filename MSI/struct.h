@@ -163,3 +163,9 @@ public:
 		, y((float)_pt.y)
 	{}
 };
+
+struct tFrame
+{
+	Vec2 vLT;
+	Vec2 vSliceSize;
+};

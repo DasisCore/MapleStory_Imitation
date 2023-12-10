@@ -2,6 +2,8 @@
 #include "CAnimator.h"
 
 #include "CAnimation.h"
+#include "CScene_Ani_Workshop.h"
+
 CAnimator::CAnimator()
 	: m_pOwner(nullptr)
 	, m_pCurAnim(nullptr)
@@ -40,7 +42,7 @@ void CAnimator::render(HDC _dc)
 	}
 }
 
-void CAnimator::CreateAnimation(const wstring& _strName, CTexture* _pTex, Vec2 _vLT, Vec2 _vSliceSize, Vec2 _vStep, float _fDuration, UINT _iFrameCount, int _inAtlasNxtLine)
+void CAnimator::CreateAnimation(const wstring& _strName, CTexture* _pTex, vector<tAnimFrm> _vFrame, float _fDuration)
 {
 	CAnimation* pAnim = FindAnimation(_strName);
 	assert(nullptr == pAnim);
@@ -49,12 +51,13 @@ void CAnimator::CreateAnimation(const wstring& _strName, CTexture* _pTex, Vec2 _
 
 	pAnim->SetName(_strName);
 	pAnim->m_pAnimator = this;
-	pAnim->Create(_pTex, _vLT, _vSliceSize, _vStep, _fDuration, _iFrameCount, _inAtlasNxtLine);
+
+	pAnim->Create(_pTex, _vFrame, _fDuration);
 
 	m_mapAnim.insert(make_pair(_strName, pAnim));
 }
 
-void CAnimator::CreateAnimation_rewind(const wstring& _strName, CTexture* _pTex, Vec2 _vLT, Vec2 _vSliceSize, Vec2 _vStep, float _fDuration, UINT _iFrameCount)
+void CAnimator::CreateAnimation_rewind(const wstring& _strName, CTexture* _pTex, vector<tAnimFrm> _vFrame, float _fDuration)
 {
 	CAnimation* pAnim = FindAnimation(_strName);
 	assert(nullptr == pAnim);
@@ -63,7 +66,7 @@ void CAnimator::CreateAnimation_rewind(const wstring& _strName, CTexture* _pTex,
 
 	pAnim->SetName(_strName);
 	pAnim->m_pAnimator = this;
-	pAnim->Create_rewind(_pTex, _vLT, _vSliceSize, _vStep, _fDuration, _iFrameCount);
+	pAnim->Create_rewind(_pTex, _vFrame, _fDuration);
 
 	m_mapAnim.insert(make_pair(_strName, pAnim));
 }

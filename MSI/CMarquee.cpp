@@ -24,6 +24,8 @@ void CMarquee::update()
 	{
 		bool bMouseOn = CKeyMgr::GetInst()->IsMouseInObj(this);
 
+		Vec2 vCurPos = GetPos();
+
 		if (bMouseOn && KEY_TAP(KEY::LBTN))
 		{
 			m_vDragStart = CCamera::GetInst()->GetRealPos(MOUSE_POS);
@@ -31,12 +33,31 @@ void CMarquee::update()
 
 		if (bMouseOn && KEY_HOLD(KEY::LBTN))
 		{
-			Vec2 vCurPos = GetPos();
 			Vec2 vDiff = CCamera::GetInst()->GetRealPos(MOUSE_POS) - m_vDragStart;
 
 			vCurPos += vDiff;
 			SetPos(vCurPos);
 			m_vDragStart = CCamera::GetInst()->GetRealPos(MOUSE_POS);
+		}
+
+		if (KEY_TAP(KEY::UP))
+		{
+			SetPos(vCurPos + Vec2(0.f, -0.2f));
+		}
+
+		if (KEY_TAP(KEY::RIGHT))
+		{
+			SetPos(vCurPos + Vec2(0.2f, 0.f));
+		}
+
+		if (KEY_TAP(KEY::DOWN))
+		{
+			SetPos(vCurPos + Vec2(0.f, 0.2f));
+		}
+
+		if (KEY_TAP(KEY::LEFT))
+		{
+			SetPos(vCurPos + Vec2(-0.2f, 0.f));
 		}
 	}
 }
@@ -46,7 +67,7 @@ void CMarquee::render(HDC _dc)
 	CObject::render(_dc);
 	
 	Graphics graphics(_dc);
-	Pen pen(Color(255, 0, 0), 3);
+	Pen pen(Color(255, 0, 0), 2);
 	if (m_bTarget) pen.SetColor(Color(0, 0, 255));
 	pen.SetDashStyle(DashStyleDash);
 

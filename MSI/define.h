@@ -75,6 +75,7 @@ enum class EVENT_TYPE
 	DELETE_OBJECT,
 	SCENE_CHANGE,
 	CHANGE_AI_STATE,
+	CHANGE_SPRITE,
 
 	END,
 };
@@ -89,3 +90,4 @@ enum class MON_STATE
 	RUN,
 	DEAD,
 };
+

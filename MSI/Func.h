@@ -1,11 +1,13 @@
 #pragma once
 
 class CObject;
+class CSprite;
 class AI;
 
 void CreateObject(CObject* _pObj, GROUP_TYPE _eGroup);
 void DeleteObject(CObject* _pObj);
 void ChangeScene(SCENE_TYPE _eNext);
+void ChangeSprite(CSprite* _ePrev, CSprite* _eNext);
 void ChangeAIState(AI* _pAI, MON_STATE _eNextState);
 
 
@@ -32,6 +34,25 @@ void Safe_Delete_Vector(vector<T>& _vec)
 		if (_vec[i] != nullptr) delete _vec[i];
 	}
 	_vec.clear();
+}
+
+template<typename T>
+void Safe_Delete_List(list<T>& _list)
+{
+	for (auto iter = _list.begin(); iter != _list.end(); iter++)
+	{
+		if (*iter != nullptr)
+		{
+			delete* iter;
+			iter = _list.erase(iter); // 삭제 후에 반복자를 올바르게 증가시킴
+		}
+		else
+		{
+			++iter;
+		}
+	}
+	_list.clear();
+	_list.resize(0);
 }
 
 void SaveWString(const wstring& _str, FILE* _pFile);

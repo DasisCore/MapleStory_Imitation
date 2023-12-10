@@ -9,12 +9,6 @@ enum class TOOL_TYPE
     END,
 };
 
-struct tFrame
-{
-    Vec2 vLT;
-    Vec2 vSliceSize;
-};
-
 class CSprite;
 class CMarquee;
 class CUI;
@@ -49,6 +43,8 @@ private:
     // 프레임 자르기 임시 자료구조
     list<tFrame> m_lFrame;
 
+    bool m_bResetFlag;
+
 public:
     virtual void update() override;
     virtual void render(HDC _dc) override;
@@ -70,11 +66,13 @@ public:
     CSprite* GetSprite() { return m_pMainSprite; }
     wstring GetAbsolutePath() { return m_wStrPath; }
     void temp_render(HDC _dc);
+    void reset();
 
 
 private:
     // 이미지를 불러올 때, 확장자를 확인하는 함수.
     bool CheckImageFormat(wstring _wStr);
+
 
 
 // marquee 관련 함수들
@@ -98,5 +96,7 @@ public:
 public:
     CScene_Ani_Workshop();
     ~CScene_Ani_Workshop();
+
+    friend class CWorkshopWindow;
 };
 

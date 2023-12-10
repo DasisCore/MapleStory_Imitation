@@ -31,6 +31,16 @@ void ChangeScene(SCENE_TYPE _eNext)
 	CEventMgr::GetInst()->AddEvent(eve);
 }
 
+void ChangeSprite(CSprite* _eOld, CSprite* _eNew)
+{
+	tEvent eve = {};
+	eve.eEvent = EVENT_TYPE::CHANGE_SPRITE;
+	eve.lParam = (DWORD_PTR)_eOld;
+	eve.wParam = (DWORD_PTR)_eNew;
+
+	CEventMgr::GetInst()->AddEvent(eve);
+}
+
 void ChangeAIState(AI* _pAI, MON_STATE _eNextState)
 {
 	tEvent eve = {};

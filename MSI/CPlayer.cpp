@@ -32,9 +32,9 @@ CPlayer::CPlayer()
 	CreateComponent();
 
 	// 캐릭터 기본 콜라이더 크기 (45, 70)
-	//CreateCollider();
-	//GetComponent()->GetCollider()->SetScale(Vec2(45.f, 70.f));
-	//GetComponent()->GetCollider()->SetOffsetPos(Vec2(0.f, 0.f));
+	CreateCollider();
+	GetComponent()->GetCollider()->SetScale(Vec2(45.f, 70.f));
+	GetComponent()->GetCollider()->SetOffsetPos(Vec2(0.f, 0.f));
 
 
 	CreateRigidbody();
@@ -46,14 +46,14 @@ CPlayer::CPlayer()
 
 	CreateAnimation();
 
-	//GetComponent()->GetAnimator()->LoadAnimation(L"\\Animation\\player_idle_left.anim");
-	//GetComponent()->GetAnimator()->LoadAnimation(L"\\Animation\\player_idle_right.anim");
+	GetComponent()->GetAnimator()->LoadAnimation(L"Animation\\RAVEN_LEFT_IDLE.anim");
+	GetComponent()->GetAnimator()->LoadAnimation(L"Animation\\RAVEN_RIGHT_IDLE.anim");
 
-	//GetComponent()->GetAnimator()->LoadAnimation(L"\\Animation\\player_walk_left.anim");
-	//GetComponent()->GetAnimator()->LoadAnimation(L"\\Animation\\player_walk_right.anim");
+	GetComponent()->GetAnimator()->LoadAnimation(L"Animation\\RAVEN_LEFT_WALK.anim");
+	GetComponent()->GetAnimator()->LoadAnimation(L"Animation\\RAVEN_RIGHT_WALK.anim");
 
-	//GetComponent()->GetAnimator()->LoadAnimation(L"\\Animation\\player_jump_left.anim");
-	//GetComponent()->GetAnimator()->LoadAnimation(L"\\Animation\\player_jump_right.anim");
+	GetComponent()->GetAnimator()->LoadAnimation(L"Animation\\RAVEN_LEFT_JUMP.anim");
+	GetComponent()->GetAnimator()->LoadAnimation(L"Animation\\RAVEN_RIGHT_JUMP.anim");
 
 	//////CTexture* m_pLeftTex = CResMgr::GetInst()->LoadTexture(L"RavenLeft", L"Texture\\Player\\Raven.png");
 	//////CTexture* m_pRightTex = CResMgr::GetInst()->LoadTexture(L"RavenRight", L"Texture\\Player\\Raven.png", 1);
@@ -88,7 +88,7 @@ CPlayer::CPlayer()
 	// =====================================
 	// 중력 추가
 	// =====================================
-	//CreateGravity();
+	CreateGravity();
 }
 
 CPlayer::~CPlayer()

@@ -4,6 +4,8 @@
 #include "CCore.h"
 
 #include "SelectGDI.h"
+#include "CSceneMgr.h"
+#include "CScene.h"
 
 CTexture::CTexture()
 	: m_dc(0)
@@ -20,7 +22,7 @@ CTexture::~CTexture()
 }
 
 
-void CTexture::Load(const wstring& _strFilePath, int _iDir)
+void CTexture::Load(const wstring& _strFilePath, bool _bIsReverse)
 {
 	// 이미지 불러오기
 	Image* image = Image::FromFile(_strFilePath.c_str());
@@ -45,10 +47,12 @@ void CTexture::Load(const wstring& _strFilePath, int _iDir)
 	// GDI+를 이용해서 m_dc에 그림 그리기
 	Graphics graphics(m_dc);
 
-	if (!_iDir)
+	// 정방향
+	if (!_bIsReverse)
 	{
 		graphics.DrawImage(image, 0, 0, iWidth, iHeight);
 	}
+	// 좌우 반전
 	else
 	{
 		graphics.DrawImage(image, iWidth, 0, (int)iWidth * -1, iHeight);

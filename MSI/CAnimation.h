@@ -21,6 +21,8 @@ private:
 	vector<tAnimFrm> m_vecFrm;	// 모든 프레임 정보
 	int m_iCurFrm;				// 현재 프레임 정보
 	float m_fAccTime;
+
+	bool m_bIsReverse;
 	
 	bool m_bFinish;				// 재생 끝 도달 여부
 
@@ -43,8 +45,9 @@ private:
 public:
 	void update();
 	void render(HDC _dc);
-	void Create(CTexture* _pTex, Vec2 _vLT, Vec2 _vSliceSize, Vec2 _vStep, float _fDuration, UINT _iFrameCount, int _inAtlasNxtLine = -1);
-	void Create_rewind(CTexture* _pTex, Vec2 _vLT, Vec2 _vSliceSize, Vec2 _vStep, float _fDuration, UINT _iFrameCount);
+	void Create(CTexture* _pTex, vector<tAnimFrm> _vFrame, float _fDuration);
+	// 되감는 애니메이션
+	void Create_rewind(CTexture* _pTex, vector<tAnimFrm> _vFrame, float _fDuration);
 
 public:
 	void Save(const wstring& _strRelativePath);

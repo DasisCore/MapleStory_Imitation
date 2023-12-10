@@ -27,23 +27,23 @@ CVoltarix::CVoltarix()
 	//CreateAnimation();
 	CreateGravity();
 
-	CTexture* m_pVoltarix_LeftTex = CResMgr::GetInst()->LoadTexture(L"VoltarixLeft", L"Texture\\Player\\Voltarix.png");
-	CTexture* m_pVoltarix_RightTex = CResMgr::GetInst()->LoadTexture(L"VoltarixRight", L"Texture\\Player\\Voltarix.png", 1);
+	//CTexture* m_pVoltarix_LeftTex = CResMgr::GetInst()->LoadTexture(L"VoltarixLeft", L"Texture\\Player\\Voltarix.png");
+	//CTexture* m_pVoltarix_RightTex = CResMgr::GetInst()->LoadTexture(L"VoltarixRight", L"Texture\\Player\\Voltarix.png", 1);
 
-	GetComponent()->GetAnimator()->CreateAnimation_rewind(L"VOLTARIX_LEFT_IDLE", m_pVoltarix_LeftTex, Vec2(1302.f, 0.f), Vec2(73.f, 75.f), Vec2(73.f, 0.f), 0.5f, 3);
-	GetComponent()->GetAnimator()->CreateAnimation_rewind(L"VOLTARIX_RIGHT_IDLE", m_pVoltarix_RightTex, Vec2(375.f, 0.f), Vec2(73.f, 75.f), Vec2(73.f, 0.f), 0.5f, 3);
+	//GetComponent()->GetAnimator()->CreateAnimation_rewind(L"VOLTARIX_LEFT_IDLE", m_pVoltarix_LeftTex, Vec2(1302.f, 0.f), Vec2(73.f, 75.f), Vec2(73.f, 0.f), 0.5f, 3);
+	//GetComponent()->GetAnimator()->CreateAnimation_rewind(L"VOLTARIX_RIGHT_IDLE", m_pVoltarix_RightTex, Vec2(375.f, 0.f), Vec2(73.f, 75.f), Vec2(73.f, 0.f), 0.5f, 3);
 
-	GetComponent()->GetAnimator()->CreateAnimation(L"VOLTARIX_LEFT_WALK", m_pVoltarix_LeftTex, Vec2(1522.f, 0.f), Vec2(73.f, 75.f), Vec2(73.f, 0.f), 0.1f, 4);
-	GetComponent()->GetAnimator()->CreateAnimation(L"VOLTARIX_RIGHT_WALK", m_pVoltarix_RightTex, Vec2(85.f, 0.f), Vec2(73.f, 75.f), Vec2(73.f, 0.f), 0.1f, 4);
+	//GetComponent()->GetAnimator()->CreateAnimation(L"VOLTARIX_LEFT_WALK", m_pVoltarix_LeftTex, Vec2(1522.f, 0.f), Vec2(73.f, 75.f), Vec2(73.f, 0.f), 0.1f, 4);
+	//GetComponent()->GetAnimator()->CreateAnimation(L"VOLTARIX_RIGHT_WALK", m_pVoltarix_RightTex, Vec2(85.f, 0.f), Vec2(73.f, 75.f), Vec2(73.f, 0.f), 0.1f, 4);
 
-	GetComponent()->GetAnimator()->CreateAnimation(L"VOLTARIX_LEFT_JUMP", m_pVoltarix_LeftTex, Vec2(719.f, 0.f), Vec2(73.f, 75.f), Vec2(0.f, 0.f), 0.1f, 1);
-	GetComponent()->GetAnimator()->CreateAnimation(L"VOLTARIX_RIGHT_JUMP", m_pVoltarix_RightTex, Vec2(1105.f, 0.f), Vec2(73.f, 75.f), Vec2(0.f, 0.f), 0.1f, 1);
+	//GetComponent()->GetAnimator()->CreateAnimation(L"VOLTARIX_LEFT_JUMP", m_pVoltarix_LeftTex, Vec2(719.f, 0.f), Vec2(73.f, 75.f), Vec2(0.f, 0.f), 0.1f, 1);
+	//GetComponent()->GetAnimator()->CreateAnimation(L"VOLTARIX_RIGHT_JUMP", m_pVoltarix_RightTex, Vec2(1105.f, 0.f), Vec2(73.f, 75.f), Vec2(0.f, 0.f), 0.1f, 1);
 
-	GetComponent()->GetAnimator()->CreateAnimation(L"VOLTARIX_LEFT_PRONE", m_pVoltarix_LeftTex, Vec2(937.f, 0.f), Vec2(85.f, 75.f), Vec2(0.f, 0.f), 1.f, 1);
-	GetComponent()->GetAnimator()->CreateAnimation(L"VOLTARIX_RIGHT_PRONE", m_pVoltarix_RightTex, Vec2(876.f, 0.f), Vec2(73.f, 75.f), Vec2(0.f, 0.f), 1.f, 1);
+	//GetComponent()->GetAnimator()->CreateAnimation(L"VOLTARIX_LEFT_PRONE", m_pVoltarix_LeftTex, Vec2(937.f, 0.f), Vec2(85.f, 75.f), Vec2(0.f, 0.f), 1.f, 1);
+	//GetComponent()->GetAnimator()->CreateAnimation(L"VOLTARIX_RIGHT_PRONE", m_pVoltarix_RightTex, Vec2(876.f, 0.f), Vec2(73.f, 75.f), Vec2(0.f, 0.f), 1.f, 1);
 
-	GetComponent()->GetAnimator()->CreateAnimation(L"VOLTARIX_LEFT_ATT_A", m_pVoltarix_LeftTex, Vec2(937.f, 0.f), Vec2(85.f, 75.f), Vec2(0.f, 0.f), 1.f, 1);
-	GetComponent()->GetAnimator()->CreateAnimation(L"VOLTARIX_RIGHT_ATT_A", m_pVoltarix_RightTex, Vec2(876.f, 0.f), Vec2(73.f, 75.f), Vec2(0.f, 0.f), 1.f, 1);
+	//GetComponent()->GetAnimator()->CreateAnimation(L"VOLTARIX_LEFT_ATT_A", m_pVoltarix_LeftTex, Vec2(937.f, 0.f), Vec2(85.f, 75.f), Vec2(0.f, 0.f), 1.f, 1);
+	//GetComponent()->GetAnimator()->CreateAnimation(L"VOLTARIX_RIGHT_ATT_A", m_pVoltarix_RightTex, Vec2(876.f, 0.f), Vec2(73.f, 75.f), Vec2(0.f, 0.f), 1.f, 1);
 }
 
 CVoltarix::~CVoltarix()

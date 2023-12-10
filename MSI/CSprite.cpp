@@ -7,6 +7,7 @@
 CSprite::CSprite(wstring _strAbsolutePath)
 	: m_pImage(nullptr)
 	, m_tInfo{}
+	, m_bIsReverse(false)
 {
 	Image* image = Image::FromFile(_strAbsolutePath.c_str());
 	m_pImage = image;
@@ -140,13 +141,23 @@ void CSprite::render(HDC _dc)
 	float imageWidth = m_tInfo.fOriginWidth * m_tInfo.fWidthRatio;
 	float imageHeight = m_tInfo.fOriginHeight * m_tInfo.fHeightRatio;
 
-	float centerX = GetPos().x - m_tInfo.fCurWidth / 2;
-	float centerY = GetPos().y - m_tInfo.fCurHeight / 2;
+	float centerX = GetPos().x - m_tInfo.fCurWidth / 2.f;
+	float centerY = GetPos().y - m_tInfo.fCurHeight / 2.f;
 
 	Vec2 vRenderPos = CCamera::GetInst()->GetRenderPos(Vec2(centerX, centerY));
 
 	Graphics graphics(_dc);
-	graphics.DrawImage(m_pImage, vRenderPos.x, vRenderPos.y, imageWidth, imageHeight);
+
+	//graphics.DrawImage(m_pImage, vRenderPos.x, vRenderPos.y, imageWidth, imageHeight);
+	
+	if (m_bIsReverse)
+	{
+		graphics.DrawImage(m_pImage, vRenderPos.x + imageWidth, vRenderPos.y, -imageWidth, imageHeight);
+	}
+	else
+	{
+		graphics.DrawImage(m_pImage, vRenderPos.x, vRenderPos.y, imageWidth, imageHeight);
+	}
 
 	if (m_tInfo.bTarget)
 	{

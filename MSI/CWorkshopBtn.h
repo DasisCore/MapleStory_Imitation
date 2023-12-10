@@ -33,8 +33,10 @@ public:
 	void SetScale(Vec2 _vScale) { m_vScale = _vScale; }
 	Vec2 GetScale() { return m_vScale; }
 
-	void render(HDC _dc);
-	void update();
+	bool GetMouseOn() { return m_bMouseOn; }
+
+	virtual void render(HDC _dc);
+	virtual void update();
 
 	void SetClickCallBack(BTN_FUNCC _pFunc, DWORD_PTR _param1, DWORD_PTR _param2, DWORD_PTR _param3)
 	{
@@ -46,11 +48,10 @@ public:
 
 
 public:
-	void MouseOn();
-	void MouseLbtnDown();
-	void MouseLbtnUp();
+	virtual void MouseOn();
+	virtual void MouseLbtnDown();
+	virtual void MouseLbtnUp();
 	void MouseLbtnClicked();
-
 
 public:
 	CWorkshopBtn();

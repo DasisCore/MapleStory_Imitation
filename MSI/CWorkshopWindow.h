@@ -21,19 +21,27 @@ private:
 
 	float m_fDuration;
 	float m_fCurTime;
+	
+	// 애니메이션 재생 여부
 	bool m_bIsPlay;
+
+	// 애니메이션 되감기 여부
+	bool m_bIsRewind;
+	
 
 public:
 	void init();
 	void update();
 	void render(HDC _dc);
+
 	void FrameRender(HDC _dc);
+	void SetIsRewind(bool _b) { m_bIsRewind = _b; }
 
 public:
 	void LoadAnimation();
 	void SaveAnimation();
 	void Save(const wstring& _strFilePath);
-	void Load();
+	void Load(const wstring& _strFilePath);
 
 
 // ===========================================================

@@ -7,6 +7,7 @@
 #include "CSceneMgr.h"
 #include "CScene.h"
 #include "CUIMgr.h"
+#include "CSprite.h"
 
 #include "CState.h"
 #include "AI.h"
@@ -91,5 +92,13 @@ void CEventMgr::Excute(const tEvent& _eve)
 		pAI->ChangeState(eState);
 	}
 		break;
+	case EVENT_TYPE::CHANGE_SPRITE:
+	{
+		CSprite* pOldSprite = (CSprite*)_eve.lParam;
+		CSprite* pNewSprite = (CSprite*)_eve.wParam;
+		DeleteObject(pOldSprite);
+		CSceneMgr::GetInst()->GetCurScene()->AddObject(pNewSprite, GROUP_TYPE::SPRITE);
+	}
+	break;
 	}
 }
