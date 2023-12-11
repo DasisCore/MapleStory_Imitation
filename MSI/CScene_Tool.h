@@ -6,6 +6,8 @@ class CScene_Tool :
 private:
     CUI* m_pUI;
 
+    bool m_bGizmo;
+
 public:
     void SetTileIdx();
 
@@ -14,10 +16,14 @@ public:
     void SaveTile(const wstring& _strFilePath);
 
 
+public:
+    void DrawGizmo(HDC _dc);
+
 
 
 public:
     virtual void update() override;
+    virtual void render(HDC _dc) override;
     virtual void Enter() override;
     virtual void Exit() override;
 

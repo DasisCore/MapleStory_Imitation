@@ -12,6 +12,7 @@
 
 #include "CComponent.h"
 #include "CCollisionMgr.h"
+#include "CCollider.h"
 
 #include "CSceneMgr.h"
 #include "CKeyMgr.h"

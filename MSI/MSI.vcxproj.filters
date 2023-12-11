@@ -531,5 +531,8 @@
     <Image Include="MSI.ico">
       <Filter>Default\Resource Files</Filter>
     </Image>
+    <Image Include="icon1.ico">
+      <Filter>Default\Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

@@ -25,6 +25,7 @@
 void ChangeScene(DWORD_PTR, DWORD_PTR);
 
 CScene_Tool::CScene_Tool()
+	:m_bGizmo(false)
 {
 }
 
@@ -40,33 +41,33 @@ void CScene_Tool::Enter()
 	CCore::GetInst()->DockMenu();
 
 	// 타일 생성
-	CreateTile(5, 5);
+	//CreateTile(5, 5);
 
 	// UI 하나 만들어보기
 	Vec2 vResolution = CCore::GetInst()->GetResolution();
 
-	CUI* pPanelUI = new CPanelUI;
-	pPanelUI->SetName(L"ParentUI");
-	pPanelUI->SetScale(Vec2(500.f, 300.f));
-	pPanelUI->SetPos(Vec2(vResolution.x - pPanelUI->GetScale().x, 0.f));
+	//CUI* pPanelUI = new CPanelUI;
+	//pPanelUI->SetName(L"ParentUI");
+	//pPanelUI->SetScale(Vec2(500.f, 300.f));
+	//pPanelUI->SetPos(Vec2(vResolution.x - pPanelUI->GetScale().x, 0.f));
 
-	CBtnUI* pBtnUI = new CBtnUI;
-	pBtnUI->SetName(L"ChildUI");
-	pBtnUI->SetScale(Vec2(100.f, 40.f));
-	pBtnUI->SetPos(Vec2(0.f, 0.f));
-	//pBtnUI->SetClickCallBack(ChangeScene, 0, 0);
-	// tool4
-	pBtnUI->SetClickCallBack(this, (SCENE_MEMFUNC)&CScene_Tool::SaveTileData);
+	//CBtnUI* pBtnUI = new CBtnUI;
+	//pBtnUI->SetName(L"ChildUI");
+	//pBtnUI->SetScale(Vec2(100.f, 40.f));  
+	//pBtnUI->SetPos(Vec2(0.f, 0.f));
+	////pBtnUI->SetClickCallBack(ChangeScene, 0, 0);
+	//// tool4
+	//pBtnUI->SetClickCallBack(this, (SCENE_MEMFUNC)&CScene_Tool::SaveTileData);
 
-	pPanelUI->AddChild(pBtnUI);
+	//pPanelUI->AddChild(pBtnUI);
 
-	AddObject(pPanelUI, GROUP_TYPE::UI);
+	//AddObject(pPanelUI, GROUP_TYPE::UI);
 
-	CUI* pClonePanel = pPanelUI->Clone();
-	pClonePanel->SetPos(pClonePanel->GetPos() + Vec2(-300.f , 0.f));
-	AddObject(pClonePanel, GROUP_TYPE::UI);
+	//CUI* pClonePanel = pPanelUI->Clone();
+	//pClonePanel->SetPos(pClonePanel->GetPos() + Vec2(-300.f , 0.f));
+	//AddObject(pClonePanel, GROUP_TYPE::UI);
 
-	m_pUI = pClonePanel;
+	//m_pUI = pClonePanel;
 
 
 	// 카메라 LookAt 지정
@@ -88,10 +89,10 @@ void CScene_Tool::update()
 
 	SetTileIdx();
 
-	if (KEY_TAP(KEY::ENTER))
-	{
-		ChangeScene(SCENE_TYPE::START);
-	}
+	//if (KEY_TAP(KEY::ENTER))
+	//{
+	//	ChangeScene(SCENE_TYPE::START);
+	//}
 
 	if (KEY_TAP(KEY::F1))
 	{
@@ -120,6 +121,14 @@ void CScene_Tool::update()
 		//CUIMgr::GetInst()->SetFocusedUI(m_pUI);
 		LoadTileData();
 	}
+
+}
+
+void CScene_Tool::render(HDC _dc)
+{
+	CScene::render(_dc);
+
+	DrawGizmo(_dc);
 }
 
 
@@ -227,6 +236,31 @@ void CScene_Tool::SaveTile(const wstring& _strFilePath)
 	}
 
 	fclose(pFile);
+}
+
+void CScene_Tool::DrawGizmo(HDC _dc)
+{
+	if (m_bGizmo)
+	{
+		Graphics graphics(_dc);
+		Pen pen(Color(242, 242, 242));
+		int gridSize = 10; // 각 셀의 크기
+		for (int x = 0; x < 10000; x += gridSize) {
+			Vec2 v1 = Vec2(x, 0);
+			Vec2 v2 = Vec2(x, 10000);
+			v1 = CCamera::GetInst()->GetRenderPos(v1);
+			v2 = CCamera::GetInst()->GetRenderPos(v2);
+			graphics.DrawLine(&pen, v1.x, v1.y, v2.x, v2.y); // 세로선 그리기
+		}
+
+		for (int y = 0; y < 10000; y += gridSize) {
+			Vec2 y1 = Vec2(0, y);
+			Vec2 y2 = Vec2(10000, y);
+			y1 = CCamera::GetInst()->GetRenderPos(y1);
+			y2 = CCamera::GetInst()->GetRenderPos(y2);
+			graphics.DrawLine(&pen, y1.x, y1.y, y2.x, y2.y); // 가로선 그리기
+		}
+	}
 }
 
 

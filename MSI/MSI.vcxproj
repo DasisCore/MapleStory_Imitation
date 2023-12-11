@@ -259,6 +259,7 @@
     <ResourceCompile Include="MSI.rc" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="icon1.ico" />
     <Image Include="MSI.ico" />
     <Image Include="small.ico" />
   </ItemGroup>
