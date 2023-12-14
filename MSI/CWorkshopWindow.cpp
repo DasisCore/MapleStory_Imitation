@@ -635,7 +635,7 @@ void CWorkshopWindow::Load(const wstring& _strFilePath)
 		pAniWorkshop->m_lFrame.push_back(tFrm);
 	}
 
-		fclose(pFile);
+	fclose(pFile);
 }
 
 // 만들어진 프레임 데이터 저장

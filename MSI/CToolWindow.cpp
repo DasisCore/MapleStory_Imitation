@@ -2,6 +2,18 @@
 #include "main.h"
 #include "CToolWindow.h"
 #include "CCore.h"
+#include "CPathMgr.h"
+
+#include "CObject.h"
+#include "CMonster.h"
+#include "CGround.h"
+
+#include "CSceneMgr.h"
+#include "CScene.h"
+
+
+// TCHAR -> float로 변환하는 함수인 wtof를 위한 헤더
+#include <cstdlib>
 
 LRESULT CALLBACK ToolWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
@@ -26,9 +38,8 @@ CToolWindow::CToolWindow()
     , m_hWndAniListView(nullptr)
     , m_hWndGravityCheckBox(nullptr)
     , m_hWndRigidBodyCheckBox(nullptr)
+    , m_hWndSaveSceneBtn(nullptr)
     , m_hWndCreateObjBtn(nullptr)
-    , m_hWndObjectCombo(nullptr)
-    , m_hWndEdit(nullptr)
     , m_hDCBack(nullptr)
 {
 }
@@ -111,7 +122,7 @@ void CToolWindow::init()
     EnableWindow(m_hWndColScaleY, 0);
 
     m_hWndAniCheckBox = CreateCheckBox(L"Animation", Vec2(10, 420), Vec2(10, 10), (HMENU)IDC_CHECKBOX_ANIMATION);
-    m_hWndAniLoadBtn = CreateButton(L"Load", Vec2(360, 420), Vec2(50.f, 20.f), (HMENU)IDC_BUTTON_ANIMATION);
+    m_hWndAniLoadBtn = CreateButton(L"Load", Vec2(360, 420), Vec2(50.f, 20.f), (HMENU)IDC_BUTTON_ANIMATION_LOAD);
     EnableWindow(m_hWndAniLoadBtn, 0);
     m_hWndAniListView = CreateListView(L"Animation List view", Vec2(10, 430), Vec2(400, 200), (HMENU)IDC_LISTVIEW_ANIMATION);
     EnableWindow(m_hWndAniListView, 0);
@@ -119,8 +130,8 @@ void CToolWindow::init()
     m_hWndGravityCheckBox = CreateCheckBox(L"Gravity", Vec2(10, 660), Vec2(10, 10), (HMENU)IDC_CHECKBOX_GRAVITY);
     m_hWndRigidBodyCheckBox = CreateCheckBox(L"RigidBody", Vec2(10, 690), Vec2(10, 10), (HMENU)IDC_CHECKBOX_RIGIDBODY);
 
-    m_hWndCreateObjBtn = CreateButton(L"Create", Vec2(340, 710), Vec2(70.f, 30.f), (HMENU)IDC_BUTTON_OBJECT);
-
+    m_hWndCreateObjBtn = CreateButton(L"Save Scene", Vec2(10, 720), Vec2(100.f, 30.f), (HMENU)IDC_BUTTON_CREATE_OBJECT);
+    m_hWndCreateObjBtn = CreateButton(L"Create", Vec2(340, 720), Vec2(70.f, 30.f), (HMENU)IDC_BUTTON_CREATE_OBJECT);
 
     HDC MainDC = GetDC(m_hWndTool);
     //Graphics MainG(MainDC);
@@ -171,7 +182,7 @@ HWND CToolWindow::CraeteComboBox(wstring _strName, Vec2 _vPos, Vec2 _vScale, HME
     // 레이블 생성
     HWND hLabel = CreateWindow(
         L"STATIC",              // 클래스 이름
-        L"Object Type",    // 텍스트
+        _strName.c_str(),    // 텍스트
         WS_CHILD | WS_VISIBLE,
         _vPos.x, _vPos.y - 20.f, _vScale.x, 20.f,
         m_hWndTool, NULL, hInst, NULL);
@@ -183,14 +194,22 @@ HWND CToolWindow::CraeteComboBox(wstring _strName, Vec2 _vPos, Vec2 _vScale, HME
         _vPos.x, _vPos.y, _vScale.x, _vScale.y,
         m_hWndTool, (HMENU)_idc, hInst, NULL);
 
-    SendMessage(hComboBox, CB_ADDSTRING, 0, (LPARAM)L"Default");
-    SendMessage(hComboBox, CB_ADDSTRING, 0, (LPARAM)L"BackGround");
-    SendMessage(hComboBox, CB_ADDSTRING, 0, (LPARAM)L"Ground");
-    SendMessage(hComboBox, CB_ADDSTRING, 0, (LPARAM)L"Monster");
-    SendMessage(hComboBox, CB_ADDSTRING, 0, (LPARAM)L"Player");
+    if (_strName == L"Object Type")
+    {
+        SendMessage(hComboBox, CB_ADDSTRING, 0, (LPARAM)L"Default");
+        SendMessage(hComboBox, CB_ADDSTRING, 0, (LPARAM)L"BackGround");
+        SendMessage(hComboBox, CB_ADDSTRING, 0, (LPARAM)L"Ground");
+        SendMessage(hComboBox, CB_ADDSTRING, 0, (LPARAM)L"Monster");
+        SendMessage(hComboBox, CB_ADDSTRING, 0, (LPARAM)L"Player ");
+    }
+    else if (_strName == L"Direction")
+    {
+        SendMessage(hComboBox, CB_ADDSTRING, 0, (LPARAM)L"Right");
+        SendMessage(hComboBox, CB_ADDSTRING, 0, (LPARAM)L"Left");
+    }
 
     // 선택된 항목을 첫번째 인자로 설정
-    SendMessage(hComboBox, CB_SETCURSEL, 4, 4);
+    SendMessage(hComboBox, CB_SETCURSEL, 0, 0);
     return hComboBox;
 }
 
@@ -251,13 +270,13 @@ HWND CToolWindow::CreateListView(wstring _strName, Vec2 _vPos, Vec2 _vScale, HME
     lvColumn.iSubItem = 0;
     ListView_InsertColumn(hWndList, 0, &lvColumn);
 
-    // 리스트 뷰에 아이템 추가
-    LVITEM lvItem = { 0 };
-    lvItem.mask = LVIF_TEXT;
-    lvItem.iItem = 0; // 아이템 인덱스
-    lvItem.iSubItem = 0; // 서브아이템 인덱스
-    lvItem.pszText = const_cast<LPWSTR>(L"Item 2"); // 아이템 텍스트
-    ListView_InsertItem(hWndList, &lvItem);
+    //// 리스트 뷰에 아이템 추가
+    //LVITEM lvItem = { 0 };
+    //lvItem.mask = LVIF_TEXT;
+    //lvItem.iItem = 0; // 아이템 인덱스
+    //lvItem.iSubItem = 0; // 서브아이템 인덱스
+    //lvItem.pszText = const_cast<LPWSTR>(L"Item 2"); // 아이템 텍스트
+    //ListView_InsertItem(hWndList, &lvItem);
 
     return hWndList;
 }
@@ -270,6 +289,99 @@ HWND CToolWindow::CreateButton(wstring _strName, Vec2 _vPos, Vec2 _vScale, HMENU
         _vPos.x, _vPos.y - 20.f, _vScale.x, _vScale.y, m_hWndTool, (HMENU)_idc, hInst, NULL);
 
     return hWndBtn;
+}
+
+void CToolWindow::LoadAnimation()
+{
+    OPENFILENAME ofn = {};
+
+    wchar_t szName[256] = {};
+
+    ofn.lStructSize = sizeof(OPENFILENAME);
+    ofn.hwndOwner = CCore::GetInst()->GetMainHwnd();
+    ofn.lpstrFile = szName;
+    ofn.nMaxFile = sizeof(szName);
+    ofn.lpstrFilter = L"anim\0*.anim\0";
+    ofn.nFilterIndex = 1;
+    ofn.lpstrFileTitle = nullptr;
+    ofn.nMaxFileTitle = 0;
+
+    // 컨텐츠 Path를 가져옴
+    wstring strAnimationFolder = CPathMgr::GetInst()->GetContentPath();
+    strAnimationFolder += L"Animation";
+
+    ofn.lpstrInitialDir = strAnimationFolder.c_str();
+    ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+
+    // 파일 읽기가 성공했다면.
+    if (GetOpenFileName(&ofn))
+    {
+        wstring a = CPathMgr::GetInst()->GetRelativePath(szName);
+
+        // 리스트 뷰에 아이템 추가
+        LVITEM lvItem = { 0 };
+        lvItem.mask = LVIF_TEXT;
+        lvItem.iItem = 0; // 아이템 인덱스
+        lvItem.iSubItem = 0; // 서브아이템 인덱스
+        lvItem.pszText = const_cast<LPWSTR>(a.c_str()); // 아이템 텍스트
+        ListView_InsertItem(m_hWndAniListView, &lvItem);
+    }
+}
+
+void CToolWindow::CreateObject()
+{
+    // 데이터를 담을 버퍼 준비
+    TCHAR buffer[256];
+    wstring temp;
+
+    GetWindowText(m_hWndName, buffer, 256);
+    wstring strName = buffer;
+
+    int iObjType = SendMessage(m_hWndObjType, CB_GETCURSEL, 0, 0);
+    int iDirection = SendMessage(m_hWndDirection, CB_GETCURSEL, 0, 0);
+
+
+    GetWindowText(m_hWndPosX, buffer, 256);
+    temp = wstring(buffer);
+    float fposX = stof(temp);
+
+    GetWindowText(m_hWndPosY, buffer, 256);
+    temp = wstring(buffer);
+    float fposY = stof(temp);
+
+    Vec2 vPos = Vec2(fposX, fposY);
+
+
+    GetWindowText(m_hWndScaleX, buffer, 256);
+    temp = wstring(buffer);
+    float fscaleX = stof(temp);
+
+    GetWindowText(m_hWndScaleY, buffer, 256);
+    temp = wstring(buffer);
+    float fscaleY = stof(temp);
+
+    Vec2 vScale = Vec2(fscaleX, fscaleY);
+
+
+    bool bUseCollider = false;
+    UINT checkBoxState = SendMessage(m_hWndColCheckBox, BM_GETCHECK, 0, 0);
+    if (checkBoxState == BST_CHECKED) bUseCollider = true;
+
+    bool bUseGravity = false;
+    checkBoxState = SendMessage(m_hWndGravityCheckBox, BM_GETCHECK, 0, 0);
+    if (checkBoxState == BST_CHECKED) bUseGravity = true;
+
+    bool bUseRigidBody = false;
+    checkBoxState = SendMessage(m_hWndRigidBodyCheckBox, BM_GETCHECK, 0, 0);
+    if (checkBoxState == BST_CHECKED) bUseRigidBody = true;
+
+    CObject* pObj;
+
+    if (iObjType == 3)
+    {
+        pObj = new CMonster;
+
+    }
 }
 
 void CToolWindow::Destroy_window()
@@ -325,9 +437,6 @@ void CToolWindow::shiftWindow()
 
 
 
-
-
-
 // =================================================================
 // 윈도우 프로시저 함수
 // =================================================================
@@ -335,7 +444,6 @@ void CToolWindow::shiftWindow()
 #include "CToolWindow.h"
 #include <sstream>
 #include <iomanip>
-
 
 static WCHAR lastValidInput[256] = L"";
 
@@ -428,6 +536,21 @@ LRESULT CALLBACK ToolWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
             hEdit = pToolWindow->GethWndColScaleY();
             CheckPrecision(hWnd, wParam, lParam, hEdit);
             break;
+        case IDC_BUTTON_ANIMATION_LOAD:
+        {
+            CToolWindow::GetInst()->LoadAnimation();
+        }
+            break;
+        case IDC_BUTTON_CREATE_OBJECT:
+        {
+            CToolWindow::GetInst()->CreateObject();
+        }
+        break;
+        case IDC_BUTTON_SAVE_SCENE:
+        {
+            CToolWindow::GetInst();
+        }
+        break;
         default:
             return DefWindowProc(hWnd, message, wParam, lParam);
         }

@@ -30,10 +30,8 @@ private:
 	HWND m_hWndGravityCheckBox;
 	HWND m_hWndRigidBodyCheckBox;
 	
+	HWND m_hWndSaveSceneBtn;
 	HWND m_hWndCreateObjBtn;
-
-	HWND m_hWndObjectCombo;
-	HWND m_hWndEdit;
 
 	HDC m_hDCBack;
 
@@ -43,10 +41,6 @@ public:
 	void showWindow();
 	void update();
 	void render();
-
-public:
-	HWND GetObjectCombo() { return m_hWndObjectCombo; }
-	HWND GetEdit() { return m_hWndEdit; }
 
 public:
 	HWND GethWndName() { return m_hWndName; }
@@ -75,6 +69,13 @@ private:
 	HWND CreateCheckBox(wstring _strName, Vec2 _vPos, Vec2 _vScale, HMENU _idc);
 	HWND CreateListView(wstring _strName, Vec2 _vPos, Vec2 _vScale, HMENU _idc);
 	HWND CreateButton(wstring _strName, Vec2 _vPos, Vec2 _vScale, HMENU _idc);
+
+
+public:
+	void LoadAnimation();
+	
+	// 멤버 변수의 정보를 토대로 오브젝트를 만들어 Scene에 추가.
+	void CreateObject();
 
 public:
 	HWND GetToolhWnd() { return m_hWndTool; }
