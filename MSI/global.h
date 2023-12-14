@@ -7,7 +7,7 @@
 #include <iostream>
 
 // 리스트 뷰를 위한 헤더
-#include <commctrl.h>
+#include <CommCtrl.h>
 // + 추가 종속성에 comctl32.lib
 
 

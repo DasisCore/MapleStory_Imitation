@@ -86,6 +86,7 @@ void ChangeScene(DWORD_PTR, DWORD_PTR)
 void CScene_Tool::update()
 {
 	CScene::update();
+	CToolWindow::GetInst()->update();
 
 	SetTileIdx();
 
@@ -127,8 +128,8 @@ void CScene_Tool::update()
 void CScene_Tool::render(HDC _dc)
 {
 	CScene::render(_dc);
-
-	DrawGizmo(_dc);
+	CToolWindow::GetInst()->render();
+	//DrawGizmo(_dc);
 }
 
 

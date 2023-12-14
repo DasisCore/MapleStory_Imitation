@@ -15,9 +15,17 @@
 #define IDR_MAINFRAME                   128
 #define IDR_MENU1                       130
 #define IDR_MENU2                       131
-#define IDC_EDIT						1002
+#define IDC_EDIT						100
 #define IDC_EDIT2                       1000
 #define IDC_EDIT1                       1001
+
+#define IDC_COLLIDERCHECKBOX			1200
+#define IDC_ANIMATIONCHECKBOX			1201
+#define IDC_GRAVITYCHECKBOX				1202
+#define IDC_RIGIDBODYCHECKBOX			1203
+
+#define IDC_ANIMATIONLISTVIEW			1300
+
 #define ID_32771                        32771
 #define ID_MENU_TILE                    32772
 #define IDC_STATIC                      -1
