@@ -48,6 +48,27 @@ public:
 	HWND GetObjectCombo() { return m_hWndObjectCombo; }
 	HWND GetEdit() { return m_hWndEdit; }
 
+public:
+	HWND GethWndName() { return m_hWndName; }
+	HWND GethWndObjType() { return m_hWndObjType; }
+	HWND GethWndDirection() { return m_hWndDirection; }
+	HWND GethWndState() { return m_hWndState; }
+	HWND GethWndPosX() { return m_hWndPosX; }
+	HWND GethWndPosY() { return m_hWndPosY; }
+	HWND GethWndScaleX() { return m_hWndScaleX; }
+	HWND GethWndScaleY() { return m_hWndScaleY; }
+	HWND GethWndColCheckBox() { return m_hWndColCheckBox; }
+	HWND GethWndColOffsetX() { return m_hWndColOffsetX; }
+	HWND GethWndColOffsetY() { return m_hWndColOffsetY; }
+	HWND GethWndColScaleX() { return m_hWndColScaleX; }
+	HWND GethWndColScaleY() { return m_hWndColScaleY; }
+	HWND GethWndAniCheckBox() { return m_hWndAniCheckBox; }
+	HWND GethWndAniLoadBtn() { return m_hWndAniLoadBtn; }
+	HWND GethWndAniListView() { return m_hWndAniListView; }
+	HWND GethWndGravityCheckBox() { return m_hWndGravityCheckBox; }
+	HWND GethWndRigidBodyCheckBox() { return m_hWndRigidBodyCheckBox; }
+	
+
 private:
 	HWND CraeteComboBox(wstring _strName, Vec2 _vPos, Vec2 _vScale, HMENU _idc);
 	HWND CreateEdit(wstring _strName, Vec2 _vPos, Vec2 _vScale, HMENU _idc);

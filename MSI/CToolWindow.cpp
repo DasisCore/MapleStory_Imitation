@@ -87,34 +87,39 @@ void CToolWindow::init()
 
     //m_hWndObjectCombo = CraeteComboBox(L"combo box", Vec2(10, 30), Vec2(200, 200));
 
-    m_hWndName = CreateEdit(L"Name", Vec2(10, 70), Vec2(100, 30), (HMENU)IDC_EDIT);
+    m_hWndName = CreateEdit(L"Name", Vec2(10, 70), Vec2(100, 30), (HMENU)IDC_EDIT_NAME);
 
-    m_hWndObjType = CraeteComboBox(L"Object Type", Vec2(10, 120), Vec2(100, 200), (HMENU)IDC_EDIT);
-    m_hWndDirection = CraeteComboBox(L"Direction", Vec2(120, 120), Vec2(100, 200), (HMENU)IDC_EDIT);
-    m_hWndState = CraeteComboBox(L"State", Vec2(230, 120), Vec2(100, 200), (HMENU)IDC_EDIT);
+    m_hWndObjType = CraeteComboBox(L"Object Type", Vec2(10, 120), Vec2(100, 200), (HMENU)IDC_EDIT_OBJTYPE);
+    m_hWndDirection = CraeteComboBox(L"Direction", Vec2(120, 120), Vec2(100, 200), (HMENU)IDC_EDIT_DIRECTION);
+    m_hWndState = CraeteComboBox(L"State", Vec2(230, 120), Vec2(100, 200), (HMENU)IDC_EDIT_STATE);
 
-    m_hWndName = CreateEdit(L"Position X", Vec2(10, 170), Vec2(100, 30), (HMENU)IDC_EDIT);
-    m_hWndName = CreateEdit(L"Position Y", Vec2(120, 170), Vec2(100, 30), (HMENU)IDC_EDIT);
+    m_hWndPosX = CreateEdit(L"Position X", Vec2(10, 170), Vec2(100, 30), (HMENU)IDC_EDIT_POS_X);
+    m_hWndPosY = CreateEdit(L"Position Y", Vec2(120, 170), Vec2(100, 30), (HMENU)IDC_EDIT_POS_Y);
 
-    m_hWndName = CreateEdit(L"Scale Width", Vec2(10, 220), Vec2(100, 30), (HMENU)IDC_EDIT);
-    m_hWndName = CreateEdit(L"Scale Height", Vec2(120, 220), Vec2(100, 30), (HMENU)IDC_EDIT);
+    m_hWndScaleX = CreateEdit(L"Scale Width", Vec2(10, 220), Vec2(100, 30), (HMENU)IDC_EDIT_SCALE_X);
+    m_hWndScaleY = CreateEdit(L"Scale Height", Vec2(120, 220), Vec2(100, 30), (HMENU)IDC_EDIT_SCALE_Y);
 
-    m_hWndColCheckBox = CreateCheckBox(L"Collider", Vec2(10, 280), Vec2(10, 10), (HMENU)IDC_COLLIDERCHECKBOX);
-    
-    m_hWndColOffsetX = CreateEdit(L"Offset X", Vec2(10, 310), Vec2(100, 30), (HMENU)IDC_EDIT);
-    m_hWndColOffsetY = CreateEdit(L"Offset Y", Vec2(120, 310), Vec2(100, 30), (HMENU)IDC_EDIT);
+    m_hWndColCheckBox = CreateCheckBox(L"Collider", Vec2(10, 280), Vec2(10, 10), (HMENU)IDC_CHECKBOX_COLLIDER);
+    // 기본상태는 비활성화 상태
+    m_hWndColOffsetX = CreateEdit(L"Offset X", Vec2(10, 310), Vec2(100, 30), (HMENU)IDC_EDIT_COLLIDER_OFFSET_X);
+    EnableWindow(m_hWndColOffsetX, 0);
+    m_hWndColOffsetY = CreateEdit(L"Offset Y", Vec2(120, 310), Vec2(100, 30), (HMENU)IDC_EDIT_COLLIDER_OFFSET_Y);
+    EnableWindow(m_hWndColOffsetY, 0);
+    m_hWndColScaleX = CreateEdit(L"Offset Scale X", Vec2(10, 360), Vec2(100, 30), (HMENU)IDC_EDIT_COLLIDER_SCALE_X);
+    EnableWindow(m_hWndColScaleX, 0);
+    m_hWndColScaleY = CreateEdit(L"Offset Scale Y", Vec2(120, 360), Vec2(100, 30), (HMENU)IDC_EDIT_COLLIDER_SCALE_Y);
+    EnableWindow(m_hWndColScaleY, 0);
 
-    m_hWndColScaleX = CreateEdit(L"Offset Scale X", Vec2(10, 360), Vec2(100, 30), (HMENU)IDC_EDIT);
-    m_hWndColScaleY = CreateEdit(L"Offset Scale Y", Vec2(120, 360), Vec2(100, 30), (HMENU)IDC_EDIT);
+    m_hWndAniCheckBox = CreateCheckBox(L"Animation", Vec2(10, 420), Vec2(10, 10), (HMENU)IDC_CHECKBOX_ANIMATION);
+    m_hWndAniLoadBtn = CreateButton(L"Load", Vec2(360, 420), Vec2(50.f, 20.f), (HMENU)IDC_BUTTON_ANIMATION);
+    EnableWindow(m_hWndAniLoadBtn, 0);
+    m_hWndAniListView = CreateListView(L"Animation List view", Vec2(10, 430), Vec2(400, 200), (HMENU)IDC_LISTVIEW_ANIMATION);
+    EnableWindow(m_hWndAniListView, 0);
 
-    m_hWndAniCheckBox = CreateCheckBox(L"Animation", Vec2(10, 420), Vec2(10, 10), (HMENU)IDC_ANIMATIONCHECKBOX);
-    m_hWndAniLoadBtn = CreateButton(L"Load", Vec2(360, 420), Vec2(50.f, 20.f), (HMENU)IDC_ANIMATIONCHECKBOX);
-    m_hWndAniListView = CreateListView(L"Animation List view", Vec2(10, 430), Vec2(400, 200), (HMENU)IDC_ANIMATIONLISTVIEW);
+    m_hWndGravityCheckBox = CreateCheckBox(L"Gravity", Vec2(10, 660), Vec2(10, 10), (HMENU)IDC_CHECKBOX_GRAVITY);
+    m_hWndRigidBodyCheckBox = CreateCheckBox(L"RigidBody", Vec2(10, 690), Vec2(10, 10), (HMENU)IDC_CHECKBOX_RIGIDBODY);
 
-    m_hWndGravityCheckBox = CreateCheckBox(L"Gravity", Vec2(10, 660), Vec2(10, 10), (HMENU)IDC_ANIMATIONCHECKBOX);
-    m_hWndRigidBodyCheckBox = CreateCheckBox(L"RigidBody", Vec2(10, 690), Vec2(10, 10), (HMENU)IDC_ANIMATIONCHECKBOX);
-
-    m_hWndCreateObjBtn = CreateButton(L"Create", Vec2(340, 710), Vec2(70.f, 30.f), (HMENU)IDC_ANIMATIONCHECKBOX);
+    m_hWndCreateObjBtn = CreateButton(L"Create", Vec2(340, 710), Vec2(70.f, 30.f), (HMENU)IDC_BUTTON_OBJECT);
 
 
     HDC MainDC = GetDC(m_hWndTool);
@@ -202,7 +207,7 @@ HWND CToolWindow::CreateEdit(wstring _strName, Vec2 _vPos, Vec2 _vScale, HMENU _
         m_hWndTool, NULL, hInst, NULL);
 
     HWND hEdit = CreateWindowEx(WS_EX_CLIENTEDGE, L"EDIT", L"", WS_CHILD | WS_VISIBLE | ES_LEFT,
-        _vPos.x, _vPos.y, _vScale.x, 20.f, m_hWndTool, (HMENU)IDC_EDIT, hInst, NULL);
+        _vPos.x, _vPos.y, _vScale.x, 20.f, m_hWndTool, (HMENU)_idc, hInst, NULL);
 
     return hEdit;
 }
@@ -331,12 +336,14 @@ void CToolWindow::shiftWindow()
 #include <sstream>
 #include <iomanip>
 
+
 static WCHAR lastValidInput[256] = L"";
+
+void CheckPrecision(HWND hWnd, WPARAM wParam, LPARAM lParam, HWND _edit);
 
 LRESULT CALLBACK ToolWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-    HWND ToolhWnd = CToolWindow::GetInst()->GetToolhWnd();
-    HWND hEdit = CToolWindow::GetInst()->GetEdit();
+    CToolWindow* pToolWindow = CToolWindow::GetInst();
 
     switch (message)
     {
@@ -344,7 +351,7 @@ LRESULT CALLBACK ToolWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
         switch (wParam)
         {
         case VK_ESCAPE:
-            ShowWindow(ToolhWnd, SW_HIDE);
+            ShowWindow(pToolWindow->GetToolhWnd(), SW_HIDE);
             break;
         }
     break;
@@ -360,53 +367,66 @@ LRESULT CALLBACK ToolWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
     break;
     case WM_COMMAND:
     {
+        if (HIWORD(wParam) == BN_CLICKED)
+        {
+            if ((HWND)lParam == pToolWindow->GethWndColCheckBox())
+            {
+                int isChecked = SendMessage(pToolWindow->GethWndColCheckBox(), BM_GETCHECK, 0, 0);
+                EnableWindow(pToolWindow->GethWndColScaleX(), isChecked);
+                EnableWindow(pToolWindow->GethWndColScaleY(), isChecked);
+                EnableWindow(pToolWindow->GethWndColOffsetX(), isChecked);
+                EnableWindow(pToolWindow->GethWndColOffsetY(), isChecked);
+            }
+
+            if ((HWND)lParam == pToolWindow->GethWndAniCheckBox())
+            {
+                int isChecked = SendMessage(pToolWindow->GethWndAniCheckBox(), BM_GETCHECK, 0, 0);
+                EnableWindow(pToolWindow->GethWndAniListView(), isChecked);
+                EnableWindow(pToolWindow->GethWndAniLoadBtn(), isChecked);
+            }
+        }
+
         int wmId = LOWORD(wParam);
         // Parse the menu selections:
         switch (wmId)
         {
         case IDM_EXIT:
-            ShowWindow(ToolhWnd, SW_HIDE);
+            ShowWindow(pToolWindow->GetToolhWnd(), SW_HIDE);
             break;
         
         // 소수점 첫째자리 or 실수만 받기.
-        case IDC_EDIT:
-        case IDC_EDIT2:
-            if (HIWORD(wParam) == EN_CHANGE)
-            {
-                TCHAR buffer[256];
-                GetWindowText(hEdit, buffer, 256);
-
-                // 입력된 값이 실수인지 확인
-                std::wistringstream ss(buffer);
-                float floatValue;
-                if (ss >> std::setprecision(3) >> floatValue && ss.eof())
-                {
-                    // 유효한 실수 값이면 처리
-                    // 여기에서 floatValue를 사용하여 필요한 작업 수행
-                    // 소수점 둘째자리 초과 여부 확인
-                    if (wcschr(buffer, L'.') != nullptr)
-                    {
-                        int decimalCount = wcslen(buffer) - (wcschr(buffer, L'.') - buffer) - 1;
-                        if (decimalCount > 1)
-                        {
-                            MessageBox(hWnd, L"소수 첫번째 자리까지만 입력 가능합니다.", L"Error", MB_OK | MB_ICONERROR);
-                            // 이전 유효한 값으로 복원
-                            SetWindowText(hEdit, lastValidInput);
-                            return 0;
-                        }
-                    }
-                    // 유효한 실수 값이면 처리
-                    wcscpy_s(lastValidInput, buffer);
-                    // 여기에서 floatValue를 사용하여 필요한 작업 수행
-                }
-                else
-                {
-                    // 유효하지 않은 입력 처리
-                    MessageBox(hWnd, L"숫자만 입력 가능합니다.", L"Error", MB_OK | MB_ICONERROR);
-                    // 이전 유효한 값으로 복원
-                    SetWindowText(hEdit, lastValidInput);
-                }
-            }
+        HWND hEdit;
+        case IDC_EDIT_POS_X:
+            hEdit = pToolWindow->GethWndPosX();
+            CheckPrecision(hWnd, wParam, lParam, hEdit);
+            break;
+        case IDC_EDIT_POS_Y:
+            hEdit = pToolWindow->GethWndPosY();
+            CheckPrecision(hWnd, wParam, lParam, hEdit);
+            break;
+        case IDC_EDIT_SCALE_X:
+            hEdit = pToolWindow->GethWndScaleX();
+            CheckPrecision(hWnd, wParam, lParam, hEdit);
+            break;
+        case IDC_EDIT_SCALE_Y:
+            hEdit = pToolWindow->GethWndScaleY();
+            CheckPrecision(hWnd, wParam, lParam, hEdit);
+            break;
+        case IDC_EDIT_COLLIDER_OFFSET_X:
+            hEdit = pToolWindow->GethWndColOffsetX();
+            CheckPrecision(hWnd, wParam, lParam, hEdit);
+            break;
+        case IDC_EDIT_COLLIDER_OFFSET_Y:
+            hEdit = pToolWindow->GethWndColOffsetY();
+            CheckPrecision(hWnd, wParam, lParam, hEdit);
+            break;
+        case IDC_EDIT_COLLIDER_SCALE_X:
+            hEdit = pToolWindow->GethWndColScaleX();
+            CheckPrecision(hWnd, wParam, lParam, hEdit);
+            break;
+        case IDC_EDIT_COLLIDER_SCALE_Y:
+            hEdit = pToolWindow->GethWndColScaleY();
+            CheckPrecision(hWnd, wParam, lParam, hEdit);
             break;
         default:
             return DefWindowProc(hWnd, message, wParam, lParam);
@@ -414,13 +434,58 @@ LRESULT CALLBACK ToolWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
     }
     break;
     case WM_CLOSE:
-        ShowWindow(ToolhWnd, SW_HIDE);
+        ShowWindow(pToolWindow->GetToolhWnd(), SW_HIDE);
         break;
     case WM_DESTROY:
-        ShowWindow(ToolhWnd, SW_HIDE);
+        ShowWindow(pToolWindow->GetToolhWnd(), SW_HIDE);
         break;
     default:
         return DefWindowProc(hWnd, message, wParam, lParam);
     }
     return 0;
+}
+
+
+void CheckPrecision(HWND hWnd, WPARAM wParam, LPARAM lParam, HWND _edit)
+{
+    if (HIWORD(wParam) == EN_CHANGE)
+    {
+        TCHAR buffer[256];
+        GetWindowText(_edit, buffer, 256);
+
+        // 버퍼가 비었다면 확인하지 않음.
+        if (wcslen(buffer) == 0) return;
+
+        // 입력된 값이 실수인지 확인
+        std::wistringstream ss(buffer);
+        float floatValue;
+        if (ss >> std::setprecision(3) >> floatValue && ss.eof())
+        {
+            // 유효한 실수 값이면 처리
+            // 여기에서 floatValue를 사용하여 필요한 작업 수행
+            // 소수점 둘째자리 초과 여부 확인
+            if (wcschr(buffer, L'.') != nullptr)
+            {
+                int decimalCount = wcslen(buffer) - (wcschr(buffer, L'.') - buffer) - 1;
+                if (decimalCount > 1)
+                {
+                    // 이전 유효한 값으로 복원
+                    MessageBox(hWnd, L"소수 첫번째 자리까지만 입력 가능합니다.", L"Error", MB_OK | MB_ICONERROR);
+
+                    SetWindowText(_edit, lastValidInput);
+                    return;
+                }
+            }
+            // 유효한 실수 값이면 처리
+            wcscpy_s(lastValidInput, buffer);
+            // 여기에서 floatValue를 사용하여 필요한 작업 수행
+        }
+        else
+        {
+            // 유효하지 않은 입력 처리
+            MessageBox(hWnd, L"숫자만 입력 가능합니다.", L"Error", MB_OK | MB_ICONERROR);
+            // 이전 유효한 값으로 복원
+            SetWindowText(_edit, lastValidInput);
+        }
+    }
 }

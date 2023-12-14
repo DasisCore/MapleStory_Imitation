@@ -15,16 +15,37 @@
 #define IDR_MAINFRAME                   128
 #define IDR_MENU1                       130
 #define IDR_MENU2                       131
+
+// EDIT
+#define IDC_EDIT_NAME					200
+#define IDC_EDIT_OBJTYPE				201
+#define IDC_EDIT_DIRECTION				202
+#define IDC_EDIT_STATE					203
+#define IDC_EDIT_POS_X					204
+#define IDC_EDIT_POS_Y					205
+#define IDC_EDIT_SCALE_X				206
+#define IDC_EDIT_SCALE_Y				207
+#define IDC_EDIT_COLLIDER_OFFSET_X		208
+#define IDC_EDIT_COLLIDER_OFFSET_Y		209
+#define IDC_EDIT_COLLIDER_SCALE_X		210
+#define IDC_EDIT_COLLIDER_SCALE_Y		211
+
 #define IDC_EDIT						100
 #define IDC_EDIT2                       1000
 #define IDC_EDIT1                       1001
 
-#define IDC_COLLIDERCHECKBOX			1200
-#define IDC_ANIMATIONCHECKBOX			1201
-#define IDC_GRAVITYCHECKBOX				1202
-#define IDC_RIGIDBODYCHECKBOX			1203
+// CHECKBOX
+#define IDC_CHECKBOX_COLLIDER			300
+#define IDC_CHECKBOX_ANIMATION			301
+#define IDC_CHECKBOX_GRAVITY			302
+#define IDC_CHECKBOX_RIGIDBODY			303
 
-#define IDC_ANIMATIONLISTVIEW			1300
+// BUTTON
+#define IDC_BUTTON_ANIMATION			400
+#define IDC_BUTTON_OBJECT				401
+
+// LISTVIEW
+#define IDC_LISTVIEW_ANIMATION			500
 
 #define ID_32771                        32771
 #define ID_MENU_TILE                    32772
