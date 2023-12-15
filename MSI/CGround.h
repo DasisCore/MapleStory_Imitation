@@ -16,6 +16,10 @@ public:
 
 public:
     CGround();
+    CGround(wstring _strName, Vec2 _vPos, Vec2 _vScale
+        , bool _bCollider, Vec2 _vColOffset, Vec2 _vColScale
+        , bool _bAnimation, vector<wstring> _vecPath
+        , bool _bGravity, bool _bRigidBody);
     ~CGround();
 };
 

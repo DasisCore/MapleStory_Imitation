@@ -5,11 +5,40 @@
 #include "CCollider.h"
 #include "CGravity.h"
 #include "CMonster.h"
+#include "CAnimator.h"
 
 CGround::CGround()
 {
 	CreateComponent();
-	CreateCollider();
+	//CreateCollider();
+}
+
+CGround::CGround(wstring _strName, Vec2 _vPos, Vec2 _vScale, bool _bCollider, Vec2 _vColOffset, Vec2 _vColScale, bool _bAnimation, vector<wstring> _vecPath, bool _bGravity, bool _bRigidBody)
+{
+	SetName(_strName);
+	SetPos(_vPos);
+	SetScale(_vScale);
+
+	CreateComponent();
+
+	if (_bCollider)
+	{
+		CreateCollider();
+		CCollider* pCol = GetComponent()->GetCollider();
+		pCol->SetOffsetPos(_vColOffset);
+		pCol->SetScale(_vColScale);
+	}
+
+	if (_bAnimation)
+	{
+		CreateAnimator();
+		CAnimator* pAnimator = GetComponent()->GetAnimator();
+		for (int i = 0; i < _vecPath.size(); i++) pAnimator->LoadAnimation(_vecPath[i]);
+		pAnimator->Play(_strName, 1);
+	}
+
+	if (_bGravity) CreateGravity();
+	if (_bRigidBody) CreateRigidbody();
 }
 
 CGround::~CGround()
@@ -18,11 +47,16 @@ CGround::~CGround()
 
 void CGround::start()
 {
-	GetComponent()->GetCollider()->SetScale(Vec2(GetScale()));
+	// 기본적으로 자기 자신만큼의 크기를 가지도록 함.
+	if (GetComponent()->GetCollider() != nullptr)
+	{
+		GetComponent()->GetCollider()->SetScale(Vec2(GetScale()));
+	}
 }
 
 void CGround::update()
 {
+
 }
 
 void CGround::OnCollisionEnter(CCollider* _pOther)

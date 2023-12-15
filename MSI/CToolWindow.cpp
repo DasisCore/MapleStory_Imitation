@@ -461,9 +461,8 @@ void CToolWindow::CreateObject()
         break;
     case OBJTYPE::GROUND:
     {
-
-
-
+        pObj = new CGround(strName, vPos, vScale, bUseCollider, vColOffset, vColScale, bUseAnimator, m_vecAniPath, bUseGravity, bUseRigidBody);
+        CSceneMgr::GetInst()->GetCurScene()->AddObject(pObj, GROUP_TYPE::GROUND);
     }
         break;
     case OBJTYPE::MONSTER:
