@@ -40,7 +40,7 @@ private:
 public:
 	void CreateComponent();
 	void CreateCollider();
-	void CreateAnimation();
+	void CreateAnimator();
 	void CreateRigidbody();
 	void CreateGravity();
 

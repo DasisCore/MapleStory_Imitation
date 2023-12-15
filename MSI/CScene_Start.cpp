@@ -5,7 +5,7 @@
 #include "CObject.h"
 #include "CPlayer.h"
 #include "CMonster.h"
-#include "CLesh.h"
+#include "CMonster_Normal.h"
 
 #include "CTexture.h"
 #include "CPathMgr.h"
@@ -198,7 +198,7 @@ void CScene_Start::Enter()
 	// 이벤트를 이용하여 오브젝트 삽입 예시
 	//CreateObject(pOtherPlayer, GROUP_TYPE::PLAYER);
 
-	CLesh* pMonLesh = new CLesh;
+	CMonster_Normal* pMonLesh = new CMonster_Normal;
 	pMonLesh->SetName(L"Monster_Lesh");
 	pMonLesh->SetScale(Vec2(50.f, 60.f));
 	pMonLesh->SetPos(Vec2(200.f, 200.f));

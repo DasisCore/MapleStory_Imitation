@@ -19,6 +19,8 @@
 #include "main.h"
 #include "CCore.h"
 
+#include "CToolWindow.h"
+
 #define MAX_LOADSTRING 100
 
 // Global Variables:
@@ -80,12 +82,21 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                 break;
             }
 
-            // 단축키 정보 확인
-            if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
-            {
-                TranslateMessage(&msg);
-                DispatchMessage(&msg);
+            //// 단축키 정보 확인
+            //if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
+            //{
+            //    TranslateMessage(&msg);
+            //    DispatchMessage(&msg);
+            //}
+
+            // CTool window의 Tab를 사용하기 위해 메시지를 받는 조건을 하나 더 추가함.
+            if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg)) {
+                if (!IsDialogMessage(CToolWindow::GetInst()->GetToolhWnd(), &msg)) {
+                    TranslateMessage(&msg);
+                    DispatchMessage(&msg);
+                }
             }
+
         }
         else
         {

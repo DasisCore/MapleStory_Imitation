@@ -1,6 +1,7 @@
 #pragma once
 #include "CMonster.h"
-class CLesh :
+
+class CMonster_Normal :
     public CMonster
 {
 private:
@@ -25,7 +26,11 @@ public:
     virtual void update() override;
 
 public:
-    CLesh();
-    ~CLesh();
+    CMonster_Normal();
+    CMonster_Normal(wstring _strName, Vec2 _vPos, Vec2 _vScale
+        , bool _bCollider, Vec2 _vColOffset, Vec2 _vColScale
+        , bool _bAnimation, vector<wstring> _vecPath
+        , bool _bGravity, bool _bRigidBody);
+    ~CMonster_Normal();
 };
 

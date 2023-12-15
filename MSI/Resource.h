@@ -18,9 +18,9 @@
 
 // EDIT
 #define IDC_EDIT_NAME					200
-#define IDC_EDIT_OBJTYPE				201
-#define IDC_EDIT_DIRECTION				202
-#define IDC_EDIT_STATE					203
+#define IDC_COMBOBOX_OBJTYPE				201
+#define IDC_COMBOBOX_DIRECTION				202
+#define IDC_COMBOBOX_GRADE					203
 #define IDC_EDIT_POS_X					204
 #define IDC_EDIT_POS_Y					205
 #define IDC_EDIT_SCALE_X				206

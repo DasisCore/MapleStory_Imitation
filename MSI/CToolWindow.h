@@ -10,7 +10,7 @@ private:
 	HWND m_hWndName;
 	HWND m_hWndObjType;
 	HWND m_hWndDirection;
-	HWND m_hWndState;
+	HWND m_hWndGrade;
 
 	HWND m_hWndPosX;
 	HWND m_hWndPosY;
@@ -37,6 +37,9 @@ private:
 
 
 public:
+	vector<wstring> m_vecAniPath;
+
+public:
 	void init();
 	void showWindow();
 	void update();
@@ -46,7 +49,7 @@ public:
 	HWND GethWndName() { return m_hWndName; }
 	HWND GethWndObjType() { return m_hWndObjType; }
 	HWND GethWndDirection() { return m_hWndDirection; }
-	HWND GethWndState() { return m_hWndState; }
+	HWND GethWndGrade() { return m_hWndGrade; }
 	HWND GethWndPosX() { return m_hWndPosX; }
 	HWND GethWndPosY() { return m_hWndPosY; }
 	HWND GethWndScaleX() { return m_hWndScaleX; }

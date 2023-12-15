@@ -97,7 +97,7 @@ void CObject::CreateCollider()
 	m_pComponent->m_pCollider->m_pOwner = this;
 }
 
-void CObject::CreateAnimation()
+void CObject::CreateAnimator()
 {
 	m_pComponent->m_pAnimator = new CAnimator;
 	m_pComponent->m_pAnimator->m_pOwner = this;

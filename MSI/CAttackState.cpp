@@ -9,7 +9,7 @@
 #include "CComponent.h"
 #include "CCollider.h"
 #include "CEventMgr.h"
-#include "CLesh.h"
+#include "CMonster_Normal.h"
 
 CAttackState::CAttackState()
 	:CState(MON_STATE::ATT)
@@ -55,7 +55,7 @@ void CAttackState::Exit()
 void CAttackState::update()
 {
 	CMonster* pMonster = GetMonster();
-	CLesh* pMon = (CLesh*) GetMonster();
+	CMonster_Normal* pMon = (CMonster_Normal*) GetMonster();
 	Vec2 vMonPos = pMon->GetPos();
 	if (m_pDetect) m_pDetect->SetPos(vMonPos + Vec2(50.f * GetMonster()->GetInfo().iDir, 0.f));
 	

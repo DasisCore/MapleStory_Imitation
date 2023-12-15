@@ -44,7 +44,7 @@ CPlayer::CPlayer()
 	//CTexture* pLeftTex = CResMgr::GetInst()->LoadTexture(L"PlayerLeft", L"Texture\\player01_L.bmp");
 	//CTexture* pRightTex = CResMgr::GetInst()->LoadTexture(L"PlayerRight", L"Texture\\player01_R.bmp");
 
-	CreateAnimation();
+	CreateAnimator();
 
 	GetComponent()->GetAnimator()->LoadAnimation(L"Animation\\RAVEN_LEFT_IDLE.anim");
 	GetComponent()->GetAnimator()->LoadAnimation(L"Animation\\RAVEN_RIGHT_IDLE.anim");

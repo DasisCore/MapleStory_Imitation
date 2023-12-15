@@ -4,9 +4,16 @@
 #include "CCore.h"
 #include "CPathMgr.h"
 
+#include "CCamera.h"
 #include "CObject.h"
 #include "CMonster.h"
+#include "CMonster_Normal.h"
 #include "CGround.h"
+
+#include "CComponent.h"
+#include "CAnimator.h"
+
+#include "CMonFactory.h"
 
 #include "CSceneMgr.h"
 #include "CScene.h"
@@ -23,7 +30,7 @@ CToolWindow::CToolWindow()
     , m_hWndName(nullptr)
     , m_hWndObjType(nullptr)
     , m_hWndDirection(nullptr)
-    , m_hWndState(nullptr)
+    , m_hWndGrade(nullptr)
     , m_hWndPosX(nullptr)
     , m_hWndPosY(nullptr)
     , m_hWndScaleX(nullptr)
@@ -100,9 +107,9 @@ void CToolWindow::init()
 
     m_hWndName = CreateEdit(L"Name", Vec2(10, 70), Vec2(100, 30), (HMENU)IDC_EDIT_NAME);
 
-    m_hWndObjType = CraeteComboBox(L"Object Type", Vec2(10, 120), Vec2(100, 200), (HMENU)IDC_EDIT_OBJTYPE);
-    m_hWndDirection = CraeteComboBox(L"Direction", Vec2(120, 120), Vec2(100, 200), (HMENU)IDC_EDIT_DIRECTION);
-    m_hWndState = CraeteComboBox(L"State", Vec2(230, 120), Vec2(100, 200), (HMENU)IDC_EDIT_STATE);
+    m_hWndObjType = CraeteComboBox(L"Object Type", Vec2(10, 120), Vec2(100, 200), (HMENU)IDC_COMBOBOX_OBJTYPE);
+    m_hWndDirection = CraeteComboBox(L"Direction", Vec2(120, 120), Vec2(100, 200), (HMENU)IDC_COMBOBOX_DIRECTION);
+    m_hWndGrade = CraeteComboBox(L"Grade", Vec2(230, 120), Vec2(100, 200), (HMENU)IDC_COMBOBOX_GRADE);
 
     m_hWndPosX = CreateEdit(L"Position X", Vec2(10, 170), Vec2(100, 30), (HMENU)IDC_EDIT_POS_X);
     m_hWndPosY = CreateEdit(L"Position Y", Vec2(120, 170), Vec2(100, 30), (HMENU)IDC_EDIT_POS_Y);
@@ -112,13 +119,13 @@ void CToolWindow::init()
 
     m_hWndColCheckBox = CreateCheckBox(L"Collider", Vec2(10, 280), Vec2(10, 10), (HMENU)IDC_CHECKBOX_COLLIDER);
     // 기본상태는 비활성화 상태
-    m_hWndColOffsetX = CreateEdit(L"Offset X", Vec2(10, 310), Vec2(100, 30), (HMENU)IDC_EDIT_COLLIDER_OFFSET_X);
+    m_hWndColOffsetX = CreateEdit(L"Col X", Vec2(10, 310), Vec2(100, 30), (HMENU)IDC_EDIT_COLLIDER_OFFSET_X);
     EnableWindow(m_hWndColOffsetX, 0);
-    m_hWndColOffsetY = CreateEdit(L"Offset Y", Vec2(120, 310), Vec2(100, 30), (HMENU)IDC_EDIT_COLLIDER_OFFSET_Y);
+    m_hWndColOffsetY = CreateEdit(L"Col Y", Vec2(120, 310), Vec2(100, 30), (HMENU)IDC_EDIT_COLLIDER_OFFSET_Y);
     EnableWindow(m_hWndColOffsetY, 0);
-    m_hWndColScaleX = CreateEdit(L"Offset Scale X", Vec2(10, 360), Vec2(100, 30), (HMENU)IDC_EDIT_COLLIDER_SCALE_X);
+    m_hWndColScaleX = CreateEdit(L"Col Scale X", Vec2(10, 360), Vec2(100, 30), (HMENU)IDC_EDIT_COLLIDER_SCALE_X);
     EnableWindow(m_hWndColScaleX, 0);
-    m_hWndColScaleY = CreateEdit(L"Offset Scale Y", Vec2(120, 360), Vec2(100, 30), (HMENU)IDC_EDIT_COLLIDER_SCALE_Y);
+    m_hWndColScaleY = CreateEdit(L"Col Scale Y", Vec2(120, 360), Vec2(100, 30), (HMENU)IDC_EDIT_COLLIDER_SCALE_Y);
     EnableWindow(m_hWndColScaleY, 0);
 
     m_hWndAniCheckBox = CreateCheckBox(L"Animation", Vec2(10, 420), Vec2(10, 10), (HMENU)IDC_CHECKBOX_ANIMATION);
@@ -207,6 +214,12 @@ HWND CToolWindow::CraeteComboBox(wstring _strName, Vec2 _vPos, Vec2 _vScale, HME
         SendMessage(hComboBox, CB_ADDSTRING, 0, (LPARAM)L"Right");
         SendMessage(hComboBox, CB_ADDSTRING, 0, (LPARAM)L"Left");
     }
+    else if (_strName == L"Grade")
+    {
+        SendMessage(hComboBox, CB_ADDSTRING, 0, (LPARAM)L"Puppet");
+        SendMessage(hComboBox, CB_ADDSTRING, 0, (LPARAM)L"Normal");
+        EnableWindow(hComboBox, false);
+    }
 
     // 선택된 항목을 첫번째 인자로 설정
     SendMessage(hComboBox, CB_SETCURSEL, 0, 0);
@@ -225,7 +238,7 @@ HWND CToolWindow::CreateEdit(wstring _strName, Vec2 _vPos, Vec2 _vScale, HMENU _
         _vPos.x, _vPos.y - 20.f, _vScale.x, 20.f,
         m_hWndTool, NULL, hInst, NULL);
 
-    HWND hEdit = CreateWindowEx(WS_EX_CLIENTEDGE, L"EDIT", L"", WS_CHILD | WS_VISIBLE | ES_LEFT,
+    HWND hEdit = CreateWindowEx(WS_EX_CLIENTEDGE, L"EDIT", L"", WS_CHILD | WS_VISIBLE | ES_LEFT | WS_TABSTOP,
         _vPos.x, _vPos.y, _vScale.x, 20.f, m_hWndTool, (HMENU)_idc, hInst, NULL);
 
     return hEdit;
@@ -316,17 +329,38 @@ void CToolWindow::LoadAnimation()
     // 파일 읽기가 성공했다면.
     if (GetOpenFileName(&ofn))
     {
-        wstring a = CPathMgr::GetInst()->GetRelativePath(szName);
+        wstring strPath = CPathMgr::GetInst()->GetRelativePath(szName);
 
         // 리스트 뷰에 아이템 추가
         LVITEM lvItem = { 0 };
         lvItem.mask = LVIF_TEXT;
         lvItem.iItem = 0; // 아이템 인덱스
         lvItem.iSubItem = 0; // 서브아이템 인덱스
-        lvItem.pszText = const_cast<LPWSTR>(a.c_str()); // 아이템 텍스트
+        lvItem.pszText = const_cast<LPWSTR>(strPath.c_str()); // 아이템 텍스트
         ListView_InsertItem(m_hWndAniListView, &lvItem);
+
+        // 불러온 상대 경로를 저장한다.
+        m_vecAniPath.push_back(strPath);
     }
 }
+
+enum class OBJTYPE
+{
+    DEFAULT,
+    BACKGROUND,
+    GROUND,
+    MONSTER,
+    PLAYER
+};
+
+//enum class MONGRADE
+//{
+//    NORMAL,
+//    EPIC,
+//    UNIQUE,
+//    LEGEND,
+//};
+
 
 void CToolWindow::CreateObject()
 {
@@ -334,13 +368,16 @@ void CToolWindow::CreateObject()
     TCHAR buffer[256];
     wstring temp;
 
+    // Name
     GetWindowText(m_hWndName, buffer, 256);
     wstring strName = buffer;
 
+    // Type, Direction, Grade
     int iObjType = SendMessage(m_hWndObjType, CB_GETCURSEL, 0, 0);
     int iDirection = SendMessage(m_hWndDirection, CB_GETCURSEL, 0, 0);
+    int iGrade = SendMessage(m_hWndGrade, CB_GETCURSEL, 0, 0);
 
-
+    // Position
     GetWindowText(m_hWndPosX, buffer, 256);
     temp = wstring(buffer);
     float fposX = stof(temp);
@@ -350,8 +387,9 @@ void CToolWindow::CreateObject()
     float fposY = stof(temp);
 
     Vec2 vPos = Vec2(fposX, fposY);
+    vPos = CCamera::GetInst()->GetRenderPos(vPos);
 
-
+    // Scale
     GetWindowText(m_hWndScaleX, buffer, 256);
     temp = wstring(buffer);
     float fscaleX = stof(temp);
@@ -362,25 +400,99 @@ void CToolWindow::CreateObject()
 
     Vec2 vScale = Vec2(fscaleX, fscaleY);
 
-
+    // Collider
     bool bUseCollider = false;
     UINT checkBoxState = SendMessage(m_hWndColCheckBox, BM_GETCHECK, 0, 0);
     if (checkBoxState == BST_CHECKED) bUseCollider = true;
 
+    Vec2 vColOffset = Vec2(0.f, 0.f);
+    if (bUseCollider)
+    {
+        GetWindowText(m_hWndColOffsetX, buffer, 256);
+        temp = wstring(buffer);
+        if (temp == L"") temp = L"0";
+        float fColOffsetX = stof(temp);
+
+        GetWindowText(m_hWndColOffsetY, buffer, 256);
+        temp = wstring(buffer);
+        if (temp == L"") temp = L"0";
+        float fColOffsetY = stof(temp);
+        vColOffset = Vec2(fColOffsetX, fColOffsetY);
+    }
+
+    Vec2 vColScale = Vec2(0.f, 0.f);
+    if (bUseCollider)
+    {
+        GetWindowText(m_hWndColScaleX, buffer, 256);
+        temp = wstring(buffer);
+        if (temp == L"") temp = L"0";
+        float fColScaleX = stof(temp);
+
+        GetWindowText(m_hWndColScaleY, buffer, 256);
+        temp = wstring(buffer);
+        if (temp == L"") temp = L"0";
+        float fColScaleY = stof(temp);
+        vColScale = Vec2(fColScaleX, fColScaleY);
+    }
+
+
+    // Animation
+    bool bUseAnimator = false;
+    checkBoxState = SendMessage(m_hWndAniCheckBox, BM_GETCHECK, 0, 0);
+    if (checkBoxState == BST_CHECKED) bUseAnimator = true;
+
+    // Gravity
     bool bUseGravity = false;
     checkBoxState = SendMessage(m_hWndGravityCheckBox, BM_GETCHECK, 0, 0);
     if (checkBoxState == BST_CHECKED) bUseGravity = true;
 
+    // RigidBody
     bool bUseRigidBody = false;
     checkBoxState = SendMessage(m_hWndRigidBodyCheckBox, BM_GETCHECK, 0, 0);
     if (checkBoxState == BST_CHECKED) bUseRigidBody = true;
 
     CObject* pObj;
 
-    if (iObjType == 3)
+    switch ((OBJTYPE)iObjType)
     {
-        pObj = new CMonster;
+    case OBJTYPE::DEFAULT:
+        break;
+    case OBJTYPE::BACKGROUND:
+        break;
+    case OBJTYPE::GROUND:
+    {
 
+
+
+    }
+        break;
+    case OBJTYPE::MONSTER:
+    {
+        //pObj = new CMonster_Normal(strName, vPos, vScale, bUseCollider, vColOffset, vColScale, bUseAnimator, m_vecAniPath, bUseGravity, bUseRigidBody);
+        
+        switch ((MON_TYPE)iGrade)
+        {
+            case MON_TYPE::PUPPET:
+            {
+                pObj = CMonFactory::CreateMonster(MON_TYPE::PUPPET, strName, vPos, vScale, bUseCollider, vColOffset, vColScale, bUseAnimator, m_vecAniPath, bUseGravity, bUseRigidBody);
+                CSceneMgr::GetInst()->GetCurScene()->AddObject(pObj, GROUP_TYPE::MONSTER);
+            }
+        break;
+            case MON_TYPE::NORMAL:
+            {
+                pObj = CMonFactory::CreateMonster(MON_TYPE::NORMAL, strName, vPos, vScale, bUseCollider, vColOffset, vColScale, bUseAnimator, m_vecAniPath, bUseGravity, bUseRigidBody);
+                CSceneMgr::GetInst()->GetCurScene()->AddObject(pObj, GROUP_TYPE::MONSTER);
+            }
+        break;
+        }
+
+
+    }
+        break;
+    case OBJTYPE::PLAYER:
+        break;
+    default:
+        break;
     }
 }
 
@@ -458,6 +570,11 @@ LRESULT CALLBACK ToolWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
     case WM_KEYDOWN:
         switch (wParam)
         {
+        case VK_TAB:
+        {
+            int a = 1;
+        }
+        break;
         case VK_ESCAPE:
             ShowWindow(pToolWindow->GetToolhWnd(), SW_HIDE);
             break;
@@ -475,6 +592,19 @@ LRESULT CALLBACK ToolWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
     break;
     case WM_COMMAND:
     {
+        // 콤보박스에서 선택이 변경되었을 때
+        if (HIWORD(wParam) == CBN_SELCHANGE)
+        {
+            // 오브젝트 타입 콤보박스에서 변경되었을 때.
+            if (LOWORD(wParam) == IDC_COMBOBOX_OBJTYPE)
+            {
+                int iSelected = SendMessageW(pToolWindow->GethWndObjType(), CB_GETCURSEL, 0, 0);
+
+                BOOL disableGrade = (iSelected == 3);
+                EnableWindow(pToolWindow->GethWndGrade(), disableGrade);
+            }
+        }
+
         if (HIWORD(wParam) == BN_CLICKED)
         {
             if ((HWND)lParam == pToolWindow->GethWndColCheckBox())
@@ -501,7 +631,7 @@ LRESULT CALLBACK ToolWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
         case IDM_EXIT:
             ShowWindow(pToolWindow->GetToolhWnd(), SW_HIDE);
             break;
-        
+
         // 소수점 첫째자리 or 실수만 받기.
         HWND hEdit;
         case IDC_EDIT_POS_X:

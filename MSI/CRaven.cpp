@@ -18,7 +18,7 @@ CRaven::CRaven()
 	CreateComponent();
 	CreateCollider();
 	CreateRigidbody();
-	CreateAnimation();
+	CreateAnimator();
 	CreateGravity();
 
 	GetComponent()->GetCollider()->SetScale(Vec2(45.f, 70.f));

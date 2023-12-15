@@ -137,6 +137,12 @@ public:
 		else return false;
 	}
 
+	bool operator != (Vec2 _Other)
+	{
+		if (x == _Other.x && y == _Other.y) return false;
+		else return true;
+	}
+
 public:
 	Vec2()
 		: x(0.f)

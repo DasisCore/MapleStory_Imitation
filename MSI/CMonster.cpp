@@ -19,11 +19,11 @@ CMonster::CMonster()
 
 {
 	CreateComponent();
-	CreateCollider();
-	GetComponent()->GetCollider()->SetScale(Vec2(60.f, 60.f));
+	//CreateCollider();
+	//GetComponent()->GetCollider()->SetScale(Vec2(60.f, 60.f));
 
-	CreateAnimation();
-	CreateRigidbody();
+	//CreateAnimation();
+	//CreateRigidbody();
 	
 	// 공중 몹은 중력이 필요 없으므로, 
 	// 기본으로 넣어주지 않는다.
@@ -51,7 +51,6 @@ void CMonster::SetRandomDir()
 }
 
 
-
 void CMonster::update()
 {
 	//Vec2 vV = GetComponent()->GetRigidbody()->GetVelocity();
@@ -62,79 +61,87 @@ void CMonster::update()
 	{
 		m_pAI->update();
 	}
-	update_animation();
+
+	if (GetComponent()->GetAnimator() != nullptr)
+	{
+		update_animation();
+	}
 }
 
 void CMonster::render(HDC _dc)
 {
 	CObject::render(_dc);
 
-	wstring tempStr;
-
-	MON_STATE curState = m_pAI->GetCurState()->GetType();
-
-	if (curState == MON_STATE::IDLE)
+	if (m_pAI)
 	{
-		tempStr = L"IDLE";
-	}
-	else if (curState == MON_STATE::PATROL)
-	{
-		tempStr = L"PATROL";
-	}
-	else if (curState == MON_STATE::ATT)
-	{
-		tempStr = L"ATTACK";
-	}
-	else if (curState == MON_STATE::RUN)
-	{
-		tempStr = L"RUN";
-	}
-	else if (curState == MON_STATE::TRACE)
-	{
-		tempStr = L"TRACE";
-	}
+		wstring tempStr;
 
-	//Vec2 vV = GetComponent()->GetRigidbody()->GetVelocity();
-	//tempStr = std::to_wstring(m_fLeftDist) + L" / " + std::to_wstring(m_fRightDist);
+		MON_STATE curState = m_pAI->GetCurState()->GetType();
 
-	Graphics graphics(_dc);
+		if (curState == MON_STATE::IDLE)
+		{
+			tempStr = L"IDLE";
+		}
+		else if (curState == MON_STATE::PATROL)
+		{
+			tempStr = L"PATROL";
+		}
+		else if (curState == MON_STATE::ATT)
+		{
+			tempStr = L"ATTACK";
+		}
+		else if (curState == MON_STATE::RUN)
+		{
+			tempStr = L"RUN";
+		}
+		else if (curState == MON_STATE::TRACE)
+		{
+			tempStr = L"TRACE";
+		}
 
-	Font font(L"Arial", 10, FontStyle::FontStyleBold);
+		//Vec2 vV = GetComponent()->GetRigidbody()->GetVelocity();
+		//tempStr = std::to_wstring(m_fLeftDist) + L" / " + std::to_wstring(m_fRightDist);
 
-	SolidBrush brush(Color(255, 0, 0, 0));
+		Graphics graphics(_dc);
 
-	Vec2 vPos = GetPos();
+		Font font(L"Arial", 10, FontStyle::FontStyleBold);
 
-	PointF point(vPos.x + 40.f, vPos.y);
+		SolidBrush brush(Color(255, 0, 0, 0));
 
-	graphics.DrawString(tempStr.c_str(), -1, &font, point, &brush);
+		Vec2 vPos = GetPos();
 
-	// 몬스터의 사정거리 그리기
-	Pen pen(Color(255, 0, 0, 255));
-	if (m_tInfo.iDir == 1)
-	{
-		graphics.DrawRectangle(&pen, GetPos().x, GetPos().y - (GetScale().y / 2.f), m_tInfo.vRecogRange.x, GetScale().y);
-	}
-	else
-	{
-		graphics.DrawRectangle(&pen, GetPos().x - m_tInfo.vRecogRange.x, GetPos().y - (GetScale().y / 2.f), m_tInfo.vRecogRange.x, GetScale().y);
+		PointF point(vPos.x + 40.f, vPos.y);
+
+		graphics.DrawString(tempStr.c_str(), -1, &font, point, &brush);
+	
+		// 몬스터의 사정거리 그리기
+		Pen pen(Color(255, 0, 0, 255));
+		if (m_tInfo.iDir == 1)
+		{
+			graphics.DrawRectangle(&pen, GetPos().x, GetPos().y - (GetScale().y / 2.f), m_tInfo.vRecogRange.x, GetScale().y);
+		}
+		else
+		{
+			graphics.DrawRectangle(&pen, GetPos().x - m_tInfo.vRecogRange.x, GetPos().y - (GetScale().y / 2.f), m_tInfo.vRecogRange.x, GetScale().y);
+		}
 	}
 }
 
 void CMonster::update_animation()
 {
-	wstring currentChar = m_wCurChar;
+	wstring currentChar = GetName();
+
+	if (m_pAI == nullptr)
+	{
+		currentChar += L"_LEFT_IDLE";
+		GetComponent()->GetAnimator()->Play(currentChar.c_str(), true);
+		return;
+	}
 
 	MON_STATE curState = m_pAI->GetCurState()->GetType();
 
-	if (m_tInfo.iDir == -1)
-	{
-		currentChar += L"_LEFT";
-	}
-	else
-	{
-		currentChar += L"_RIGHT";
-	}
+	if (m_tInfo.iDir == -1) currentChar += L"_LEFT";
+	else currentChar += L"_RIGHT";
 
 	if (curState == MON_STATE::IDLE)
 	{

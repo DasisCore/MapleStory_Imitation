@@ -95,6 +95,8 @@ bool CPatrolState::InRangePlayer()
 {
 	// Player의 위치 체크
 	CPlayer* pPlayer = (CPlayer*)CSceneMgr::GetInst()->GetCurScene()->GetPlayer();
+	if (pPlayer == nullptr) return false;
+
 	Vec2 vPlayerPos = pPlayer->GetPos();
 	Vec2 vPlayerScale = pPlayer->GetScale();
 

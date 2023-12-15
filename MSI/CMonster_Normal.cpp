@@ -1,18 +1,17 @@
 #include "global.h"
-#include "CLesh.h"
+#include "CMonster_Normal.h"
 #include "CTexture.h"
 #include "CResMgr.h"
 #include "CComponent.h"
+#include "CCollider.h"
 #include "CAnimator.h"
 #include "CTimeMgr.h"
 
-CLesh::CLesh()
+CMonster_Normal::CMonster_Normal()
 	: CMonster()
 	, m_fAttDelay(1.5f)
 	, m_fAttTime(1.5f)
 {
-	setCurChar(L"LESH");
-
 	CreateGravity();
 
 	//CTexture* pLeshLeftTex = CResMgr::GetInst()->LoadTexture(L"Monster_Left_Lesh", L"Texture\\Monster\\Lesh.png");
@@ -34,17 +33,51 @@ CLesh::CLesh()
 	//GetComponent()->GetAnimator()->CreateAnimation(L"LESH_RIGHT_DIE", pLeshRightTex, Vec2(1470.f, 131.f), Vec2(146.f, 131.f), Vec2(-146.f, 0.f), 0.1f, 11);
 }
 
-CLesh::~CLesh()
+CMonster_Normal::CMonster_Normal(wstring _strName, Vec2 _vPos, Vec2 _vScale
+	, bool _bCollider, Vec2 _vColOffset, Vec2 _vColScale
+	, bool _bAnimation, vector<wstring> _vecPath
+	, bool _bGravity, bool _bRigidBody)
+	: CMonster()
+	, m_fAttDelay(1.5f)
+	, m_fAttTime(1.5f)
+{
+	SetName(_strName);
+	SetPos(_vPos);
+	SetScale(_vScale);
+
+	if (_bCollider)
+	{
+		CreateCollider();
+		CCollider* pCol = GetComponent()->GetCollider();
+		pCol->SetOffsetPos(_vColOffset);
+		pCol->SetScale(_vColScale);
+	}
+
+	if (_bAnimation)
+	{
+		CreateAnimator();
+		CAnimator* pAni = GetComponent()->GetAnimator();
+
+		for (int i = 0; i < _vecPath.size(); i++)
+		{
+			pAni->LoadAnimation(_vecPath[i]);
+		}
+	}
+	if (_bGravity) CreateGravity();
+	if (_bRigidBody) CreateRigidbody();
+}
+
+CMonster_Normal::~CMonster_Normal()
 {
 }
 
-void CLesh::update()
+void CMonster_Normal::update()
 {
 	CMonster::update();
 	//GetComponent()->GetAnimator()->Play(L"LESH_RIGHT_WALK", true);
 }
 
-void CLesh::Attack()
+void CMonster_Normal::Attack()
 {
 	m_fAttTime -= fDT;
 	//GetComponent()->GetAnimator()->Play(L"LESH_RIGHT_ATTACK", true);
