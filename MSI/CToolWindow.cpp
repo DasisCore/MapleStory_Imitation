@@ -9,6 +9,7 @@
 #include "CMonster.h"
 #include "CMonster_Normal.h"
 #include "CGround.h"
+#include "CBackground.h"
 
 #include "CComponent.h"
 #include "CAnimator.h"
@@ -105,8 +106,9 @@ void CToolWindow::init()
 
     //m_hWndObjectCombo = CraeteComboBox(L"combo box", Vec2(10, 30), Vec2(200, 200));
 
+    m_hWndReset = CreateButton(L"Reset", Vec2(310, 30), Vec2(100, 30), (HMENU)IDC_BUTTON_RESET);
     m_hWndName = CreateEdit(L"Name", Vec2(10, 70), Vec2(100, 30), (HMENU)IDC_EDIT_NAME);
-
+    
     m_hWndObjType = CraeteComboBox(L"Object Type", Vec2(10, 120), Vec2(100, 200), (HMENU)IDC_COMBOBOX_OBJTYPE);
     m_hWndDirection = CraeteComboBox(L"Direction", Vec2(120, 120), Vec2(100, 200), (HMENU)IDC_COMBOBOX_DIRECTION);
     m_hWndGrade = CraeteComboBox(L"Grade", Vec2(230, 120), Vec2(100, 200), (HMENU)IDC_COMBOBOX_GRADE);
@@ -204,7 +206,9 @@ HWND CToolWindow::CraeteComboBox(wstring _strName, Vec2 _vPos, Vec2 _vScale, HME
     if (_strName == L"Object Type")
     {
         SendMessage(hComboBox, CB_ADDSTRING, 0, (LPARAM)L"Default");
-        SendMessage(hComboBox, CB_ADDSTRING, 0, (LPARAM)L"BackGround");
+        SendMessage(hComboBox, CB_ADDSTRING, 0, (LPARAM)L"BackGround1");
+        SendMessage(hComboBox, CB_ADDSTRING, 0, (LPARAM)L"BackGround2");
+        SendMessage(hComboBox, CB_ADDSTRING, 0, (LPARAM)L"BackGround3");
         SendMessage(hComboBox, CB_ADDSTRING, 0, (LPARAM)L"Ground");
         SendMessage(hComboBox, CB_ADDSTRING, 0, (LPARAM)L"Monster");
         SendMessage(hComboBox, CB_ADDSTRING, 0, (LPARAM)L"Player ");
@@ -347,7 +351,9 @@ void CToolWindow::LoadAnimation()
 enum class OBJTYPE
 {
     DEFAULT,
-    BACKGROUND,
+    BACKGROUND1,
+    BACKGROUND2,
+    BACKGROUND3,
     GROUND,
     MONSTER,
     PLAYER
@@ -379,23 +385,22 @@ void CToolWindow::CreateObject()
 
     // Position
     GetWindowText(m_hWndPosX, buffer, 256);
-    temp = wstring(buffer);
+    temp = wstring(buffer) == L"" ? L"0" : wstring(buffer);
     float fposX = stof(temp);
 
     GetWindowText(m_hWndPosY, buffer, 256);
-    temp = wstring(buffer);
+    temp = wstring(buffer) == L"" ? L"0" : wstring(buffer);
     float fposY = stof(temp);
 
     Vec2 vPos = Vec2(fposX, fposY);
-    vPos = CCamera::GetInst()->GetRenderPos(vPos);
 
     // Scale
     GetWindowText(m_hWndScaleX, buffer, 256);
-    temp = wstring(buffer);
+    temp = wstring(buffer) == L"" ? L"0" : wstring(buffer);
     float fscaleX = stof(temp);
 
     GetWindowText(m_hWndScaleY, buffer, 256);
-    temp = wstring(buffer);
+    temp = wstring(buffer) == L"" ? L"0" : wstring(buffer);
     float fscaleY = stof(temp);
 
     Vec2 vScale = Vec2(fscaleX, fscaleY);
@@ -409,13 +414,11 @@ void CToolWindow::CreateObject()
     if (bUseCollider)
     {
         GetWindowText(m_hWndColOffsetX, buffer, 256);
-        temp = wstring(buffer);
-        if (temp == L"") temp = L"0";
+        temp = wstring(buffer) == L"" ? L"0" : wstring(buffer);
         float fColOffsetX = stof(temp);
 
         GetWindowText(m_hWndColOffsetY, buffer, 256);
-        temp = wstring(buffer);
-        if (temp == L"") temp = L"0";
+        temp = wstring(buffer) == L"" ? L"0" : wstring(buffer);
         float fColOffsetY = stof(temp);
         vColOffset = Vec2(fColOffsetX, fColOffsetY);
     }
@@ -424,13 +427,11 @@ void CToolWindow::CreateObject()
     if (bUseCollider)
     {
         GetWindowText(m_hWndColScaleX, buffer, 256);
-        temp = wstring(buffer);
-        if (temp == L"") temp = L"0";
+        temp = wstring(buffer) == L"" ? L"0" : wstring(buffer);
         float fColScaleX = stof(temp);
 
         GetWindowText(m_hWndColScaleY, buffer, 256);
-        temp = wstring(buffer);
-        if (temp == L"") temp = L"0";
+        temp = wstring(buffer) == L"" ? L"0" : wstring(buffer);
         float fColScaleY = stof(temp);
         vColScale = Vec2(fColScaleX, fColScaleY);
     }
@@ -457,7 +458,17 @@ void CToolWindow::CreateObject()
     {
     case OBJTYPE::DEFAULT:
         break;
-    case OBJTYPE::BACKGROUND:
+    case OBJTYPE::BACKGROUND1:
+        pObj = new CBackground(strName, vPos, vScale, bUseCollider, vColOffset, vColScale, bUseAnimator, m_vecAniPath, bUseGravity, bUseRigidBody);
+        CSceneMgr::GetInst()->GetCurScene()->AddObject(pObj, GROUP_TYPE::BACKGROUND1);
+        break;
+    case OBJTYPE::BACKGROUND2:
+        pObj = new CBackground(strName, vPos, vScale, bUseCollider, vColOffset, vColScale, bUseAnimator, m_vecAniPath, bUseGravity, bUseRigidBody);
+        CSceneMgr::GetInst()->GetCurScene()->AddObject(pObj, GROUP_TYPE::BACKGROUND2);
+        break;
+    case OBJTYPE::BACKGROUND3:
+        pObj = new CBackground(strName, vPos, vScale, bUseCollider, vColOffset, vColScale, bUseAnimator, m_vecAniPath, bUseGravity, bUseRigidBody);
+        CSceneMgr::GetInst()->GetCurScene()->AddObject(pObj, GROUP_TYPE::BACKGROUND3);
         break;
     case OBJTYPE::GROUND:
     {
@@ -493,6 +504,33 @@ void CToolWindow::CreateObject()
     default:
         break;
     }
+}
+
+void CToolWindow::ResetData()
+{
+    SetWindowText(m_hWndName, L"");
+    SetWindowText(m_hWndPosX, L"");
+    SetWindowText(m_hWndPosY, L"");
+    SetWindowText(m_hWndScaleX, L"");
+    SetWindowText(m_hWndScaleY, L"");
+    SendMessage(m_hWndColCheckBox , BM_SETCHECK, BST_UNCHECKED, 0);
+    SetWindowText(m_hWndColOffsetX, L"");
+    EnableWindow(m_hWndColOffsetX, FALSE);
+    SetWindowText(m_hWndColOffsetY, L"");
+    EnableWindow(m_hWndColOffsetY, FALSE);
+    SetWindowText(m_hWndColScaleX, L"");
+    EnableWindow(m_hWndColScaleX, FALSE);
+    SetWindowText(m_hWndColScaleY, L"");
+    EnableWindow(m_hWndColScaleY, FALSE);
+
+    SendMessage(m_hWndAniCheckBox, BM_SETCHECK, BST_UNCHECKED, 0);
+    ListView_DeleteAllItems(m_hWndAniListView);
+    EnableWindow(m_hWndAniListView, FALSE);
+    EnableWindow(m_hWndAniLoadBtn, FALSE);
+    m_vecAniPath.clear();
+    m_vecAniPath.resize(0);
+    SendMessage(m_hWndGravityCheckBox, BM_SETCHECK, BST_UNCHECKED, 0);
+    SendMessage(m_hWndRigidBodyCheckBox, BM_SETCHECK, BST_UNCHECKED, 0);
 }
 
 void CToolWindow::Destroy_window()
@@ -599,7 +637,7 @@ LRESULT CALLBACK ToolWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
             {
                 int iSelected = SendMessageW(pToolWindow->GethWndObjType(), CB_GETCURSEL, 0, 0);
 
-                BOOL disableGrade = (iSelected == 3);
+                BOOL disableGrade = (iSelected == 5);
                 EnableWindow(pToolWindow->GethWndGrade(), disableGrade);
             }
         }
@@ -665,6 +703,12 @@ LRESULT CALLBACK ToolWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
             hEdit = pToolWindow->GethWndColScaleY();
             CheckPrecision(hWnd, wParam, lParam, hEdit);
             break;
+        
+        case IDC_BUTTON_RESET:
+        {
+            CToolWindow::GetInst()->ResetData();
+        }
+        break;
         case IDC_BUTTON_ANIMATION_LOAD:
         {
             CToolWindow::GetInst()->LoadAnimation();
@@ -674,12 +718,12 @@ LRESULT CALLBACK ToolWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
         {
             CToolWindow::GetInst()->CreateObject();
         }
-        break;
+            break;
         case IDC_BUTTON_SAVE_SCENE:
         {
             CToolWindow::GetInst();
         }
-        break;
+            break;
         default:
             return DefWindowProc(hWnd, message, wParam, lParam);
         }

@@ -8,6 +8,7 @@ private:
 	HDC m_hDCTool;
 
 	HWND m_hWndName;
+	HWND m_hWndReset;
 	HWND m_hWndObjType;
 	HWND m_hWndDirection;
 	HWND m_hWndGrade;
@@ -79,6 +80,7 @@ public:
 	
 	// 멤버 변수의 정보를 토대로 오브젝트를 만들어 Scene에 추가.
 	void CreateObject();
+	void ResetData();
 
 public:
 	HWND GetToolhWnd() { return m_hWndTool; }

@@ -143,9 +143,6 @@
     <Filter Include="Engine\04. Object\Player\Voltarix">
       <UniqueIdentifier>{51cd0d7d-6415-4139-bd27-c57855a82f6f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\04. Object\Monster\Lesh">
-      <UniqueIdentifier>{805dc15f-fcae-4588-ac55-94f321af62f8}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Engine\04. Object\Monster\DarkLesh">
       <UniqueIdentifier>{17d5dd98-4c3c-478e-ab14-6a869f9c58e6}</UniqueIdentifier>
     </Filter>
@@ -175,6 +172,12 @@
     </Filter>
     <Filter Include="Engine\01. Header">
       <UniqueIdentifier>{69d26e12-3666-4a69-b241-e7ccb717ca31}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\04. Object\Monster\CMonster_Normal">
+      <UniqueIdentifier>{805dc15f-fcae-4588-ac55-94f321af62f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\04. Object\Background">
+      <UniqueIdentifier>{4558c55d-3d40-4368-8914-aeeacea06589}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -321,7 +324,7 @@
       <Filter>Engine\04. Object\Player\Voltarix</Filter>
     </ClInclude>
     <ClInclude Include="CMonster_Normal.h">
-      <Filter>Engine\04. Object\Monster\Lesh</Filter>
+      <Filter>Engine\04. Object\Monster\CMonster_Normal</Filter>
     </ClInclude>
     <ClInclude Include="CRandom.h">
       <Filter>Engine\08. Module</Filter>
@@ -355,6 +358,9 @@
     </ClInclude>
     <ClInclude Include="CWorkshopCheckBox.h">
       <Filter>Engine\05. Scene\Scene_Ani_Workshop\WorkshopWindow\BtnUI</Filter>
+    </ClInclude>
+    <ClInclude Include="CBackground.h">
+      <Filter>Engine\04. Object\Background</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -483,7 +489,7 @@
       <Filter>Engine\04. Object\Player\Voltarix</Filter>
     </ClCompile>
     <ClCompile Include="CMonster_Normal.cpp">
-      <Filter>Engine\04. Object\Monster\Lesh</Filter>
+      <Filter>Engine\04. Object\Monster\CMonster_Normal</Filter>
     </ClCompile>
     <ClCompile Include="CRandom.cpp">
       <Filter>Engine\08. Module</Filter>
@@ -517,6 +523,9 @@
     </ClCompile>
     <ClCompile Include="CWorkshopCheckBox.cpp">
       <Filter>Engine\05. Scene\Scene_Ani_Workshop\WorkshopWindow\BtnUI</Filter>
+    </ClCompile>
+    <ClCompile Include="CBackground.cpp">
+      <Filter>Engine\04. Object\Background</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

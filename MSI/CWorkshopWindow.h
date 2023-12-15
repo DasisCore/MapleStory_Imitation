@@ -55,7 +55,7 @@ public:
 	void AddDuration(float _f) 
 	{
 		m_fDuration += _f;
-		m_fDuration = max(0.1f, m_fDuration);
+		m_fDuration = max(0.01f, m_fDuration);
 	};
 
 
