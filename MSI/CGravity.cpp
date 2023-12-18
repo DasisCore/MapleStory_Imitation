@@ -21,7 +21,7 @@ void CGravity::SetGround(bool _b)
 	if (m_bGround)
 	{
 		Vec2 vV = m_pOwner->GetComponent()->GetRigidbody()->GetVelocity();
-		m_pOwner->GetComponent()->GetRigidbody()->SetVelocity(Vec2(vV.x, 0.f));
+		m_pOwner->GetComponent()->GetRigidbody()->SetVelocity(Vec2(vV.x,  0.f));
 	}
 }
 

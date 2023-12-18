@@ -13,6 +13,7 @@ CMonster_Normal::CMonster_Normal()
 	, m_fAttTime(1.5f)
 {
 	CreateGravity();
+	CreateRigidbody();
 
 	//CTexture* pLeshLeftTex = CResMgr::GetInst()->LoadTexture(L"Monster_Left_Lesh", L"Texture\\Monster\\Lesh.png");
 	//CTexture* pLeshRightTex = CResMgr::GetInst()->LoadTexture(L"Monster_Right_Lesh", L"Texture\\Monster\\Lesh.png", 1);
@@ -57,7 +58,6 @@ CMonster_Normal::CMonster_Normal(wstring _strName, Vec2 _vPos, Vec2 _vScale
 	{
 		CreateAnimator();
 		CAnimator* pAni = GetComponent()->GetAnimator();
-
 		for (int i = 0; i < _vecPath.size(); i++)
 		{
 			pAni->LoadAnimation(_vecPath[i]);

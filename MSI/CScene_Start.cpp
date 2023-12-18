@@ -23,11 +23,13 @@
 #include "CTraceState.h"
 #include "CPatrolState.h"
 #include "CAttackState.h"
+#include "CMonFactory.h"
 
 #include "CRigidBody.h"
 #include "SelectGDI.h"
 #include "CTimeMgr.h"
 #include "CGround.h"
+#include "CFoothold.h"
 
 #include "CVoltarix.h"
 
@@ -198,33 +200,44 @@ void CScene_Start::Enter()
 	// 이벤트를 이용하여 오브젝트 삽입 예시
 	//CreateObject(pOtherPlayer, GROUP_TYPE::PLAYER);
 
-	CMonster_Normal* pMonLesh = new CMonster_Normal;
-	pMonLesh->SetName(L"Monster_Lesh");
-	pMonLesh->SetScale(Vec2(50.f, 60.f));
-	pMonLesh->SetPos(Vec2(200.f, 200.f));
+	//CMonster_Normal* pMonLesh = new CMonster_Normal;
+	//pMonLesh->SetName(L"Monster_Lesh");
+	//pMonLesh->SetScale(Vec2(50.f, 60.f));
+	//pMonLesh->SetPos(Vec2(200.f, 200.f));
 
-	tMonInfo info = {};
-	info.fAtt = 10.f;
-	info.fAttRange = 50.f;
-	info.vRecogRange = Vec2(250.f, 50.f);
-	info.fRecogRange = 300.f;
-	info.fHP = 100.f;
-	info.fSpeed = 300.f;
-	info.iDir = 1;
+	//tMonInfo info = {};
+	//info.fAtt = 10.f;
+	//info.fAttRange = 50.f;
+	//info.vRecogRange = Vec2(250.f, 50.f);
+	//info.fRecogRange = 300.f;
+	//info.fHP = 100.f;
+	//info.fSpeed = 300.f;
+	//info.iDir = 1;
 
-	pMonLesh->SetMonInfo(info);
+	//pMonLesh->SetMonInfo(info);
 
-	AI* pAI = new AI;
-	pAI->AddState(new CIdleState);
-	pAI->AddState(new CTraceState);
-	pAI->AddState(new CPatrolState);
-	pAI->AddState(new CAttackState);
-	
-	pAI->SetCurState(MON_STATE::IDLE);
-	pMonLesh->SetAI(pAI);
+	//AI* pAI = new AI;
+	//pAI->AddState(new CIdleState);
+	//pAI->AddState(new CTraceState);
+	//pAI->AddState(new CPatrolState);
+	//pAI->AddState(new CAttackState);
+	//
+	//pAI->SetCurState(MON_STATE::IDLE);
+	//pMonLesh->SetAI(pAI);
 
+	//AddObject(pMonLesh, GROUP_TYPE::MONSTER);
+
+
+	vector<wstring> MonVecPath 
+		= {   L"Animation\\LESH_LEFT_ATTACK.anim"
+			, L"Animation\\LESH_LEFT_IDLE.anim"
+			, L"Animation\\LESH_LEFT_WALK.anim"
+			, L"Animation\\LESH_RIGHT_IDLE.anim"
+			, L"Animation\\LESH_RIGHT_WALK.anim"
+			, L"Animation\\LESH_RIGHT_ATTACK.anim"
+		};
+	CMonster* pMonLesh = CMonFactory::CreateMonster(MON_TYPE::NORMAL, L"LESH", Vec2(200.f, 200.f), Vec2(60.f, 60.f), true, Vec2(0.f, 0.f), Vec2(60.f, 60.f), true, MonVecPath, true, true);
 	AddObject(pMonLesh, GROUP_TYPE::MONSTER);
-
 
 
 	// 땅 물체 배치
@@ -233,6 +246,12 @@ void CScene_Start::Enter()
 	pGround->SetPos(Vec2(400.f, 584.f));
 	pGround->SetScale(Vec2(700.f, 60.f));
 	AddObject(pGround, GROUP_TYPE::GROUND);
+
+	CObject* pFoothold = new CFoothold;
+	pFoothold->SetName(L"Foothold");
+	pFoothold->SetPos(Vec2(700.f, 184.f));
+	pFoothold->SetScale(Vec2(700.f, 60.f));
+	AddObject(pFoothold, GROUP_TYPE::GROUND);
 
 
 	// 충돌 지정

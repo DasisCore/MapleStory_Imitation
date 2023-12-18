@@ -2,6 +2,8 @@
 
 #include "CObject.h"
 
+#include "CSceneMgr.h"
+#include "CScene.h"
 #include "CKeyMgr.h"
 #include "CTimeMgr.h"
 
@@ -50,6 +52,8 @@ CObject::~CObject()
 
 void CObject::finalupdate()
 {
+	if (CSceneMgr::GetInst()->GetCurScene()->GetName() == L"Tool Scene") ObjectDrag();
+
 	if (m_pComponent) m_pComponent->finalupdate();
 }
 
@@ -84,6 +88,28 @@ void CObject::component_render(HDC _dc)
 	}
 }
 
+
+
+void CObject::ObjectDrag()
+{
+	if (CKeyMgr::GetInst()->IsMouseInObj(this))
+	{
+		if (KEY_TAP(KEY::LBTN))
+		{
+			m_vDragStart = CCamera::GetInst()->GetRealPos(MOUSE_POS);
+		}
+
+		if (KEY_HOLD(KEY::LBTN))
+		{
+			Vec2 vCurPos = GetPos();
+			Vec2 vDiff = CCamera::GetInst()->GetRealPos(MOUSE_POS) - m_vDragStart;
+
+			vCurPos += vDiff;
+			SetPos(vCurPos);
+			m_vDragStart = CCamera::GetInst()->GetRealPos(MOUSE_POS);
+		}
+	}
+}
 
 void CObject::CreateComponent()
 {

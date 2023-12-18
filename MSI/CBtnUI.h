@@ -23,7 +23,6 @@ private:
     SCENE_MEMFUNC m_pSceneFunc; // 호출할 함수 // 함수 포인터
     CScene* m_pSceneInst;       // 호출할 객체
 
-
 public:
     virtual void MouseOn();
     virtual void MouseLbtnDown();

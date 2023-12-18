@@ -19,6 +19,9 @@ private:
 	bool m_bAlive;
 	bool m_bGroundCheck;
 
+	Vec2 m_vDragStart;
+
+
 public:
 	void SetName(const wstring& _strName) { m_strName = _strName; }
 	const wstring& GetName() { return m_strName; }
@@ -33,8 +36,12 @@ public:
 	bool GetGroundCheck() { return m_bGroundCheck; }
 	void SetGroundCheck(bool _b) { m_bGroundCheck = _b; }
 
+	// 마우스를 이용해 오브젝트를 옮기는 기능.
+	void ObjectDrag();
+
 private:
 	void SetDead() { m_bAlive = false; }
+
 
 
 public:

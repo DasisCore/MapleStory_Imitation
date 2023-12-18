@@ -179,6 +179,9 @@
     <Filter Include="Engine\04. Object\Background">
       <UniqueIdentifier>{4558c55d-3d40-4368-8914-aeeacea06589}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\04. Object\Foothold">
+      <UniqueIdentifier>{542d02e1-5b3a-4c68-98f8-631ef6919b96}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -362,6 +365,9 @@
     <ClInclude Include="CBackground.h">
       <Filter>Engine\04. Object\Background</Filter>
     </ClInclude>
+    <ClInclude Include="CFoothold.h">
+      <Filter>Engine\04. Object\Foothold</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CCore.cpp">
@@ -526,6 +532,9 @@
     </ClCompile>
     <ClCompile Include="CBackground.cpp">
       <Filter>Engine\04. Object\Background</Filter>
+    </ClCompile>
+    <ClCompile Include="CFoothold.cpp">
+      <Filter>Engine\04. Object\Foothold</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

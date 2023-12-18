@@ -66,5 +66,6 @@ void CBtnUI::MouseLbtnClicked()
 	{	// 둘다 포인터이므로, 원형을 불러옴.
 		((*m_pSceneInst).*m_pSceneFunc)();
 	}
+
 }
 

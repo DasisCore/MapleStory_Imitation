@@ -46,26 +46,26 @@ void CSprite::DrawBorder(HDC _dc)
 	graphics.DrawRectangle(&borderPen, vRenderPos.x, vRenderPos.y, lineWidth, lineHeight);
 }
 
-void CSprite::IsLbtnDown()
-{
-	if (m_tInfo.bTarget && CKeyMgr::GetInst()->IsMouseInObj(this) && KEY_TAP(KEY::LBTN))
-	{
-		m_vDragStart = CCamera::GetInst()->GetRealPos(MOUSE_POS);
-	}
-}
-
-void CSprite::IsLbtnDrag()
-{
-	if (m_tInfo.bTarget && CKeyMgr::GetInst()->IsMouseInObj(this) && KEY_HOLD(KEY::LBTN))
-	{
-		Vec2 vCurPos = GetPos();
-		Vec2 vDiff = CCamera::GetInst()->GetRealPos(MOUSE_POS) - m_vDragStart;
-
-		vCurPos += vDiff;
-		SetPos(vCurPos);
-		m_vDragStart = CCamera::GetInst()->GetRealPos(MOUSE_POS);
-	}
-}
+//void CSprite::IsLbtnDown()
+//{
+//	if (m_tInfo.bTarget && CKeyMgr::GetInst()->IsMouseInObj(this) && KEY_TAP(KEY::LBTN))
+//	{
+//		m_vDragStart = CCamera::GetInst()->GetRealPos(MOUSE_POS);
+//	}
+//}
+//
+//void CSprite::IsLbtnDrag()
+//{
+//	if (m_tInfo.bTarget && CKeyMgr::GetInst()->IsMouseInObj(this) && KEY_HOLD(KEY::LBTN))
+//	{
+//		Vec2 vCurPos = GetPos();
+//		Vec2 vDiff = CCamera::GetInst()->GetRealPos(MOUSE_POS) - m_vDragStart;
+//
+//		vCurPos += vDiff;
+//		SetPos(vCurPos);
+//		m_vDragStart = CCamera::GetInst()->GetRealPos(MOUSE_POS);
+//	}
+//}
 
 bool CSprite::IsPointInBorder()		// 잘못 만들었는데 임시로 쓸일 있을까 싶어서 놔둠.
 {
@@ -126,8 +126,12 @@ void CSprite::update()
 		}
 		else
 		{
-			IsLbtnDown();
-			IsLbtnDrag();
+			if (m_tInfo.bTarget)
+			{
+				ObjectDrag();
+			}
+			//IsLbtnDown();
+			//IsLbtnDrag();
 		}
 	}
 

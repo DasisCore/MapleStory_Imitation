@@ -1,10 +1,18 @@
 #pragma once
 #include "CScene.h"
+
+enum class MOUSE_TOOL_TYPE
+{
+    DEFAULT,
+    FOOTHOLD,
+};
+
 class CScene_Tool :
     public CScene
 {
 private:
     CUI* m_pUI;
+    MOUSE_TOOL_TYPE m_eType;
 
     bool m_bGizmo;
 
@@ -15,8 +23,12 @@ public:
     void LoadTileData();
     void SaveTile(const wstring& _strFilePath);
 
+    void ChangeTool(int _i) { m_eType = (MOUSE_TOOL_TYPE)_i; }
+
+
 
 public:
+
     void DrawGizmo(HDC _dc);
 
 

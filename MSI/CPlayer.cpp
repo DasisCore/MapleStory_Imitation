@@ -269,7 +269,7 @@ void CPlayer::update_animation()
 void CPlayer::OnCollisionEnter(CCollider* _pOther)
 {
 	CObject* pOtherObj = _pOther->GetObj();
-	if (pOtherObj->GetName() == L"Ground")
+	if (pOtherObj->GetName() == L"Ground" || pOtherObj->GetName() == L"Foothold")
 	{
 		Vec2 vPos = GetPos();
 		if (vPos.y < pOtherObj->GetPos().y)

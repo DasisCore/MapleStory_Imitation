@@ -23,9 +23,11 @@
 #include "CToolWindow.h"
 
 void ChangeScene(DWORD_PTR, DWORD_PTR);
+void G_ChangeTool(DWORD_PTR _i, DWORD_PTR);
 
 CScene_Tool::CScene_Tool()
-	:m_bGizmo(false)
+	: m_bGizmo(false)
+	, m_eType(MOUSE_TOOL_TYPE::DEFAULT)
 {
 }
 
@@ -46,22 +48,33 @@ void CScene_Tool::Enter()
 	// UI 하나 만들어보기
 	Vec2 vResolution = CCore::GetInst()->GetResolution();
 
-	//CUI* pPanelUI = new CPanelUI;
-	//pPanelUI->SetName(L"ParentUI");
-	//pPanelUI->SetScale(Vec2(500.f, 300.f));
-	//pPanelUI->SetPos(Vec2(vResolution.x - pPanelUI->GetScale().x, 0.f));
+	CUI* pPanelUI = new CPanelUI;
+	pPanelUI->SetName(L"ParentUI");
+	pPanelUI->SetScale(Vec2(65.f, 500.f));
+	pPanelUI->SetPos(Vec2(vResolution.x - pPanelUI->GetScale().x, 0.f));
 
-	//CBtnUI* pBtnUI = new CBtnUI;
-	//pBtnUI->SetName(L"ChildUI");
-	//pBtnUI->SetScale(Vec2(100.f, 40.f));  
-	//pBtnUI->SetPos(Vec2(0.f, 0.f));
-	////pBtnUI->SetClickCallBack(ChangeScene, 0, 0);
-	//// tool4
+	CBtnUI* pBtnUI = new CBtnUI;
+	pBtnUI->SetName(L"▷");
+	pBtnUI->SetScale(Vec2(25.f, 25.f));  
+	pBtnUI->SetPos(Vec2(5.f, 5.f));
+	//pBtnUI->SetClickCallBack(ChangeScene, 0, 0);
+	// tool4
+	pBtnUI->SetClickCallBack(G_ChangeTool, 0, 0);
+
 	//pBtnUI->SetClickCallBack(this, (SCENE_MEMFUNC)&CScene_Tool::SaveTileData);
 
-	//pPanelUI->AddChild(pBtnUI);
+	pPanelUI->AddChild(pBtnUI);
 
-	//AddObject(pPanelUI, GROUP_TYPE::UI);
+	pBtnUI = new CBtnUI;
+	pBtnUI->SetName(L"▶");
+	pBtnUI->SetScale(Vec2(25.f, 25.f));
+	pBtnUI->SetPos(Vec2(35.f, 5.f));
+	pBtnUI->SetClickCallBack(G_ChangeTool, 1, 0);
+
+	pPanelUI->AddChild(pBtnUI);
+
+
+	AddObject(pPanelUI, GROUP_TYPE::UI);
 
 	//CUI* pClonePanel = pPanelUI->Clone();
 	//pClonePanel->SetPos(pClonePanel->GetPos() + Vec2(-300.f , 0.f));
@@ -82,6 +95,11 @@ void ChangeScene(DWORD_PTR, DWORD_PTR)
 	ChangeScene(SCENE_TYPE::START);
 }
 
+void G_ChangeTool(DWORD_PTR _i, DWORD_PTR)
+{
+	CScene_Tool* pCurScene = (CScene_Tool*) CSceneMgr::GetInst()->GetCurScene();
+	pCurScene->ChangeTool((int)_i);
+}
 
 void CScene_Tool::update()
 {
@@ -130,6 +148,26 @@ void CScene_Tool::render(HDC _dc)
 	CScene::render(_dc);
 	CToolWindow::GetInst()->render();
 	//DrawGizmo(_dc);
+
+	Graphics graphics(_dc);
+	Font font(L"Arial", 12);
+	SolidBrush brush(Color(0, 0, 0));
+	switch (m_eType)
+	{
+		case MOUSE_TOOL_TYPE::DEFAULT:
+		{
+			graphics.DrawString(L"Default", -1, &font, PointF(30.f, 100.f), &brush);
+		}
+	break;
+		case MOUSE_TOOL_TYPE::FOOTHOLD:
+		{
+			graphics.DrawString(L"Create FootHold", -1, &font, PointF(30.f, 100.f), &brush);
+		}
+	break;
+
+	}
+
+	
 }
 
 

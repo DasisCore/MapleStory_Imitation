@@ -39,11 +39,11 @@ private:
     // 이미지의 테두리를 그리는 함수.
     void DrawBorder(HDC _dc);
 
-    // 이미지를 클릭했을 경우 처리
-    void IsLbtnDown();
+    //// 이미지를 클릭했을 경우 처리
+    //void IsLbtnDown();
 
-    // 이미지를 드래그 했을 경우 처리
-    void IsLbtnDrag();
+    //// 이미지를 드래그 했을 경우 처리
+    //void IsLbtnDrag();
 
     // 마우스가 테두리 영역에 있는지 확인하는 함수
     bool IsPointInBorder();

@@ -10,7 +10,7 @@
 CGround::CGround()
 {
 	CreateComponent();
-	//CreateCollider();
+	CreateCollider();
 }
 
 CGround::CGround(wstring _strName, Vec2 _vPos, Vec2 _vScale, bool _bCollider, Vec2 _vColOffset, Vec2 _vColScale, bool _bAnimation, vector<wstring> _vecPath, bool _bGravity, bool _bRigidBody)
@@ -59,6 +59,37 @@ void CGround::update()
 
 }
 
+void CGround::render(HDC _dc)
+{
+	Graphics graphics(_dc);
+
+	Vec2 vPos = GetPos();
+	vPos = CCamera::GetInst()->GetRenderPos(vPos);
+	Vec2 vScale = GetScale();
+
+	Rect rectangle(vPos.x - (vScale.x / 2.f), vPos.y - (vScale.y / 2.f), vScale.x, vScale.y);
+
+	PointF startPoint(rectangle.X, rectangle.Y);
+	PointF endPoint(rectangle.GetRight(), rectangle.Y);
+	
+	// 윗변 그리기
+	Pen pen1(Color(0, 0, 0), 3);
+	graphics.DrawLine(&pen1, startPoint, endPoint);
+
+	// 윗변 제외한 나머지 변 그리기
+	Pen pen2(Color(240, 240, 240));
+	PointF leftBottom(rectangle.X, rectangle.GetBottom());
+	PointF rightBottom(rectangle.GetRight(), rectangle.GetBottom());
+	PointF rightTop(rectangle.GetRight(), rectangle.Y + rectangle.Height);
+	graphics.DrawLine(&pen2, endPoint, rightBottom);
+	graphics.DrawLine(&pen2, rightBottom, leftBottom);
+	graphics.DrawLine(&pen2, leftBottom, startPoint);
+
+	Font font(L"Arial", 8);
+	SolidBrush brush(Color(0, 0, 0));
+	graphics.DrawString(GetName().c_str(), -1, &font, PointF(vPos.x, vPos.y), &brush);
+}
+
 void CGround::OnCollisionEnter(CCollider* _pOther)
 {
 	CObject* pOtherObj = _pOther->GetObj();
@@ -91,7 +122,8 @@ void CGround::OnCollision(CCollider* _pOther)
 	CObject* pOtherObj = _pOther->GetObj();
 	if (pOtherObj->GetGroundCheck())
 	{
-		if (_pOther->GetObj()->GetName().substr(0, 7) == L"Monster")
+		//if (_pOther->GetObj()->GetName().substr(0, 7) == L"Monster")
+		if(1)
 		{
 			// 몬스터의 정보
 			float fMonPos = _pOther->GetFinalPos().x;
