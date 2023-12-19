@@ -20,6 +20,7 @@ private:
 	bool m_bGroundCheck;
 
 	Vec2 m_vDragStart;
+	bool m_bTarget;
 
 
 public:
@@ -38,6 +39,8 @@ public:
 
 	// 마우스를 이용해 오브젝트를 옮기는 기능.
 	void ObjectDrag();
+	bool GetTarget() { return m_bTarget; }
+	void SetTarget(bool _b) { m_bTarget = _b; }
 
 private:
 	void SetDead() { m_bAlive = false; }

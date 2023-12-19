@@ -43,7 +43,11 @@ public:
 	void AddObject(CObject* _pObj, GROUP_TYPE _eType) { m_vecObj[(UINT)_eType].push_back(_pObj); }
 	void RegisterPlayer(CObject* _pPlayer) { m_pPlayer = _pPlayer; }
 	void DeleteGroup(GROUP_TYPE _eTarget);
+
+	// UI를 포함한 모든 오브젝트 삭제
 	void DeleteAll();
+	// UI를 제외한 오브젝트 삭제
+	void DeleteAll_Except_UI();
 
 	void CreateTile(UINT _iXCount, UINT _iYCount);
 	void LoadTile(const wstring& _strRelativePath);

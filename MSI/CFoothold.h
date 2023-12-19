@@ -12,6 +12,7 @@ private:
     bool m_bRight;
     bool m_bBottom;
 
+
 private:
     virtual void start() override;
     virtual void update() override;
@@ -25,6 +26,8 @@ public:
 
 private:
     void Blocking(CCollider* _pOther);
+    void ChangeBlock();
+
 
 public:
     CFoothold();

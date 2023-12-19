@@ -1,6 +1,7 @@
 #include "global.h"
 #include "CFoothold.h"
 
+#include "CKeyMgr.h"
 #include "CComponent.h"
 #include "CCollider.h"
 #include "CGravity.h"
@@ -68,7 +69,7 @@ void CFoothold::start()
 
 void CFoothold::update()
 {
-
+	ChangeBlock();
 }
 
 void CFoothold::render(HDC _dc)
@@ -83,6 +84,7 @@ void CFoothold::render(HDC _dc)
 
 	Pen pen1(Color(0, 0, 0), 3);
 	Pen pen2(Color(240, 240, 240), 3);
+	if (GetTarget()) pen1.SetColor(Color(80, 140, 239));
 
 	PointF leftTop(rectangle.X, rectangle.Y);
 	PointF rightTop(rectangle.GetRight(), rectangle.Y);
@@ -233,5 +235,16 @@ void CFoothold::Blocking(CCollider* _pOther)
 
 		pRigid->SetVelocity(Vec2(0.f, vCurVelocity.y));
 		pOtherObj->SetPos(vObjPos);
+	}
+}
+
+void CFoothold::ChangeBlock()
+{
+	if (GetTarget())
+	{
+		if (KEY_TAP(KEY::UP)) m_bTop = !m_bTop;
+		if (KEY_TAP(KEY::RIGHT)) m_bRight = !m_bRight;
+		if (KEY_TAP(KEY::DOWN)) m_bBottom = !m_bBottom;
+		if (KEY_TAP(KEY::LEFT)) m_bLeft = !m_bLeft;
 	}
 }

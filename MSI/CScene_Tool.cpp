@@ -17,17 +17,23 @@
 #include "CPanelUI.h"
 #include "CBtnUI.h"
 #include "CUIMgr.h"
+#include "CCamera.h"
 
 #include "CPathMgr.h"
+#include "CFoothold.h"
 
 #include "CToolWindow.h"
 
+
 void ChangeScene(DWORD_PTR, DWORD_PTR);
 void G_ChangeTool(DWORD_PTR _i, DWORD_PTR);
+void G_CreateMap(DWORD_PTR, DWORD_PTR);
+INT_PTR CALLBACK CreateMapDialogProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 CScene_Tool::CScene_Tool()
 	: m_bGizmo(false)
 	, m_eType(MOUSE_TOOL_TYPE::DEFAULT)
+	, m_bDrag(false)
 {
 }
 
@@ -54,11 +60,17 @@ void CScene_Tool::Enter()
 	pPanelUI->SetPos(Vec2(vResolution.x - pPanelUI->GetScale().x, 0.f));
 
 	CBtnUI* pBtnUI = new CBtnUI;
+	pBtnUI->SetName(L"Create MAP");
+	pBtnUI->SetScale(Vec2(55.f, 25.f));
+	pBtnUI->SetPos(Vec2(5.f, 5.f));
+	pBtnUI->SetClickCallBack(G_CreateMap, 0, 0);
+	pPanelUI->AddChild(pBtnUI);
+
+	pBtnUI = new CBtnUI;
 	pBtnUI->SetName(L"▷");
 	pBtnUI->SetScale(Vec2(25.f, 25.f));  
-	pBtnUI->SetPos(Vec2(5.f, 5.f));
+	pBtnUI->SetPos(Vec2(5.f, 35.f));
 	//pBtnUI->SetClickCallBack(ChangeScene, 0, 0);
-	// tool4
 	pBtnUI->SetClickCallBack(G_ChangeTool, 0, 0);
 
 	//pBtnUI->SetClickCallBack(this, (SCENE_MEMFUNC)&CScene_Tool::SaveTileData);
@@ -68,10 +80,23 @@ void CScene_Tool::Enter()
 	pBtnUI = new CBtnUI;
 	pBtnUI->SetName(L"▶");
 	pBtnUI->SetScale(Vec2(25.f, 25.f));
-	pBtnUI->SetPos(Vec2(35.f, 5.f));
+	pBtnUI->SetPos(Vec2(35.f, 35.f));
 	pBtnUI->SetClickCallBack(G_ChangeTool, 1, 0);
 
 	pPanelUI->AddChild(pBtnUI);
+
+	pBtnUI = new CBtnUI;
+	pBtnUI->SetName(L"Gizmo");
+	pBtnUI->SetScale(Vec2(55.f, 25.f));
+	pBtnUI->SetPos(Vec2(5.f, 65.f));
+	pBtnUI->SetClickCallBack(this, (SCENE_MEMFUNC)&CScene_Tool::toggleGizmo);
+
+	pPanelUI->AddChild(pBtnUI);
+
+
+
+
+
 
 
 	AddObject(pPanelUI, GROUP_TYPE::UI);
@@ -88,6 +113,12 @@ void CScene_Tool::Enter()
 
 	CToolWindow::GetInst()->init();
 	CToolWindow::GetInst()->showWindow();
+}
+
+void G_CreateMap(DWORD_PTR, DWORD_PTR)
+{
+	HINSTANCE hInst = CCore::GetInst()->GetMainhInstance();
+	DialogBox(hInst, MAKEINTRESOURCE(IDD_CREATE_MAP), NULL, CreateMapDialogProc);
 }
 
 void ChangeScene(DWORD_PTR, DWORD_PTR)
@@ -123,6 +154,8 @@ void CScene_Tool::update()
 		ChangeScene(SCENE_TYPE::ANIMATION_WORKSHOP);
 	}
 
+	FootHoldDrag();
+
 	if (KEY_TAP(KEY::LBTN) && CKeyMgr::GetInst()->IsMouseInsideClinet(CToolWindow::GetInst()->GetToolhWnd()))
 	{
 		Vec2 vPos = MOUSE_POS;
@@ -145,11 +178,17 @@ void CScene_Tool::update()
 
 void CScene_Tool::render(HDC _dc)
 {
+	// Scene의 내부 요소들이 그려지기 전에 그려준다.
+	renderMapBase(_dc);
+	DrawGizmo(_dc);
+
 	CScene::render(_dc);
 	CToolWindow::GetInst()->render();
-	//DrawGizmo(_dc);
 
 	Graphics graphics(_dc);
+
+
+
 	Font font(L"Arial", 12);
 	SolidBrush brush(Color(0, 0, 0));
 	switch (m_eType)
@@ -164,10 +203,12 @@ void CScene_Tool::render(HDC _dc)
 			graphics.DrawString(L"Create FootHold", -1, &font, PointF(30.f, 100.f), &brush);
 		}
 	break;
-
 	}
 
-	
+	if(m_bGizmo) graphics.DrawString(L"Gizmo True", -1, &font, PointF(30.f, 150.f), &brush);
+	else graphics.DrawString(L"Gizmo False", -1, &font, PointF(30.f, 150.f), &brush);
+
+	renderDrag(_dc);
 }
 
 
@@ -277,28 +318,125 @@ void CScene_Tool::SaveTile(const wstring& _strFilePath)
 	fclose(pFile);
 }
 
+void CScene_Tool::CreateMap(int _iWidth, int _iHeight)
+{
+	ResetMap();
+
+	m_vMapSize = Vec2(_iWidth, _iHeight);
+}
+
+void CScene_Tool::ResetMap()
+{
+	CSceneMgr::GetInst()->GetCurScene()->DeleteAll_Except_UI();
+}
+
+void CScene_Tool::FootHoldDrag()
+{
+	if (m_eType == MOUSE_TOOL_TYPE::FOOTHOLD && KEY_TAP(KEY::LBTN))
+	{
+		m_vDragStart = MOUSE_POS;
+		m_bDrag = true;
+	}
+
+	if (m_eType == MOUSE_TOOL_TYPE::FOOTHOLD && KEY_AWAY(KEY::LBTN))
+	{
+		CreateFootHold();
+		m_bDrag = false;
+	}
+}
+
+void CScene_Tool::renderDrag(HDC _dc)
+{
+	if (m_bDrag && m_eType == MOUSE_TOOL_TYPE::FOOTHOLD)
+	{
+		Vec2 vDragEnd = MOUSE_POS;
+
+		Graphics graphics(_dc);
+		Pen pen(Color(0, 0, 0), 2.0f); // Red color, 2.0f thickness
+		pen.SetDashStyle(DashStyleDash);  // Set the pen style to dashed
+
+		float rectWidth = abs(vDragEnd.x - m_vDragStart.x);
+		float rectHeight = abs(vDragEnd.y - m_vDragStart.y);
+		graphics.DrawRectangle(&pen, min(m_vDragStart.x, vDragEnd.x), min(m_vDragStart.y, vDragEnd.y), rectWidth, rectHeight);
+	}
+}
+
+void CScene_Tool::CreateFootHold()
+{
+	Vec2 vDragEnd = MOUSE_POS;
+
+	Vec2 vCenter = (m_vDragStart + vDragEnd) / 2.f;
+	vCenter = CCamera::GetInst()->GetRealPos(vCenter);
+
+	float rectWidth = abs(vDragEnd.x - m_vDragStart.x);
+	float rectHeight = abs(vDragEnd.y - m_vDragStart.y);
+
+	if (rectWidth < 10.f || rectHeight < 10.f) return;
+
+	CObject* pObj = new CFoothold;
+	pObj->SetName(L"Foothold");
+	pObj->SetPos(vCenter);
+	pObj->SetScale(Vec2(rectWidth, rectHeight));
+	AddObject(pObj, GROUP_TYPE::FOOTHOLD);
+}
+
 void CScene_Tool::DrawGizmo(HDC _dc)
 {
 	if (m_bGizmo)
 	{
 		Graphics graphics(_dc);
-		Pen pen(Color(242, 242, 242));
+		Pen pen(Color(240, 240, 240), 1);
+
 		int gridSize = 10; // 각 셀의 크기
-		for (int x = 0; x < 10000; x += gridSize) {
+		for (int x = 0; x <= m_vMapSize.x; x += gridSize) {
 			Vec2 v1 = Vec2(x, 0);
-			Vec2 v2 = Vec2(x, 10000);
+			Vec2 v2 = Vec2((float)x, m_vMapSize.y);
 			v1 = CCamera::GetInst()->GetRenderPos(v1);
 			v2 = CCamera::GetInst()->GetRenderPos(v2);
 			graphics.DrawLine(&pen, v1.x, v1.y, v2.x, v2.y); // 세로선 그리기
 		}
 
-		for (int y = 0; y < 10000; y += gridSize) {
+		for (int y = 0; y <= m_vMapSize.y; y += gridSize) {
 			Vec2 y1 = Vec2(0, y);
-			Vec2 y2 = Vec2(10000, y);
+			Vec2 y2 = Vec2(m_vMapSize.x, (float)y);
 			y1 = CCamera::GetInst()->GetRenderPos(y1);
 			y2 = CCamera::GetInst()->GetRenderPos(y2);
 			graphics.DrawLine(&pen, y1.x, y1.y, y2.x, y2.y); // 가로선 그리기
 		}
+	}
+}
+
+void CScene_Tool::renderMapBase(HDC _dc)
+{
+	if (m_vMapSize != Vec2(0.f, 0.f))
+	{
+		Vec2 vResolution = CCore::GetInst()->GetResolution();
+
+		Vec2 vLT = -vResolution;
+		Vec2 vRB = m_vMapSize + vResolution;
+
+		Vec2 vScale = vRB - vLT;
+		Vec2 vPos = -vScale / 2.f;
+
+		// 출력할 랜더링 좌표로 변환
+		vPos = CCamera::GetInst()->GetRenderPos(vPos);
+
+		// map의 사이즈에 해상도만큼의 패딩처리를 하여 색칠한다.
+		Graphics graphics(_dc);
+		SolidBrush paddingBrush(Color(220, 220, 220, 220));
+		graphics.FillRectangle(&paddingBrush, vPos.x, vPos.y, vScale.x, vScale.y);
+
+		// 실제 맵이 그려질 공간
+		vPos = (m_vMapSize / 2.f);
+		vScale = m_vMapSize;
+
+		vPos = CCamera::GetInst()->GetRenderPos(vPos);
+		
+		GraphicsPath path;
+		path.AddRectangle(Rect(vPos.x - (vScale.x / 2.f), vPos.y - (vScale.y / 2.f), vScale.x, vScale.y));
+
+		SolidBrush fillBrush(Color(255, 255, 255));
+		graphics.FillRegion(&fillBrush, new Region(&path));
 	}
 }
 
@@ -318,6 +456,9 @@ void CScene_Tool::Exit()
 // ==============================================================================================
 // Tile Count Window Proc
 // ==============================================================================================
+
+
+#include <string>
 
 INT_PTR CALLBACK TileCountProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -354,4 +495,71 @@ INT_PTR CALLBACK TileCountProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 		break;
 	}
 	return (INT_PTR)FALSE;
+}
+
+
+INT_PTR CALLBACK CreateMapDialogProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+	switch (uMsg)
+	{
+    case WM_INITDIALOG:
+		{
+			// 화면 크기 가져오기
+			int screenWidth = GetSystemMetrics(SM_CXSCREEN);
+			int screenHeight = GetSystemMetrics(SM_CYSCREEN);
+
+			// 대화 상자 크기 가져오기
+			RECT dlgRect;
+			GetWindowRect(hwndDlg, &dlgRect);
+			int dlgWidth = dlgRect.right - dlgRect.left;
+			int dlgHeight = dlgRect.bottom - dlgRect.top;
+
+			// 대화 상자를 화면 중앙에 위치시키기
+			int x = (screenWidth - dlgWidth) / 2;
+			int y = (screenHeight - dlgHeight) / 2;
+
+			SetWindowPos(hwndDlg, NULL, x, y, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
+			return TRUE;	
+		}
+	break;
+
+	case WM_COMMAND:
+		if (LOWORD(wParam) == IDOK)
+		{
+			TCHAR buffer1[256];
+			TCHAR buffer2[256];
+			GetWindowText(GetDlgItem(hwndDlg, IDC_EDIT_CREATE_MAP_WIDTH), buffer1, sizeof(buffer1) / sizeof(buffer1[0]));
+			GetWindowText(GetDlgItem(hwndDlg, IDC_EDIT_CREATE_MAP_HEIGHT), buffer2, sizeof(buffer2) / sizeof(buffer2[0]));
+			wstring w(buffer1);
+			wstring h(buffer2);
+
+			if (w == L"") w = L"100";
+			if (h == L"") h = L"100";
+
+			int width = stoi(w);
+			int height = stoi(h);
+
+			if (width < 500 || height < 500)
+			{
+				MessageBox(NULL, L"너비와 높이의 최소 크기는 500px 입니다.", L"알림", MB_OK | MB_ICONINFORMATION);
+				if (width < 500) width = 500;
+				if (height < 500) height = 500;
+			}
+
+			CScene_Tool* pCurScene = (CScene_Tool*)CSceneMgr::GetInst()->GetCurScene();
+			pCurScene->CreateMap(width, height);
+
+			EndDialog(hwndDlg, LOWORD(wParam));
+			return TRUE;
+		}
+		else if (LOWORD(wParam) == IDCANCEL)
+		{
+			EndDialog(hwndDlg, LOWORD(wParam));
+			return TRUE;
+		}
+
+		break;
+	}
+
+	return FALSE;
 }

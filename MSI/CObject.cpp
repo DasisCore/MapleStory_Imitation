@@ -52,7 +52,12 @@ CObject::~CObject()
 
 void CObject::finalupdate()
 {
-	if (CSceneMgr::GetInst()->GetCurScene()->GetName() == L"Tool Scene") ObjectDrag();
+	//if (CSceneMgr::GetInst()->GetCurScene()->GetName() == L"Tool Scene")
+	if (1)
+	{
+		ObjectDrag();
+		if (m_bTarget && KEY_TAP(KEY::DEL)) DeleteObject(this);
+	}
 
 	if (m_pComponent) m_pComponent->finalupdate();
 }
@@ -92,7 +97,7 @@ void CObject::component_render(HDC _dc)
 
 void CObject::ObjectDrag()
 {
-	if (CKeyMgr::GetInst()->IsMouseInObj(this))
+	if (m_bTarget && CKeyMgr::GetInst()->IsMouseInObj(this))
 	{
 		if (KEY_TAP(KEY::LBTN))
 		{

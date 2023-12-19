@@ -1,6 +1,7 @@
 #include "global.h"
 
 #include "CCore.h"
+#include "CSceneMgr.h"
 #include "CScene.h"
 #include "CObject.h"
 
@@ -12,6 +13,7 @@
 #include "CPathMgr.h"
 
 #include "CCamera.h"
+#include "CKeyMgr.h"
 
 
 
@@ -61,6 +63,41 @@ void CScene::update()
 
 void CScene::finalupdate()
 {
+	//if (CSceneMgr::GetInst()->GetCurScene()->GetName() == L"Tool Scene")
+	if (1)
+	{
+		// 파이널 업데이트 전에, 오브젝트 타겟팅 설정
+		bool flag = 0;
+		CObject* pObj = nullptr;
+		int idx = -1;
+		for (int i = (UINT)GROUP_TYPE::END - 1; i > -1; i--)
+		{
+			for (int j = m_vecObj[i].size() - 1; j > -1; j--)
+			{
+				if (flag == 1)
+				{
+					m_vecObj[i][j]->SetTarget(false);
+				}
+
+				if (!flag && CKeyMgr::GetInst()->IsMouseInObj(m_vecObj[i][j]))
+				{
+					m_vecObj[i][j]->SetTarget(true);
+					pObj = m_vecObj[i][j];
+					idx = i;
+					flag = 1;
+				}
+			}
+		}
+
+		// 타겟팅 된 오브젝트를 맨 Object의 벡터의 맨 뒤로 옮긴다.
+		if (idx != -1 && pObj != nullptr)
+		{
+			m_vecObj[idx].erase(std::remove(m_vecObj[idx].begin(), m_vecObj[idx].end(), pObj), m_vecObj[idx].end());
+			m_vecObj[idx].push_back(pObj);
+		}
+	}
+
+
 	for (UINT i = 0; i < (UINT)GROUP_TYPE::END; i++)
 	{
 		for (size_t j = 0; j < m_vecObj[i].size(); j++)
@@ -145,6 +182,15 @@ void CScene::DeleteAll()
 {
 	for(UINT i = 0; i < (UINT)GROUP_TYPE::END; i++)
 	{
+		DeleteGroup((GROUP_TYPE)i);
+	}
+}
+
+void CScene::DeleteAll_Except_UI()
+{
+	for (UINT i = 0; i < (UINT)GROUP_TYPE::END; i++)
+	{
+		if (i == (UINT)GROUP_TYPE::UI) continue;
 		DeleteGroup((GROUP_TYPE)i);
 	}
 }
