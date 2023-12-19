@@ -11,7 +11,7 @@ class CScene_Tool :
     public CScene
 {
 private:
-    Vec2 m_vMapSize;
+    Vec2 m_vMap;
     bool m_bGizmo;
 
     CUI* m_pUI;

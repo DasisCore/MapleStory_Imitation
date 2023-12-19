@@ -109,6 +109,7 @@ void CScene::finalupdate()
 
 void CScene::render(HDC _dc)
 {
+	// 기본적인 오브젝트 랜더링 (제일 중요)
 	for (UINT i = 0; i < (UINT)GROUP_TYPE::END; i++)
 	{
 		if ((UINT)GROUP_TYPE::TILE == i)
@@ -138,6 +139,13 @@ void CScene::render(HDC _dc)
 	Font font(L"Arial", 12, FontStyleBold);
 	SolidBrush brush(Color(255, 0, 0, 0));
 	graphics.DrawString(m_strName.c_str(), -1, &font, PointF(10, 10), &brush);
+
+
+	// 맵 크기 관련해서 그리기
+	Pen pen(Color(240, 240, 240), 2);
+	Vec2 vCenter = m_vMapSize / 2.f;
+	vCenter = CCamera::GetInst()->GetRenderPos(vCenter);
+	graphics.DrawRectangle(&pen, Rect(vCenter.x - (m_vMapSize.x / 2.f), vCenter.y - (m_vMapSize.y / 2.f), m_vMapSize.x, m_vMapSize.y));
 }
 
 void CScene::render_tile(HDC _dc)

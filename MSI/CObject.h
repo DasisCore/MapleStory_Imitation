@@ -45,6 +45,8 @@ public:
 private:
 	void SetDead() { m_bAlive = false; }
 
+	// 오브젝트가 맵 크기 이상으로 나가지 못하도록 함.
+	void CheckLocation();
 
 
 public:

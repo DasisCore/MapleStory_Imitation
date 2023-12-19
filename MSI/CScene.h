@@ -9,6 +9,8 @@ class CScene
 private:
 	vector<CObject*> m_vecObj[(UINT)GROUP_TYPE::END];
 	wstring m_strName;
+	
+	Vec2 m_vMapSize;
 
 	UINT m_iTileX;		// 타일 가로 개수
 	UINT m_iTileY;		// 타일 세로 개수
@@ -20,6 +22,8 @@ public:
 	void SetName(const wstring _strName) { m_strName = _strName; }
 	const wstring& GetName() { return m_strName; }
 
+	Vec2 GetMapSize() { return m_vMapSize; }
+	void SetMapSize(Vec2 _vMapsize) { m_vMapSize = _vMapsize; }
 	UINT GetTileX() { return m_iTileX; }
 	UINT GetTileY() { return m_iTileY; }
 

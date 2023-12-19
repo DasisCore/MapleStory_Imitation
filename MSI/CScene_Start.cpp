@@ -44,6 +44,7 @@ CScene_Start::CScene_Start()
 	, m_pTempImage(nullptr)
 	, m_itempNumber(0)
 {
+	SetMapSize(Vec2(1000.f, 1000.f));
 }
 
 CScene_Start::~CScene_Start()
@@ -136,6 +137,18 @@ void CScene_Start::render(HDC _dc)
 	PointF point(100.f, 10.f);
 
 	graphics.DrawString(tempStr.c_str(), -1, &font, point, &brush);
+	
+	// 카메라 위치 랜더링
+	Font tfont(L"Arial", 10, FontStyle::FontStyleBold);
+	Vec2 cam = CCamera::GetInst()->GetTemp();
+	tempStr = std::to_wstring(cam.x);
+	graphics.DrawString(tempStr.c_str(), -1, &tfont, PointF(100.f, 50.f), &brush);
+	tempStr = std::to_wstring(cam.y);
+	graphics.DrawString(tempStr.c_str(), -1, &tfont, PointF(100.f, 60.f), &brush);
+
+	Vec2 vResolution = CCore::GetInst()->GetResolution();
+	Pen pen(Color(0, 0, 0), 1);
+	graphics.DrawRectangle(&pen, (vResolution.x / 2.f) - 5.f, (vResolution.y / 2.f) - 5.f, 10.f, 10.f);
 
 	// 원그리는 부분
 	if (!m_bUseForce) return;

@@ -322,7 +322,7 @@ void CScene_Tool::CreateMap(int _iWidth, int _iHeight)
 {
 	ResetMap();
 
-	m_vMapSize = Vec2(_iWidth, _iHeight);
+	m_vMap = Vec2(_iWidth, _iHeight);
 }
 
 void CScene_Tool::ResetMap()
@@ -388,17 +388,17 @@ void CScene_Tool::DrawGizmo(HDC _dc)
 		Pen pen(Color(240, 240, 240), 1);
 
 		int gridSize = 10; // 각 셀의 크기
-		for (int x = 0; x <= m_vMapSize.x; x += gridSize) {
+		for (int x = 0; x <= m_vMap.x; x += gridSize) {
 			Vec2 v1 = Vec2(x, 0);
-			Vec2 v2 = Vec2((float)x, m_vMapSize.y);
+			Vec2 v2 = Vec2((float)x, m_vMap.y);
 			v1 = CCamera::GetInst()->GetRenderPos(v1);
 			v2 = CCamera::GetInst()->GetRenderPos(v2);
 			graphics.DrawLine(&pen, v1.x, v1.y, v2.x, v2.y); // 세로선 그리기
 		}
 
-		for (int y = 0; y <= m_vMapSize.y; y += gridSize) {
+		for (int y = 0; y <= m_vMap.y; y += gridSize) {
 			Vec2 y1 = Vec2(0, y);
-			Vec2 y2 = Vec2(m_vMapSize.x, (float)y);
+			Vec2 y2 = Vec2(m_vMap.x, (float)y);
 			y1 = CCamera::GetInst()->GetRenderPos(y1);
 			y2 = CCamera::GetInst()->GetRenderPos(y2);
 			graphics.DrawLine(&pen, y1.x, y1.y, y2.x, y2.y); // 가로선 그리기
@@ -408,12 +408,12 @@ void CScene_Tool::DrawGizmo(HDC _dc)
 
 void CScene_Tool::renderMapBase(HDC _dc)
 {
-	if (m_vMapSize != Vec2(0.f, 0.f))
+	if (m_vMap != Vec2(0.f, 0.f))
 	{
 		Vec2 vResolution = CCore::GetInst()->GetResolution();
 
 		Vec2 vLT = -vResolution;
-		Vec2 vRB = m_vMapSize + vResolution;
+		Vec2 vRB = m_vMap + vResolution;
 
 		Vec2 vScale = vRB - vLT;
 		Vec2 vPos = -vScale / 2.f;
@@ -427,8 +427,8 @@ void CScene_Tool::renderMapBase(HDC _dc)
 		graphics.FillRectangle(&paddingBrush, vPos.x, vPos.y, vScale.x, vScale.y);
 
 		// 실제 맵이 그려질 공간
-		vPos = (m_vMapSize / 2.f);
-		vScale = m_vMapSize;
+		vPos = (m_vMap / 2.f);
+		vScale = m_vMap;
 
 		vPos = CCamera::GetInst()->GetRenderPos(vPos);
 		

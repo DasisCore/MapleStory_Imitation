@@ -52,6 +52,7 @@ CObject::~CObject()
 
 void CObject::finalupdate()
 {
+	CheckLocation();
 	//if (CSceneMgr::GetInst()->GetCurScene()->GetName() == L"Tool Scene")
 	if (1)
 	{
@@ -113,6 +114,27 @@ void CObject::ObjectDrag()
 			SetPos(vCurPos);
 			m_vDragStart = CCamera::GetInst()->GetRealPos(MOUSE_POS);
 		}
+	}
+}
+
+void CObject::CheckLocation()
+{
+	CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
+	Vec2 vMapSize = pCurScene->GetMapSize();
+
+	if (vMapSize != Vec2(0.f, 0.f))
+	{
+		Vec2 vPos = GetPos();
+		Vec2 vScale = GetScale();
+
+		Vec2 vLT = Vec2(vPos.x - (vScale.x / 2.f), vPos.y - (vScale.y / 2.f));
+		Vec2 vRB = Vec2(vPos.x + (vScale.x / 2.f), vPos.y + (vScale.y / 2.f));
+
+		if (vPos.x <= 0) vPos.x = vScale.x;
+		if (vPos.x >= vMapSize.x) vPos.x = vMapSize.x - (vScale.x / 2.f);
+		if (vPos.y <= 0) vPos.y = (vScale.y / 2.f);
+		if (vPos.y >= vMapSize.y) vPos.y = vMapSize.y - (vScale.y / 2.f);
+		SetPos(vPos);
 	}
 }
 
