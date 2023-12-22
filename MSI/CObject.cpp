@@ -52,7 +52,7 @@ CObject::~CObject()
 
 void CObject::finalupdate()
 {
-	CheckLocation();
+	//CheckLocation();
 	//if (CSceneMgr::GetInst()->GetCurScene()->GetName() == L"Tool Scene")
 	if (1)
 	{

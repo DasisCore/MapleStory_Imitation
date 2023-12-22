@@ -5,6 +5,7 @@
 #include "CScene.h"
 #include "CScene_Start.h"
 #include "CScene_Tool.h"
+#include "CScene_Test.h"
 #include "CScene_Ani_Workshop.h"
 
 CSceneMgr::CSceneMgr()
@@ -35,6 +36,9 @@ void CSceneMgr::init()
 
 	m_arrScene[(UINT)SCENE_TYPE::ANIMATION_WORKSHOP] = new CScene_Ani_Workshop;
 	m_arrScene[(UINT)SCENE_TYPE::ANIMATION_WORKSHOP]->SetName(L"Animation Workshop Scene");
+
+	m_arrScene[(UINT)SCENE_TYPE::TEST] = new CScene_Test;
+	m_arrScene[(UINT)SCENE_TYPE::TEST]->SetName(L"Test Scene");
 
 	m_pCurScene = m_arrScene[(UINT)SCENE_TYPE::TOOL];
 	m_pCurScene->Enter();

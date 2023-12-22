@@ -14,14 +14,13 @@
 
 #include "CCamera.h"
 #include "CKeyMgr.h"
-
-
+#include "CGround.h"
+#include "CFoothold.h"
+#include "CBackground.h"
 
 
 CScene::CScene()
-	: m_iTileX(0)
-	, m_iTileY(0)
-	, m_pPlayer(nullptr)
+	: m_pPlayer(nullptr)
 {
 }
 
@@ -112,13 +111,6 @@ void CScene::render(HDC _dc)
 	// 기본적인 오브젝트 랜더링 (제일 중요)
 	for (UINT i = 0; i < (UINT)GROUP_TYPE::END; i++)
 	{
-		if ((UINT)GROUP_TYPE::TILE == i)
-		{
-			render_tile(_dc);
-			continue;
-		}
-
-
 		vector<CObject*>::iterator iter = m_vecObj[i].begin();
 
 		for (; iter != m_vecObj[i].end();)
@@ -148,38 +140,6 @@ void CScene::render(HDC _dc)
 	graphics.DrawRectangle(&pen, Rect(vCenter.x - (m_vMapSize.x / 2.f), vCenter.y - (m_vMapSize.y / 2.f), m_vMapSize.x, m_vMapSize.y));
 }
 
-void CScene::render_tile(HDC _dc)
-{
-	vector<CObject*> vecTile = GetGroupObject(GROUP_TYPE::TILE);
-
-	Vec2 vCamLook = CCamera::GetInst()->GetLookAt();
-	Vec2 vResolution = CCore::GetInst()->GetResolution();
-
-	Vec2 vLeftTop = vCamLook - vResolution / 2.f;
-
-	int iTileSize = TILE_SIZE;
-
-	int iLTCol = (int)vLeftTop.x / iTileSize;
-	int iLTRow = (int)vLeftTop.y / iTileSize;
-
-	int iClientWidth = ((int)vResolution.x / iTileSize) + 1;
-	int iClientHeigth = ((int)vResolution.y / iTileSize) + 1;
-
-	for (int iCurRow = iLTRow; iCurRow < (iLTRow + iClientHeigth); iCurRow++)
-	{
-		for (int iCurCol = iLTCol; iCurCol < (iLTCol + iClientWidth); iCurCol++)
-		{
-			if (iCurCol < 0 || m_iTileX <= iCurCol
-				|| iCurRow < 0 || m_iTileY <= iCurRow) continue;
-
-			int iIdx = (m_iTileX * iCurRow) + iCurCol;
-
-			vecTile[iIdx]->render(_dc);
-		}
-	}
-
-}
-
 
 void CScene::DeleteGroup(GROUP_TYPE _eTarget)
 {
@@ -203,59 +163,138 @@ void CScene::DeleteAll_Except_UI()
 	}
 }
 
-void CScene::CreateTile(UINT _iXCount, UINT _iYCount)
+void CScene::LoadSceneData(const wstring& _strFilePath)
 {
-	DeleteGroup(GROUP_TYPE::TILE);
-
-	m_iTileX = _iXCount;
-	m_iTileY = _iYCount;
-
-	CTexture* pTileTex = CResMgr::GetInst()->LoadTexture(L"Tile", L"texture\\tile\\TILE.bmp");
-
-	for (UINT i = 0; i < _iXCount; i++)
-	{
-		for (UINT j = 0; j < _iYCount; j++)	
-		{
-			CTile* pTile = new CTile;
-
-			pTile->SetPos(Vec2((float)(j * TILE_SIZE), (float)(i * TILE_SIZE)));
-			pTile->SetTexture(pTileTex);
-
-			AddObject(pTile, GROUP_TYPE::TILE);
-		}
-	}
-
-}
-
-void CScene::LoadTile(const wstring& _strRelativePath)
-{
-	wstring strFilePath = CPathMgr::GetInst()->GetContentPath();
-	strFilePath += _strRelativePath;
-
 	FILE* pFile = nullptr;
+	wstring absolutePath = CPathMgr::GetInst()->GetContentPath();
 
-	_wfopen_s(&pFile, strFilePath.c_str(), L"rb");
+	absolutePath += L"Scene\\" + _strFilePath;
 
+	_wfopen_s(&pFile, absolutePath.c_str(), L"rb");
 	assert(pFile);
 
-	UINT xCount;
-	UINT yCount;
+	// 맵 크기 읽기 
+	UINT width = 0;
+	UINT height = 0;
+	fread(&width, sizeof(UINT), 1, pFile);
+	fread(&height, sizeof(UINT), 1, pFile);
 
-	// 타일 가로 세로 개수 불러오기
-	fread(&xCount, sizeof(UINT), 1, pFile);
-	fread(&yCount, sizeof(UINT), 1, pFile);
+	// 맵 크기 적용
+	m_vMapSize = Vec2((float)width, (float)height);
 
-	// 타일 생성
-	CreateTile(xCount, yCount);
-
-	// 타일들의 개별 데이터 읽어오기
-	const vector<CObject*>& vecTile = GetGroupObject(GROUP_TYPE::TILE);
-
-	for (size_t i = 0; i < vecTile.size(); i++)
+	// Background1 읽기.
+	UINT vecSize = 0;
+	fread(&vecSize, sizeof(UINT), 1, pFile);
+	for (int i = 0; i < vecSize; i++)
 	{
-		((CTile*)vecTile[i])->Load(pFile);
+		CObject* pObj = ReadObject<CBackground>(pFile);
+		AddObject(pObj, GROUP_TYPE::BACKGROUND1);
 	}
 
+	// Background2 읽기.
+	vecSize = 0;
+	fread(&vecSize, sizeof(UINT), 1, pFile);
+	for (int i = 0; i < vecSize; i++)
+	{
+		CObject* pObj = ReadObject<CBackground>(pFile);
+		AddObject(pObj, GROUP_TYPE::BACKGROUND2);
+	}
 
-	fclose(pFile);
+	// Background3 읽기.
+	vecSize = 0;
+	fread(&vecSize, sizeof(UINT), 1, pFile);
+	for (int i = 0; i < vecSize; i++)
+	{
+		CObject* pObj = ReadObject<CBackground>(pFile);
+		AddObject(pObj, GROUP_TYPE::BACKGROUND3);
+	}
+
+	// FootHold 읽기.
+	vecSize = 0;
+	fread(&vecSize, sizeof(UINT), 1, pFile);
+	for (int i = 0; i < vecSize; i++)
+	{
+		CObject* pObj = ReadObject<CFoothold>(pFile);
+		AddObject(pObj, GROUP_TYPE::FOOTHOLD);
+	}
+
+	// Ground 읽기.
+	vecSize = 0;
+	fread(&vecSize, sizeof(UINT), 1, pFile);
+	for (int i = 0; i < vecSize; i++)
+	{
+		CObject* pObj = ReadObject<CGround>(pFile);
+		AddObject(pObj, GROUP_TYPE::GROUND);
+	}
+
+	// Monster 읽기. // Monster의 경우에는 Factory를 거쳐야하므로, 하드코딩했음.
+	vecSize = 0;
+	fread(&vecSize, sizeof(UINT), 1, pFile);
+	for (int i = 0; i < vecSize; i++)
+	{
+		// 오브젝트 이름 읽기.
+		wstring strName;
+		LoadWString(strName, pFile);
+
+		// 오브젝트 위치
+		float fPosX = 0.f;
+		float fPosY = 0.f;
+		fread(&fPosX, sizeof(float), 1, pFile);
+		fread(&fPosY, sizeof(float), 1, pFile);
+		Vec2 vPos = Vec2(fPosX, fPosY);
+
+		float fScaleX = 0.f;
+		float fScaleY = 0.f;
+		fread(&fScaleX, sizeof(float), 1, pFile);
+		fread(&fScaleY, sizeof(float), 1, pFile);
+		Vec2 vScale = Vec2(fScaleX, fScaleY);
+
+		bool bCollider = false;
+		fread(&bCollider, sizeof(bool), 1, pFile);
+		Vec2 vColOffset = Vec2(0.f, 0.f);
+		Vec2 vColScale = Vec2(0.f, 0.f);
+
+		if (bCollider == true)
+		{
+			float fOffsetX = 0.f;
+			float fOffsetY = 0.f;
+			fread(&fOffsetX, sizeof(float), 1, pFile);
+			fread(&fOffsetY, sizeof(float), 1, pFile);
+			vColOffset = Vec2(fOffsetX, fOffsetY);
+
+			float fColScaleX = 0.f;
+			float fColScaleY = 0.f;
+			fread(&fColScaleX, sizeof(float), 1, pFile);
+			fread(&fColScaleY, sizeof(float), 1, pFile);
+			vColScale = Vec2(fColScaleX, fColScaleY);
+		}
+
+		bool bAnimator = false;
+		fread(&bAnimator, sizeof(bool), 1, pFile);
+
+		vector<wstring> vecPath;
+		if (bAnimator == true)
+		{
+			// 애니메이션 경로 갯수 읽기
+			UINT animSize = 0;
+			fread(&animSize, sizeof(UINT), 1, pFile);
+
+			// 경로의 갯수만큼
+			for (int i = 0; i < animSize; i++)
+			{
+				wstring animPath = L"";
+				LoadWString(animPath, pFile);
+				vecPath.push_back(animPath);
+			}
+		}
+
+		bool bRigidBody = false;
+		fread(&bRigidBody, sizeof(bool), 1, pFile);
+
+		bool bGravity = false;
+		fread(&bGravity, sizeof(bool), 1, pFile);
+
+		CObject* pMon = (CObject*)CMonFactory::CreateMonster(MON_TYPE::NORMAL, strName, vPos, vScale, bCollider, vColOffset, vColScale, bAnimator, vecPath, bGravity, bRigidBody);
+		AddObject(pMon, GROUP_TYPE::MONSTER);
+	}
 }

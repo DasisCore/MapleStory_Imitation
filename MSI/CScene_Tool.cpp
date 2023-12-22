@@ -220,8 +220,6 @@ void CScene_Tool::update()
 	CScene::update();
 	CToolWindow::GetInst()->update();
 
-	SetTileIdx();
-
 	//if (KEY_TAP(KEY::ENTER))
 	//{
 	//	ChangeScene(SCENE_TYPE::START);
@@ -250,12 +248,6 @@ void CScene_Tool::update()
 
 	//	SaveTileData();
 	//}
-
-	if (KEY_TAP(KEY::CTRL))
-	{
-		//CUIMgr::GetInst()->SetFocusedUI(m_pUI);
-		LoadTileData();
-	}
 
 }
 
@@ -292,30 +284,6 @@ void CScene_Tool::render(HDC _dc)
 	else graphics.DrawString(L"Gizmo False", -1, &font, PointF(30.f, 150.f), &brush);
 
 	renderDrag(_dc);
-}
-
-
-void CScene_Tool::SetTileIdx()
-{
-	if (KEY_TAP(KEY::LBTN))
-	{
-		Vec2 vMousePos = MOUSE_POS;
-		vMousePos = CCamera::GetInst()->GetRealPos(vMousePos);
-		
-		UINT iTileX = (int)GetTileX();
-		UINT iTileY = (int)GetTileY();
-
-		UINT iCol = (int)vMousePos.x / TILE_SIZE;
-		UINT iRow = (int)vMousePos.y / TILE_SIZE;
-	
-		if (vMousePos.x < 0.f || iTileX <= iCol
-			|| vMousePos.y < 0.f || iTileY <= iRow) return;
-
-		UINT iIdx = iRow * iTileX + iCol;
-
-		const vector<CObject*>& vecTile = GetGroupObject(GROUP_TYPE::TILE);
-		((CTile*)vecTile[iIdx])->AddImgIdx();
-	}
 }
 
 void CScene_Tool::SaveSceneData(const wstring& _strFilePath)
@@ -366,225 +334,26 @@ void CScene_Tool::SaveSceneData(const wstring& _strFilePath)
 	fclose(pFile);
 }
 
-// 일단은 템플릿 사용이 애매하니, 하드코딩
 void CScene_Tool::LoadSceneData(const wstring& _strFilePath)
 {
 	// 로드하기 전에 맵을 초기화 한다.
 	void ResetMap();
 	DeleteAll_Except_UI();
 
-	FILE* pFile = nullptr;
-	_wfopen_s(&pFile, _strFilePath.c_str(), L"rb");
-	assert(pFile);
+	wstring fileName = L"";
 
-	// 맵 크기 읽기 
-	UINT width = 0;
-	UINT height = 0;
-	fread(&width, sizeof(UINT), 1, pFile);
-	fread(&height, sizeof(UINT), 1, pFile);
-
-	// 맵 크기 적용
-	m_vMap = Vec2((float)width, (float)height);
-
-	// Background1 읽기.
-	UINT vecSize = 0;
-	fread(&vecSize, sizeof(UINT), 1, pFile);
-	for (int i = 0; i < vecSize; i++)
+	for (int i = _strFilePath.size() - 1; i > 0; i--)
 	{
-		CObject* pObj = ReadObject<CBackground>(pFile);
-		AddObject(pObj, GROUP_TYPE::BACKGROUND1);
+		if (_strFilePath[i] == L'\\') break;
+		fileName = _strFilePath[i] + fileName;
 	}
 
-	// Background2 읽기.
-	vecSize = 0;
-	fread(&vecSize, sizeof(UINT), 1, pFile);
-	for (int i = 0; i < vecSize; i++)
-	{
-		CObject* pObj = ReadObject<CBackground>(pFile);
-		AddObject(pObj, GROUP_TYPE::BACKGROUND2);
-	}
+	CScene::LoadSceneData(fileName);
 
-	// Background3 읽기.
-	vecSize = 0;
-	fread(&vecSize, sizeof(UINT), 1, pFile);
-	for (int i = 0; i < vecSize; i++)
-	{
-		CObject* pObj = ReadObject<CBackground>(pFile);
-		AddObject(pObj, GROUP_TYPE::BACKGROUND3);
-	}
-
-	// FootHold 읽기.
-	vecSize = 0;
-	fread(&vecSize, sizeof(UINT), 1, pFile);
-	for (int i = 0; i < vecSize; i++)
-	{
-		CObject* pObj = ReadObject<CFoothold>(pFile);
-		AddObject(pObj, GROUP_TYPE::FOOTHOLD);
-	}
-
-	// Ground 읽기.
-	vecSize = 0;
-	fread(&vecSize, sizeof(UINT), 1, pFile);
-	for (int i = 0; i < vecSize; i++)
-	{
-		CObject* pObj = ReadObject<CGround>(pFile);
-		AddObject(pObj, GROUP_TYPE::GROUND);
-	}
-
-	// Monster 읽기. // Monster의 경우에는 Factory를 거쳐야하므로, 하드코딩했음.
-	vecSize = 0;
-	fread(&vecSize, sizeof(UINT), 1, pFile);
-	for (int i = 0; i < vecSize; i++)
-	{
-		// 오브젝트 이름 읽기.
-		wstring strName;
-		LoadWString(strName, pFile);
-
-		// 오브젝트 위치
-		float fPosX = 0.f;
-		float fPosY = 0.f;
-		fread(&fPosX, sizeof(float), 1, pFile);
-		fread(&fPosY, sizeof(float), 1, pFile);
-		Vec2 vPos = Vec2(fPosX, fPosY);
-
-		float fScaleX = 0.f;
-		float fScaleY = 0.f;
-		fread(&fScaleX, sizeof(float), 1, pFile);
-		fread(&fScaleY, sizeof(float), 1, pFile);
-		Vec2 vScale = Vec2(fScaleX, fScaleY);
-
-		bool bCollider = false;
-		fread(&bCollider, sizeof(bool), 1, pFile);
-		Vec2 vColOffset = Vec2(0.f, 0.f);
-		Vec2 vColScale = Vec2(0.f, 0.f);
-
-		if (bCollider == true)
-		{
-			float fOffsetX = 0.f;
-			float fOffsetY = 0.f;
-			fread(&fOffsetX, sizeof(float), 1, pFile);
-			fread(&fOffsetY, sizeof(float), 1, pFile);
-			vColOffset = Vec2(fOffsetX, fOffsetY);
-
-			float fColScaleX = 0.f;
-			float fColScaleY = 0.f;
-			fread(&fColScaleX, sizeof(float), 1, pFile);
-			fread(&fColScaleY, sizeof(float), 1, pFile);
-			vColScale = Vec2(fColScaleX, fColScaleY);
-		}
-
-		bool bAnimator = false;
-		fread(&bAnimator, sizeof(bool), 1, pFile);
-
-		vector<wstring> vecPath;
-		if (bAnimator == true)
-		{
-			// 애니메이션 경로 갯수 읽기
-			UINT animSize = 0;
-			fread(&animSize, sizeof(UINT), 1, pFile);
-
-			// 경로의 갯수만큼
-			for (int i = 0; i < animSize; i++)
-			{
-				wstring animPath = L"";
-				LoadWString(animPath, pFile);
-				vecPath.push_back(animPath);
-			}
-		}
-
-		bool bRigidBody = false;
-		fread(&bRigidBody, sizeof(bool), 1, pFile);
-
-		bool bGravity = false;
-		fread(&bGravity, sizeof(bool), 1, pFile);
-
-		CObject* pMon = (CObject*) CMonFactory::CreateMonster(MON_TYPE::NORMAL, strName, vPos, vScale, bCollider, vColOffset, vColScale, bAnimator, vecPath, bGravity, bRigidBody);
-		AddObject(pMon, GROUP_TYPE::MONSTER);
-	}
+	m_vMap = GetMapSize();
 }
 
-void CScene_Tool::SaveTileData()
-{
-	OPENFILENAME ofn = {};
-	
-	wchar_t szName[256] = {};
 
-	ofn.lStructSize = sizeof(OPENFILENAME);
-	ofn.hwndOwner = CCore::GetInst()->GetMainHwnd();
-	ofn.lpstrFile = szName;
-	ofn.nMaxFile = sizeof(szName);
-	ofn.lpstrFilter = L"ALL\0*.*\0Tile\0*.tile\0";
-	ofn.nFilterIndex = 1;
-	ofn.lpstrFileTitle = nullptr;
-	ofn.nMaxFileTitle = 0;
-
-	wstring strTileFolder = CPathMgr::GetInst()->GetContentPath();
-	strTileFolder += L"Tile";
-
-	ofn.lpstrInitialDir = strTileFolder.c_str();
-	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
-
-	// Modal 방식
-	if (GetSaveFileName(&ofn))
-	{
-		SaveTile(szName);
-	};
-}
-
-void CScene_Tool::LoadTileData()
-{
-	OPENFILENAME ofn = {};
-
-	wchar_t szName[256] = {};
-
-	ofn.lStructSize = sizeof(OPENFILENAME);
-	ofn.hwndOwner = CCore::GetInst()->GetMainHwnd();
-	ofn.lpstrFile = szName;
-	ofn.nMaxFile = sizeof(szName);
-	ofn.lpstrFilter = L"ALL\0*.*\0Tile\0*.tile\0";
-	ofn.nFilterIndex = 1;
-	ofn.lpstrFileTitle = nullptr;
-	ofn.nMaxFileTitle = 0;
-
-	wstring strTileFolder = CPathMgr::GetInst()->GetContentPath();
-	strTileFolder += L"Tile";
-
-	ofn.lpstrInitialDir = strTileFolder.c_str();
-	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
-
-	// Modal 방식
-	if (GetOpenFileName(&ofn))
-	{
-		wstring strRelativePath = CPathMgr::GetInst()->GetRelativePath(szName);
-		LoadTile(strRelativePath);
-	};
-}
-
-void CScene_Tool::SaveTile(const wstring& _strFilePath)
-{
-	// 커널 오브젝트
-	FILE* pFile = nullptr;
-	_wfopen_s(&pFile, _strFilePath.c_str(), L"wb");
-
-	assert(pFile);
-
-	// 타일 가로 세로 개수 저장
-	UINT xCount = GetTileX();
-	UINT yCount = GetTileY();
-
-	fwrite(&xCount, sizeof(UINT), 1, pFile);
-	fwrite(&yCount, sizeof(UINT), 1, pFile);
-
-	// 모든 타일들의 개별 데이터를 저장한다.
-	const vector<CObject*>& vecTile = GetGroupObject(GROUP_TYPE::TILE);
-
-	for (size_t i = 0; i < vecTile.size(); i++)
-	{
-		((CTile*)vecTile[i])->Save(pFile);
-	}
-
-	fclose(pFile);
-}
 
 void CScene_Tool::CreateMap(int _iWidth, int _iHeight)
 {
@@ -727,44 +496,6 @@ void CScene_Tool::Exit()
 
 
 #include <string>
-
-INT_PTR CALLBACK TileCountProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
-{
-	UNREFERENCED_PARAMETER(lParam);
-	switch (message)
-	{
-	case WM_INITDIALOG:
-		return (INT_PTR)TRUE;
-
-	case WM_COMMAND:
-		if (LOWORD(wParam) == IDOK)
-		{
-			// 프로시저에서 바로 처리
-			UINT iXCount = GetDlgItemInt(hDlg, IDC_EDIT1, nullptr, false);
-			UINT iYCount = GetDlgItemInt(hDlg, IDC_EDIT2, nullptr, false);
-
-			CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
-
-			// dynamic cast는 형변환에 실패했을 경우에 nullptr이 나오게 된다.
-			CScene_Tool* pToolScene = dynamic_cast<CScene_Tool*>(pCurScene);
-			assert(pToolScene);
-
-			pToolScene->DeleteGroup(GROUP_TYPE::TILE);
-			pToolScene->CreateTile(iXCount, iYCount);
-
-			EndDialog(hDlg, LOWORD(wParam));
-			return (INT_PTR)TRUE;
-		}
-		else if (LOWORD(wParam) == IDCANCEL)
-		{
-			EndDialog(hDlg, LOWORD(wParam));
-			return (INT_PTR)TRUE;
-		}
-		break;
-	}
-	return (INT_PTR)FALSE;
-}
-
 
 INT_PTR CALLBACK CreateMapDialogProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {

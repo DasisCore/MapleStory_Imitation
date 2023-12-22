@@ -30,6 +30,7 @@ enum class SCENE_TYPE
 	START,
 	TOOL,
 	ANIMATION_WORKSHOP,
+	TEST,
 
 
 	END,

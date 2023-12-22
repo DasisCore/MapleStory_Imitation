@@ -182,6 +182,9 @@
     <Filter Include="Engine\04. Object\Foothold">
       <UniqueIdentifier>{542d02e1-5b3a-4c68-98f8-631ef6919b96}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\05. Scene\Scene_Test">
+      <UniqueIdentifier>{81caf0aa-7adf-44cb-9574-029f0b8d68d4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -368,6 +371,9 @@
     <ClInclude Include="CFoothold.h">
       <Filter>Engine\04. Object\Foothold</Filter>
     </ClInclude>
+    <ClInclude Include="CScene_Test.h">
+      <Filter>Engine\05. Scene\Scene_Test</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CCore.cpp">
@@ -535,6 +541,9 @@
     </ClCompile>
     <ClCompile Include="CFoothold.cpp">
       <Filter>Engine\04. Object\Foothold</Filter>
+    </ClCompile>
+    <ClCompile Include="CScene_Test.cpp">
+      <Filter>Engine\05. Scene\Scene_Test</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
