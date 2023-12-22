@@ -369,6 +369,10 @@ void CScene_Tool::SaveSceneData(const wstring& _strFilePath)
 // 일단은 템플릿 사용이 애매하니, 하드코딩
 void CScene_Tool::LoadSceneData(const wstring& _strFilePath)
 {
+	// 로드하기 전에 맵을 초기화 한다.
+	void ResetMap();
+	DeleteAll_Except_UI();
+
 	FILE* pFile = nullptr;
 	_wfopen_s(&pFile, _strFilePath.c_str(), L"rb");
 	assert(pFile);
@@ -379,75 +383,15 @@ void CScene_Tool::LoadSceneData(const wstring& _strFilePath)
 	fread(&width, sizeof(UINT), 1, pFile);
 	fread(&height, sizeof(UINT), 1, pFile);
 
+	// 맵 크기 적용
+	m_vMap = Vec2((float)width, (float)height);
+
 	// Background1 읽기.
 	UINT vecSize = 0;
 	fread(&vecSize, sizeof(UINT), 1, pFile);
 	for (int i = 0; i < vecSize; i++)
 	{
-		// 오브젝트 이름 읽기.
-		wstring strName;
-		LoadWString(strName, pFile);
-
-		// 오브젝트 위치
-		float fPosX = 0.f;
-		float fPosY = 0.f;
-		fread(&fPosX, sizeof(float), 1, pFile);
-		fread(&fPosY, sizeof(float), 1, pFile);
-		Vec2 vPos = Vec2(fPosX, fPosY);
-
-		float fScaleX = 0.f;
-		float fScaleY = 0.f;
-		fread(&fScaleX, sizeof(float), 1, pFile);
-		fread(&fScaleY, sizeof(float), 1, pFile);
-		Vec2 vScale = Vec2(fScaleX, fScaleY);
-
-		bool bCollider = false;
-		fread(&bCollider, sizeof(bool), 1, pFile);
-		Vec2 vColOffset = Vec2(0.f, 0.f);
-		Vec2 vColScale = Vec2(0.f, 0.f);
-
-		if (bCollider == true)
-		{
-			float fOffsetX = 0.f;
-			float fOffsetY = 0.f;
-			fread(&fOffsetX, sizeof(float), 1, pFile);
-			fread(&fOffsetY, sizeof(float), 1, pFile);
-			vColOffset = Vec2(fOffsetX, fOffsetY);
-		
-
-			float fColScaleX = 0.f;
-			float fColScaleY = 0.f;
-			fread(&fColScaleX, sizeof(float), 1, pFile);
-			fread(&fColScaleY, sizeof(float), 1, pFile);
-			vColScale = Vec2(fColScaleX, fColScaleY);
-		}
-
-		bool bAnimator = false;
-		fread(&bAnimator, sizeof(bool), 1, pFile);
-
-		vector<wstring> vecPath;
-		if (bAnimator == true)
-		{
-			// 애니메이션 경로 갯수 읽기
-			UINT animSize = 0;
-			fread(&animSize, sizeof(UINT), 1, pFile);
-
-			// 경로의 갯수만큼
-			for (int i = 0; i < animSize; i++)
-			{
-				wstring animPath = L"";
-				LoadWString(animPath, pFile);
-				vecPath.push_back(animPath);
-			}
-		}
-
-		bool bRigidBody = false;
-		fread(&bRigidBody, sizeof(bool), 1, pFile);
-
-		bool bGravity = false;
-		fread(&bGravity, sizeof(bool), 1, pFile);
-
-		CObject* pObj = new CBackground(strName, vPos, vScale, bCollider, vColOffset, vColScale, bAnimator, vecPath, bGravity, bRigidBody);
+		CObject* pObj = ReadObject<CBackground>(pFile);
 		AddObject(pObj, GROUP_TYPE::BACKGROUND1);
 	}
 
@@ -456,70 +400,7 @@ void CScene_Tool::LoadSceneData(const wstring& _strFilePath)
 	fread(&vecSize, sizeof(UINT), 1, pFile);
 	for (int i = 0; i < vecSize; i++)
 	{
-		// 오브젝트 이름 읽기.
-		wstring strName;
-		LoadWString(strName, pFile);
-
-		// 오브젝트 위치
-		float fPosX = 0.f;
-		float fPosY = 0.f;
-		fread(&fPosX, sizeof(float), 1, pFile);
-		fread(&fPosY, sizeof(float), 1, pFile);
-		Vec2 vPos = Vec2(fPosX, fPosY);
-
-		float fScaleX = 0.f;
-		float fScaleY = 0.f;
-		fread(&fScaleX, sizeof(float), 1, pFile);
-		fread(&fScaleY, sizeof(float), 1, pFile);
-		Vec2 vScale = Vec2(fScaleX, fScaleY);
-
-		bool bCollider = false;
-		fread(&bCollider, sizeof(bool), 1, pFile);
-		Vec2 vColOffset = Vec2(0.f, 0.f);
-		Vec2 vColScale = Vec2(0.f, 0.f);
-
-		if (bCollider == true)
-		{
-			float fOffsetX = 0.f;
-			float fOffsetY = 0.f;
-			fread(&fOffsetX, sizeof(float), 1, pFile);
-			fread(&fOffsetY, sizeof(float), 1, pFile);
-			vColOffset = Vec2(fOffsetX, fOffsetY);
-
-
-			float fColScaleX = 0.f;
-			float fColScaleY = 0.f;
-			fread(&fColScaleX, sizeof(float), 1, pFile);
-			fread(&fColScaleY, sizeof(float), 1, pFile);
-			vColScale = Vec2(fColScaleX, fColScaleY);
-		}
-
-		bool bAnimator = false;
-		fread(&bAnimator, sizeof(bool), 1, pFile);
-
-		vector<wstring> vecPath;
-		if (bAnimator == true)
-		{
-			// 애니메이션 경로 갯수 읽기
-			UINT animSize = 0;
-			fread(&animSize, sizeof(UINT), 1, pFile);
-
-			// 경로의 갯수만큼
-			for (int i = 0; i < animSize; i++)
-			{
-				wstring animPath = L"";
-				LoadWString(animPath, pFile);
-				vecPath.push_back(animPath);
-			}
-		}
-
-		bool bRigidBody = false;
-		fread(&bRigidBody, sizeof(bool), 1, pFile);
-
-		bool bGravity = false;
-		fread(&bGravity, sizeof(bool), 1, pFile);
-
-		CObject* pObj = new CBackground(strName, vPos, vScale, bCollider, vColOffset, vColScale, bAnimator, vecPath, bGravity, bRigidBody);
+		CObject* pObj = ReadObject<CBackground>(pFile);
 		AddObject(pObj, GROUP_TYPE::BACKGROUND2);
 	}
 
@@ -528,70 +409,7 @@ void CScene_Tool::LoadSceneData(const wstring& _strFilePath)
 	fread(&vecSize, sizeof(UINT), 1, pFile);
 	for (int i = 0; i < vecSize; i++)
 	{
-		// 오브젝트 이름 읽기.
-		wstring strName;
-		LoadWString(strName, pFile);
-
-		// 오브젝트 위치
-		float fPosX = 0.f;
-		float fPosY = 0.f;
-		fread(&fPosX, sizeof(float), 1, pFile);
-		fread(&fPosY, sizeof(float), 1, pFile);
-		Vec2 vPos = Vec2(fPosX, fPosY);
-
-		float fScaleX = 0.f;
-		float fScaleY = 0.f;
-		fread(&fScaleX, sizeof(float), 1, pFile);
-		fread(&fScaleY, sizeof(float), 1, pFile);
-		Vec2 vScale = Vec2(fScaleX, fScaleY);
-
-		bool bCollider = false;
-		fread(&bCollider, sizeof(bool), 1, pFile);
-		Vec2 vColOffset = Vec2(0.f, 0.f);
-		Vec2 vColScale = Vec2(0.f, 0.f);
-
-		if (bCollider == true)
-		{
-			float fOffsetX = 0.f;
-			float fOffsetY = 0.f;
-			fread(&fOffsetX, sizeof(float), 1, pFile);
-			fread(&fOffsetY, sizeof(float), 1, pFile);
-			vColOffset = Vec2(fOffsetX, fOffsetY);
-
-
-			float fColScaleX = 0.f;
-			float fColScaleY = 0.f;
-			fread(&fColScaleX, sizeof(float), 1, pFile);
-			fread(&fColScaleY, sizeof(float), 1, pFile);
-			vColScale = Vec2(fColScaleX, fColScaleY);
-		}
-
-		bool bAnimator = false;
-		fread(&bAnimator, sizeof(bool), 1, pFile);
-
-		vector<wstring> vecPath;
-		if (bAnimator == true)
-		{
-			// 애니메이션 경로 갯수 읽기
-			UINT animSize = 0;
-			fread(&animSize, sizeof(UINT), 1, pFile);
-
-			// 경로의 갯수만큼
-			for (int i = 0; i < animSize; i++)
-			{
-				wstring animPath = L"";
-				LoadWString(animPath, pFile);
-				vecPath.push_back(animPath);
-			}
-		}
-
-		bool bRigidBody = false;
-		fread(&bRigidBody, sizeof(bool), 1, pFile);
-
-		bool bGravity = false;
-		fread(&bGravity, sizeof(bool), 1, pFile);
-
-		CObject* pObj = new CBackground(strName, vPos, vScale, bCollider, vColOffset, vColScale, bAnimator, vecPath, bGravity, bRigidBody);
+		CObject* pObj = ReadObject<CBackground>(pFile);
 		AddObject(pObj, GROUP_TYPE::BACKGROUND3);
 	}
 
@@ -600,70 +418,7 @@ void CScene_Tool::LoadSceneData(const wstring& _strFilePath)
 	fread(&vecSize, sizeof(UINT), 1, pFile);
 	for (int i = 0; i < vecSize; i++)
 	{
-		// 오브젝트 이름 읽기.
-		wstring strName;
-		LoadWString(strName, pFile);
-
-		// 오브젝트 위치
-		float fPosX = 0.f;
-		float fPosY = 0.f;
-		fread(&fPosX, sizeof(float), 1, pFile);
-		fread(&fPosY, sizeof(float), 1, pFile);
-		Vec2 vPos = Vec2(fPosX, fPosY);
-
-		float fScaleX = 0.f;
-		float fScaleY = 0.f;
-		fread(&fScaleX, sizeof(float), 1, pFile);
-		fread(&fScaleY, sizeof(float), 1, pFile);
-		Vec2 vScale = Vec2(fScaleX, fScaleY);
-
-		bool bCollider = false;
-		fread(&bCollider, sizeof(bool), 1, pFile);
-		Vec2 vColOffset = Vec2(0.f, 0.f);
-		Vec2 vColScale = Vec2(0.f, 0.f);
-
-		if (bCollider == true)
-		{
-			float fOffsetX = 0.f;
-			float fOffsetY = 0.f;
-			fread(&fOffsetX, sizeof(float), 1, pFile);
-			fread(&fOffsetY, sizeof(float), 1, pFile);
-			vColOffset = Vec2(fOffsetX, fOffsetY);
-
-
-			float fColScaleX = 0.f;
-			float fColScaleY = 0.f;
-			fread(&fColScaleX, sizeof(float), 1, pFile);
-			fread(&fColScaleY, sizeof(float), 1, pFile);
-			vColScale = Vec2(fColScaleX, fColScaleY);
-		}
-
-		bool bAnimator = false;
-		fread(&bAnimator, sizeof(bool), 1, pFile);
-
-		vector<wstring> vecPath;
-		if (bAnimator == true)
-		{
-			// 애니메이션 경로 갯수 읽기
-			UINT animSize = 0;
-			fread(&animSize, sizeof(UINT), 1, pFile);
-
-			// 경로의 갯수만큼
-			for (int i = 0; i < animSize; i++)
-			{
-				wstring animPath = L"";
-				LoadWString(animPath, pFile);
-				vecPath.push_back(animPath);
-			}
-		}
-
-		bool bRigidBody = false;
-		fread(&bRigidBody, sizeof(bool), 1, pFile);
-
-		bool bGravity = false;
-		fread(&bGravity, sizeof(bool), 1, pFile);
-
-		CObject* pObj = new CFoothold(strName, vPos, vScale, bCollider, vColOffset, vColScale, bAnimator, vecPath, bGravity, bRigidBody);
+		CObject* pObj = ReadObject<CFoothold>(pFile);
 		AddObject(pObj, GROUP_TYPE::FOOTHOLD);
 	}
 
@@ -672,74 +427,11 @@ void CScene_Tool::LoadSceneData(const wstring& _strFilePath)
 	fread(&vecSize, sizeof(UINT), 1, pFile);
 	for (int i = 0; i < vecSize; i++)
 	{
-		// 오브젝트 이름 읽기.
-		wstring strName;
-		LoadWString(strName, pFile);
-
-		// 오브젝트 위치
-		float fPosX = 0.f;
-		float fPosY = 0.f;
-		fread(&fPosX, sizeof(float), 1, pFile);
-		fread(&fPosY, sizeof(float), 1, pFile);
-		Vec2 vPos = Vec2(fPosX, fPosY);
-
-		float fScaleX = 0.f;
-		float fScaleY = 0.f;
-		fread(&fScaleX, sizeof(float), 1, pFile);
-		fread(&fScaleY, sizeof(float), 1, pFile);
-		Vec2 vScale = Vec2(fScaleX, fScaleY);
-
-		bool bCollider = false;
-		fread(&bCollider, sizeof(bool), 1, pFile);
-		Vec2 vColOffset = Vec2(0.f, 0.f);
-		Vec2 vColScale = Vec2(0.f, 0.f);
-
-		if (bCollider == true)
-		{
-			float fOffsetX = 0.f;
-			float fOffsetY = 0.f;
-			fread(&fOffsetX, sizeof(float), 1, pFile);
-			fread(&fOffsetY, sizeof(float), 1, pFile);
-			vColOffset = Vec2(fOffsetX, fOffsetY);
-
-
-			float fColScaleX = 0.f;
-			float fColScaleY = 0.f;
-			fread(&fColScaleX, sizeof(float), 1, pFile);
-			fread(&fColScaleY, sizeof(float), 1, pFile);
-			vColScale = Vec2(fColScaleX, fColScaleY);
-		}
-
-		bool bAnimator = false;
-		fread(&bAnimator, sizeof(bool), 1, pFile);
-
-		vector<wstring> vecPath;
-		if (bAnimator == true)
-		{
-			// 애니메이션 경로 갯수 읽기
-			UINT animSize = 0;
-			fread(&animSize, sizeof(UINT), 1, pFile);
-
-			// 경로의 갯수만큼
-			for (int i = 0; i < animSize; i++)
-			{
-				wstring animPath = L"";
-				LoadWString(animPath, pFile);
-				vecPath.push_back(animPath);
-			}
-		}
-
-		bool bRigidBody = false;
-		fread(&bRigidBody, sizeof(bool), 1, pFile);
-
-		bool bGravity = false;
-		fread(&bGravity, sizeof(bool), 1, pFile);
-
-		CObject* pObj = new CGround(strName, vPos, vScale, bCollider, vColOffset, vColScale, bAnimator, vecPath, bGravity, bRigidBody);
+		CObject* pObj = ReadObject<CGround>(pFile);
 		AddObject(pObj, GROUP_TYPE::GROUND);
 	}
 
-	// Monster 읽기.
+	// Monster 읽기. // Monster의 경우에는 Factory를 거쳐야하므로, 하드코딩했음.
 	vecSize = 0;
 	fread(&vecSize, sizeof(UINT), 1, pFile);
 	for (int i = 0; i < vecSize; i++)
