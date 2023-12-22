@@ -18,6 +18,7 @@ public:
 	CObject* GetObj() { return m_pOwner; }
 
 public:
+	const map<wstring, CAnimation*> GetMapAnim() { return m_mapAnim; }
 	void CreateAnimation(const wstring& _strName, CTexture* _pTex, vector<tAnimFrm> _vFrame, float _fDuration);
 	void CreateAnimation_rewind(const wstring& _strName, CTexture* _pTex, vector<tAnimFrm> _vFrame, float _fDuration);
 	void LoadAnimation(const wstring& _strRelationPath);

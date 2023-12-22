@@ -23,6 +23,9 @@ private:
 public:
     void SetTileIdx();
 
+    void SaveSceneData(const wstring& _strFilePath);
+    void LoadSceneData(const wstring& _strFilePath);
+
     void SaveTileData();
     void LoadTileData();
     void SaveTile(const wstring& _strFilePath);

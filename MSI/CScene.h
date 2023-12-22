@@ -35,7 +35,6 @@ public:
 	void render_tile(HDC _dc);
 	
 	const vector<CObject*>& GetGroupObject(GROUP_TYPE _eType) { return m_vecObj[(UINT)_eType]; }
-
 	vector<CObject*>& GetUIGroup() { return m_vecObj[(UINT)GROUP_TYPE::UI]; }
 
 	virtual void start();

@@ -58,3 +58,7 @@ void Safe_Delete_List(list<T>& _list)
 void SaveWString(const wstring& _str, FILE* _pFile);
 void LoadWString(wstring& _str, FILE* _pFile);
 wstring setprecision_float(float _f, int cnt);
+
+// 특정 유형의 오브젝트를 저장
+void SaveObject(const vector<CObject*> _vecObj, FILE* _pFile);
+

@@ -21,13 +21,22 @@
 
 #include "CPathMgr.h"
 #include "CFoothold.h"
+#include "CBackground.h"
+#include "CGround.h"
 
+
+#include "CComponent.h"
+#include "CCollider.h"
+#include "CAnimator.h"
+#include "CAnimation.h"
 #include "CToolWindow.h"
 
 
 void ChangeScene(DWORD_PTR, DWORD_PTR);
 void G_ChangeTool(DWORD_PTR _i, DWORD_PTR);
 void G_CreateMap(DWORD_PTR, DWORD_PTR);
+void Save(DWORD_PTR, DWORD_PTR);
+void Load(DWORD_PTR, DWORD_PTR);
 INT_PTR CALLBACK CreateMapDialogProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 CScene_Tool::CScene_Tool()
@@ -93,11 +102,23 @@ void CScene_Tool::Enter()
 
 	pPanelUI->AddChild(pBtnUI);
 
+	pBtnUI = new CBtnUI;
+	pBtnUI->SetName(L"Load");
+	pBtnUI->SetScale(Vec2(55.f, 25.f));
+	pBtnUI->SetPos(Vec2(5.f, 95.f));
+	//pBtnUI->SetClickCallBack(this, (SCENE_MEMFUNC)&CScene_Tool::toggleGizmo);
+	pBtnUI->SetClickCallBack(Load, 0, 0);
 
+	pPanelUI->AddChild(pBtnUI);
 
+	pBtnUI = new CBtnUI;
+	pBtnUI->SetName(L"Save");
+	pBtnUI->SetScale(Vec2(55.f, 25.f));
+	pBtnUI->SetPos(Vec2(5.f, 125.f));
+	//pBtnUI->SetClickCallBack(this, (SCENE_MEMFUNC)&CScene_Tool::SaveSceneData);
+	pBtnUI->SetClickCallBack(Save, 0, 0);
 
-
-
+	pPanelUI->AddChild(pBtnUI);
 
 	AddObject(pPanelUI, GROUP_TYPE::UI);
 
@@ -130,6 +151,68 @@ void G_ChangeTool(DWORD_PTR _i, DWORD_PTR)
 {
 	CScene_Tool* pCurScene = (CScene_Tool*) CSceneMgr::GetInst()->GetCurScene();
 	pCurScene->ChangeTool((int)_i);
+}
+
+void Save(DWORD_PTR, DWORD_PTR)
+{
+	OPENFILENAME ofn = {};
+
+	wchar_t szName[256] = {};
+
+	ofn.lStructSize = sizeof(OPENFILENAME);
+	ofn.hwndOwner = CCore::GetInst()->GetMainHwnd();
+	ofn.lpstrFile = szName;
+	ofn.nMaxFile = sizeof(szName);
+	ofn.lpstrFilter = L"scene\0*.scene\0";
+	ofn.nFilterIndex = 1;
+	ofn.lpstrFileTitle = nullptr;
+	ofn.nMaxFileTitle = 0;
+
+	wstring strAnimationFolder = CPathMgr::GetInst()->GetContentPath();
+	strAnimationFolder += L"Scene";
+
+	ofn.lpstrInitialDir = strAnimationFolder.c_str();
+	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+
+	// 확장자 지정
+	ofn.lpstrDefExt = L"scene";
+
+	// Modal 방식
+	if (GetSaveFileName(&ofn))
+	{
+		CScene_Tool* pCurScene = (CScene_Tool*)CSceneMgr::GetInst()->GetCurScene();
+		pCurScene->SaveSceneData(szName);
+	}
+}
+
+void Load(DWORD_PTR, DWORD_PTR)
+{
+	OPENFILENAME ofn = {};
+
+	wchar_t szName[256] = {};
+
+	ofn.lStructSize = sizeof(OPENFILENAME);
+	ofn.hwndOwner = CCore::GetInst()->GetMainHwnd();
+	ofn.lpstrFile = szName;
+	ofn.nMaxFile = sizeof(szName);
+	ofn.lpstrFilter = L"scene\0*.scene\0";
+	ofn.nFilterIndex = 1;
+	ofn.lpstrFileTitle = nullptr;
+	ofn.nMaxFileTitle = 0;
+
+	// 컨텐츠 Path를 가져옴
+	wstring strAnimationFolder = CPathMgr::GetInst()->GetContentPath();
+	strAnimationFolder += L"Scene";
+
+	ofn.lpstrInitialDir = strAnimationFolder.c_str();
+	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+
+	// 파일 읽기가 성공했다면.
+	if (GetOpenFileName(&ofn))
+	{
+		CScene_Tool* pCurScene = (CScene_Tool*)CSceneMgr::GetInst()->GetCurScene();
+		pCurScene->LoadSceneData(szName);
+	}
 }
 
 void CScene_Tool::update()
@@ -232,6 +315,499 @@ void CScene_Tool::SetTileIdx()
 
 		const vector<CObject*>& vecTile = GetGroupObject(GROUP_TYPE::TILE);
 		((CTile*)vecTile[iIdx])->AddImgIdx();
+	}
+}
+
+void CScene_Tool::SaveSceneData(const wstring& _strFilePath)
+{
+	// 파일 이름 가져오기 (확장자 제외)
+	wstring strName = L"";
+	bool flag = 0;
+	for (int i = _strFilePath.length() - 1; i >= 0; i--)
+	{
+		if (_strFilePath[i] == L'\\') break;
+		if (flag) strName = _strFilePath[i] + strName;
+		if (_strFilePath[i] == L'.') flag = 1;
+	}
+
+	CScene* pCurScene = this;
+
+	FILE* pFile = nullptr;
+
+	//// 파일스트림 열기
+	_wfopen_s(&pFile, _strFilePath.c_str(), L"wb");
+	assert(pFile);
+
+	// 맵의 너비와 높이 저장
+	UINT width = m_vMap.x;
+	UINT Height = m_vMap.y;
+
+	fwrite(&width, sizeof(UINT), 1, pFile);
+	fwrite(&Height, sizeof(UINT), 1, pFile);
+
+	const vector<CObject*> vecBG1 = GetGroupObject(GROUP_TYPE::BACKGROUND1);
+	SaveObject(vecBG1, pFile);
+
+	const vector<CObject*> vecBG2 = GetGroupObject(GROUP_TYPE::BACKGROUND2);
+	SaveObject(vecBG2, pFile);
+
+	const vector<CObject*> vecBG3 = GetGroupObject(GROUP_TYPE::BACKGROUND3);
+	SaveObject(vecBG3, pFile);
+
+	const vector<CObject*> vecFH = GetGroupObject(GROUP_TYPE::FOOTHOLD);
+	SaveObject(vecFH, pFile);
+
+	const vector<CObject*> vecGD = GetGroupObject(GROUP_TYPE::GROUND);
+	SaveObject(vecGD, pFile);
+
+	const vector<CObject*> vecMS = GetGroupObject(GROUP_TYPE::MONSTER);
+	SaveObject(vecMS, pFile);
+
+	fclose(pFile);
+}
+
+// 일단은 템플릿 사용이 애매하니, 하드코딩
+void CScene_Tool::LoadSceneData(const wstring& _strFilePath)
+{
+	FILE* pFile = nullptr;
+	_wfopen_s(&pFile, _strFilePath.c_str(), L"rb");
+	assert(pFile);
+
+	// 맵 크기 읽기 
+	UINT width = 0;
+	UINT height = 0;
+	fread(&width, sizeof(UINT), 1, pFile);
+	fread(&height, sizeof(UINT), 1, pFile);
+
+	// Background1 읽기.
+	UINT vecSize = 0;
+	fread(&vecSize, sizeof(UINT), 1, pFile);
+	for (int i = 0; i < vecSize; i++)
+	{
+		// 오브젝트 이름 읽기.
+		wstring strName;
+		LoadWString(strName, pFile);
+
+		// 오브젝트 위치
+		float fPosX = 0.f;
+		float fPosY = 0.f;
+		fread(&fPosX, sizeof(float), 1, pFile);
+		fread(&fPosY, sizeof(float), 1, pFile);
+		Vec2 vPos = Vec2(fPosX, fPosY);
+
+		float fScaleX = 0.f;
+		float fScaleY = 0.f;
+		fread(&fScaleX, sizeof(float), 1, pFile);
+		fread(&fScaleY, sizeof(float), 1, pFile);
+		Vec2 vScale = Vec2(fScaleX, fScaleY);
+
+		bool bCollider = false;
+		fread(&bCollider, sizeof(bool), 1, pFile);
+		Vec2 vColOffset = Vec2(0.f, 0.f);
+		Vec2 vColScale = Vec2(0.f, 0.f);
+
+		if (bCollider == true)
+		{
+			float fOffsetX = 0.f;
+			float fOffsetY = 0.f;
+			fread(&fOffsetX, sizeof(float), 1, pFile);
+			fread(&fOffsetY, sizeof(float), 1, pFile);
+			vColOffset = Vec2(fOffsetX, fOffsetY);
+		
+
+			float fColScaleX = 0.f;
+			float fColScaleY = 0.f;
+			fread(&fColScaleX, sizeof(float), 1, pFile);
+			fread(&fColScaleY, sizeof(float), 1, pFile);
+			vColScale = Vec2(fColScaleX, fColScaleY);
+		}
+
+		bool bAnimator = false;
+		fread(&bAnimator, sizeof(bool), 1, pFile);
+
+		vector<wstring> vecPath;
+		if (bAnimator == true)
+		{
+			// 애니메이션 경로 갯수 읽기
+			UINT animSize = 0;
+			fread(&animSize, sizeof(UINT), 1, pFile);
+
+			// 경로의 갯수만큼
+			for (int i = 0; i < animSize; i++)
+			{
+				wstring animPath = L"";
+				LoadWString(animPath, pFile);
+				vecPath.push_back(animPath);
+			}
+		}
+
+		bool bRigidBody = false;
+		fread(&bRigidBody, sizeof(bool), 1, pFile);
+
+		bool bGravity = false;
+		fread(&bGravity, sizeof(bool), 1, pFile);
+
+		CObject* pObj = new CBackground(strName, vPos, vScale, bCollider, vColOffset, vColScale, bAnimator, vecPath, bGravity, bRigidBody);
+		AddObject(pObj, GROUP_TYPE::BACKGROUND1);
+	}
+
+	// Background2 읽기.
+	vecSize = 0;
+	fread(&vecSize, sizeof(UINT), 1, pFile);
+	for (int i = 0; i < vecSize; i++)
+	{
+		// 오브젝트 이름 읽기.
+		wstring strName;
+		LoadWString(strName, pFile);
+
+		// 오브젝트 위치
+		float fPosX = 0.f;
+		float fPosY = 0.f;
+		fread(&fPosX, sizeof(float), 1, pFile);
+		fread(&fPosY, sizeof(float), 1, pFile);
+		Vec2 vPos = Vec2(fPosX, fPosY);
+
+		float fScaleX = 0.f;
+		float fScaleY = 0.f;
+		fread(&fScaleX, sizeof(float), 1, pFile);
+		fread(&fScaleY, sizeof(float), 1, pFile);
+		Vec2 vScale = Vec2(fScaleX, fScaleY);
+
+		bool bCollider = false;
+		fread(&bCollider, sizeof(bool), 1, pFile);
+		Vec2 vColOffset = Vec2(0.f, 0.f);
+		Vec2 vColScale = Vec2(0.f, 0.f);
+
+		if (bCollider == true)
+		{
+			float fOffsetX = 0.f;
+			float fOffsetY = 0.f;
+			fread(&fOffsetX, sizeof(float), 1, pFile);
+			fread(&fOffsetY, sizeof(float), 1, pFile);
+			vColOffset = Vec2(fOffsetX, fOffsetY);
+
+
+			float fColScaleX = 0.f;
+			float fColScaleY = 0.f;
+			fread(&fColScaleX, sizeof(float), 1, pFile);
+			fread(&fColScaleY, sizeof(float), 1, pFile);
+			vColScale = Vec2(fColScaleX, fColScaleY);
+		}
+
+		bool bAnimator = false;
+		fread(&bAnimator, sizeof(bool), 1, pFile);
+
+		vector<wstring> vecPath;
+		if (bAnimator == true)
+		{
+			// 애니메이션 경로 갯수 읽기
+			UINT animSize = 0;
+			fread(&animSize, sizeof(UINT), 1, pFile);
+
+			// 경로의 갯수만큼
+			for (int i = 0; i < animSize; i++)
+			{
+				wstring animPath = L"";
+				LoadWString(animPath, pFile);
+				vecPath.push_back(animPath);
+			}
+		}
+
+		bool bRigidBody = false;
+		fread(&bRigidBody, sizeof(bool), 1, pFile);
+
+		bool bGravity = false;
+		fread(&bGravity, sizeof(bool), 1, pFile);
+
+		CObject* pObj = new CBackground(strName, vPos, vScale, bCollider, vColOffset, vColScale, bAnimator, vecPath, bGravity, bRigidBody);
+		AddObject(pObj, GROUP_TYPE::BACKGROUND2);
+	}
+
+	// Background3 읽기.
+	vecSize = 0;
+	fread(&vecSize, sizeof(UINT), 1, pFile);
+	for (int i = 0; i < vecSize; i++)
+	{
+		// 오브젝트 이름 읽기.
+		wstring strName;
+		LoadWString(strName, pFile);
+
+		// 오브젝트 위치
+		float fPosX = 0.f;
+		float fPosY = 0.f;
+		fread(&fPosX, sizeof(float), 1, pFile);
+		fread(&fPosY, sizeof(float), 1, pFile);
+		Vec2 vPos = Vec2(fPosX, fPosY);
+
+		float fScaleX = 0.f;
+		float fScaleY = 0.f;
+		fread(&fScaleX, sizeof(float), 1, pFile);
+		fread(&fScaleY, sizeof(float), 1, pFile);
+		Vec2 vScale = Vec2(fScaleX, fScaleY);
+
+		bool bCollider = false;
+		fread(&bCollider, sizeof(bool), 1, pFile);
+		Vec2 vColOffset = Vec2(0.f, 0.f);
+		Vec2 vColScale = Vec2(0.f, 0.f);
+
+		if (bCollider == true)
+		{
+			float fOffsetX = 0.f;
+			float fOffsetY = 0.f;
+			fread(&fOffsetX, sizeof(float), 1, pFile);
+			fread(&fOffsetY, sizeof(float), 1, pFile);
+			vColOffset = Vec2(fOffsetX, fOffsetY);
+
+
+			float fColScaleX = 0.f;
+			float fColScaleY = 0.f;
+			fread(&fColScaleX, sizeof(float), 1, pFile);
+			fread(&fColScaleY, sizeof(float), 1, pFile);
+			vColScale = Vec2(fColScaleX, fColScaleY);
+		}
+
+		bool bAnimator = false;
+		fread(&bAnimator, sizeof(bool), 1, pFile);
+
+		vector<wstring> vecPath;
+		if (bAnimator == true)
+		{
+			// 애니메이션 경로 갯수 읽기
+			UINT animSize = 0;
+			fread(&animSize, sizeof(UINT), 1, pFile);
+
+			// 경로의 갯수만큼
+			for (int i = 0; i < animSize; i++)
+			{
+				wstring animPath = L"";
+				LoadWString(animPath, pFile);
+				vecPath.push_back(animPath);
+			}
+		}
+
+		bool bRigidBody = false;
+		fread(&bRigidBody, sizeof(bool), 1, pFile);
+
+		bool bGravity = false;
+		fread(&bGravity, sizeof(bool), 1, pFile);
+
+		CObject* pObj = new CBackground(strName, vPos, vScale, bCollider, vColOffset, vColScale, bAnimator, vecPath, bGravity, bRigidBody);
+		AddObject(pObj, GROUP_TYPE::BACKGROUND3);
+	}
+
+	// FootHold 읽기.
+	vecSize = 0;
+	fread(&vecSize, sizeof(UINT), 1, pFile);
+	for (int i = 0; i < vecSize; i++)
+	{
+		// 오브젝트 이름 읽기.
+		wstring strName;
+		LoadWString(strName, pFile);
+
+		// 오브젝트 위치
+		float fPosX = 0.f;
+		float fPosY = 0.f;
+		fread(&fPosX, sizeof(float), 1, pFile);
+		fread(&fPosY, sizeof(float), 1, pFile);
+		Vec2 vPos = Vec2(fPosX, fPosY);
+
+		float fScaleX = 0.f;
+		float fScaleY = 0.f;
+		fread(&fScaleX, sizeof(float), 1, pFile);
+		fread(&fScaleY, sizeof(float), 1, pFile);
+		Vec2 vScale = Vec2(fScaleX, fScaleY);
+
+		bool bCollider = false;
+		fread(&bCollider, sizeof(bool), 1, pFile);
+		Vec2 vColOffset = Vec2(0.f, 0.f);
+		Vec2 vColScale = Vec2(0.f, 0.f);
+
+		if (bCollider == true)
+		{
+			float fOffsetX = 0.f;
+			float fOffsetY = 0.f;
+			fread(&fOffsetX, sizeof(float), 1, pFile);
+			fread(&fOffsetY, sizeof(float), 1, pFile);
+			vColOffset = Vec2(fOffsetX, fOffsetY);
+
+
+			float fColScaleX = 0.f;
+			float fColScaleY = 0.f;
+			fread(&fColScaleX, sizeof(float), 1, pFile);
+			fread(&fColScaleY, sizeof(float), 1, pFile);
+			vColScale = Vec2(fColScaleX, fColScaleY);
+		}
+
+		bool bAnimator = false;
+		fread(&bAnimator, sizeof(bool), 1, pFile);
+
+		vector<wstring> vecPath;
+		if (bAnimator == true)
+		{
+			// 애니메이션 경로 갯수 읽기
+			UINT animSize = 0;
+			fread(&animSize, sizeof(UINT), 1, pFile);
+
+			// 경로의 갯수만큼
+			for (int i = 0; i < animSize; i++)
+			{
+				wstring animPath = L"";
+				LoadWString(animPath, pFile);
+				vecPath.push_back(animPath);
+			}
+		}
+
+		bool bRigidBody = false;
+		fread(&bRigidBody, sizeof(bool), 1, pFile);
+
+		bool bGravity = false;
+		fread(&bGravity, sizeof(bool), 1, pFile);
+
+		CObject* pObj = new CFoothold(strName, vPos, vScale, bCollider, vColOffset, vColScale, bAnimator, vecPath, bGravity, bRigidBody);
+		AddObject(pObj, GROUP_TYPE::FOOTHOLD);
+	}
+
+	// Ground 읽기.
+	vecSize = 0;
+	fread(&vecSize, sizeof(UINT), 1, pFile);
+	for (int i = 0; i < vecSize; i++)
+	{
+		// 오브젝트 이름 읽기.
+		wstring strName;
+		LoadWString(strName, pFile);
+
+		// 오브젝트 위치
+		float fPosX = 0.f;
+		float fPosY = 0.f;
+		fread(&fPosX, sizeof(float), 1, pFile);
+		fread(&fPosY, sizeof(float), 1, pFile);
+		Vec2 vPos = Vec2(fPosX, fPosY);
+
+		float fScaleX = 0.f;
+		float fScaleY = 0.f;
+		fread(&fScaleX, sizeof(float), 1, pFile);
+		fread(&fScaleY, sizeof(float), 1, pFile);
+		Vec2 vScale = Vec2(fScaleX, fScaleY);
+
+		bool bCollider = false;
+		fread(&bCollider, sizeof(bool), 1, pFile);
+		Vec2 vColOffset = Vec2(0.f, 0.f);
+		Vec2 vColScale = Vec2(0.f, 0.f);
+
+		if (bCollider == true)
+		{
+			float fOffsetX = 0.f;
+			float fOffsetY = 0.f;
+			fread(&fOffsetX, sizeof(float), 1, pFile);
+			fread(&fOffsetY, sizeof(float), 1, pFile);
+			vColOffset = Vec2(fOffsetX, fOffsetY);
+
+
+			float fColScaleX = 0.f;
+			float fColScaleY = 0.f;
+			fread(&fColScaleX, sizeof(float), 1, pFile);
+			fread(&fColScaleY, sizeof(float), 1, pFile);
+			vColScale = Vec2(fColScaleX, fColScaleY);
+		}
+
+		bool bAnimator = false;
+		fread(&bAnimator, sizeof(bool), 1, pFile);
+
+		vector<wstring> vecPath;
+		if (bAnimator == true)
+		{
+			// 애니메이션 경로 갯수 읽기
+			UINT animSize = 0;
+			fread(&animSize, sizeof(UINT), 1, pFile);
+
+			// 경로의 갯수만큼
+			for (int i = 0; i < animSize; i++)
+			{
+				wstring animPath = L"";
+				LoadWString(animPath, pFile);
+				vecPath.push_back(animPath);
+			}
+		}
+
+		bool bRigidBody = false;
+		fread(&bRigidBody, sizeof(bool), 1, pFile);
+
+		bool bGravity = false;
+		fread(&bGravity, sizeof(bool), 1, pFile);
+
+		CObject* pObj = new CGround(strName, vPos, vScale, bCollider, vColOffset, vColScale, bAnimator, vecPath, bGravity, bRigidBody);
+		AddObject(pObj, GROUP_TYPE::GROUND);
+	}
+
+	// Monster 읽기.
+	vecSize = 0;
+	fread(&vecSize, sizeof(UINT), 1, pFile);
+	for (int i = 0; i < vecSize; i++)
+	{
+		// 오브젝트 이름 읽기.
+		wstring strName;
+		LoadWString(strName, pFile);
+
+		// 오브젝트 위치
+		float fPosX = 0.f;
+		float fPosY = 0.f;
+		fread(&fPosX, sizeof(float), 1, pFile);
+		fread(&fPosY, sizeof(float), 1, pFile);
+		Vec2 vPos = Vec2(fPosX, fPosY);
+
+		float fScaleX = 0.f;
+		float fScaleY = 0.f;
+		fread(&fScaleX, sizeof(float), 1, pFile);
+		fread(&fScaleY, sizeof(float), 1, pFile);
+		Vec2 vScale = Vec2(fScaleX, fScaleY);
+
+		bool bCollider = false;
+		fread(&bCollider, sizeof(bool), 1, pFile);
+		Vec2 vColOffset = Vec2(0.f, 0.f);
+		Vec2 vColScale = Vec2(0.f, 0.f);
+
+		if (bCollider == true)
+		{
+			float fOffsetX = 0.f;
+			float fOffsetY = 0.f;
+			fread(&fOffsetX, sizeof(float), 1, pFile);
+			fread(&fOffsetY, sizeof(float), 1, pFile);
+			vColOffset = Vec2(fOffsetX, fOffsetY);
+
+			float fColScaleX = 0.f;
+			float fColScaleY = 0.f;
+			fread(&fColScaleX, sizeof(float), 1, pFile);
+			fread(&fColScaleY, sizeof(float), 1, pFile);
+			vColScale = Vec2(fColScaleX, fColScaleY);
+		}
+
+		bool bAnimator = false;
+		fread(&bAnimator, sizeof(bool), 1, pFile);
+
+		vector<wstring> vecPath;
+		if (bAnimator == true)
+		{
+			// 애니메이션 경로 갯수 읽기
+			UINT animSize = 0;
+			fread(&animSize, sizeof(UINT), 1, pFile);
+
+			// 경로의 갯수만큼
+			for (int i = 0; i < animSize; i++)
+			{
+				wstring animPath = L"";
+				LoadWString(animPath, pFile);
+				vecPath.push_back(animPath);
+			}
+		}
+
+		bool bRigidBody = false;
+		fread(&bRigidBody, sizeof(bool), 1, pFile);
+
+		bool bGravity = false;
+		fread(&bGravity, sizeof(bool), 1, pFile);
+
+		CObject* pMon = (CObject*) CMonFactory::CreateMonster(MON_TYPE::NORMAL, strName, vPos, vScale, bCollider, vColOffset, vColScale, bAnimator, vecPath, bGravity, bRigidBody);
+		AddObject(pMon, GROUP_TYPE::MONSTER);
 	}
 }
 

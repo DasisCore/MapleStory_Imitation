@@ -139,7 +139,7 @@ void CToolWindow::init()
     m_hWndGravityCheckBox = CreateCheckBox(L"Gravity", Vec2(10, 660), Vec2(10, 10), (HMENU)IDC_CHECKBOX_GRAVITY);
     m_hWndRigidBodyCheckBox = CreateCheckBox(L"RigidBody", Vec2(10, 690), Vec2(10, 10), (HMENU)IDC_CHECKBOX_RIGIDBODY);
 
-    m_hWndCreateObjBtn = CreateButton(L"Save Scene", Vec2(10, 720), Vec2(100.f, 30.f), (HMENU)IDC_BUTTON_CREATE_OBJECT);
+    m_hWndCreateObjBtn = CreateButton(L"Save Scene", Vec2(10, 720), Vec2(100.f, 30.f), (HMENU)IDC_BUTTON_SAVE_SCENE);
     m_hWndCreateObjBtn = CreateButton(L"Create", Vec2(340, 720), Vec2(70.f, 30.f), (HMENU)IDC_BUTTON_CREATE_OBJECT);
 
     HDC MainDC = GetDC(m_hWndTool);
@@ -591,6 +591,7 @@ void CToolWindow::shiftWindow()
 // =================================================================
 
 #include "CToolWindow.h"
+#include "CScene_Tool.h"
 #include <sstream>
 #include <iomanip>
 
@@ -721,7 +722,34 @@ LRESULT CALLBACK ToolWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
             break;
         case IDC_BUTTON_SAVE_SCENE:
         {
-            CToolWindow::GetInst();
+            OPENFILENAME ofn = {};
+
+            wchar_t szName[256] = {};
+
+            ofn.lStructSize = sizeof(OPENFILENAME);
+            ofn.hwndOwner = CCore::GetInst()->GetMainHwnd();
+            ofn.lpstrFile = szName;
+            ofn.nMaxFile = sizeof(szName);
+            ofn.lpstrFilter = L"scene\0*.scene\0";
+            ofn.nFilterIndex = 1;
+            ofn.lpstrFileTitle = nullptr;
+            ofn.nMaxFileTitle = 0;
+
+            wstring strAnimationFolder = CPathMgr::GetInst()->GetContentPath();
+            strAnimationFolder += L"Scene";
+
+            ofn.lpstrInitialDir = strAnimationFolder.c_str();
+            ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+
+            // 확장자 지정
+            ofn.lpstrDefExt = L"scene";
+
+            // Modal 방식
+            if (GetSaveFileName(&ofn))
+            {
+                CScene_Tool* pCurScene = (CScene_Tool*) CSceneMgr::GetInst()->GetCurScene();
+                pCurScene->SaveSceneData(szName);
+            }
         }
             break;
         default:

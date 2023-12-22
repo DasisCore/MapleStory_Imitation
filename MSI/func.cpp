@@ -2,6 +2,13 @@
 #include "func.h"
 
 #include "CEventMgr.h"
+#include "CComponent.h"
+#include "CAnimator.h"
+#include "CAnimation.h"
+#include "CCollider.h"
+#include "CRigidBody.h"
+#include "CGravity.h"
+#include "CObject.h"
 
 void CreateObject(CObject* _pObj, GROUP_TYPE _eGroup)
 {
@@ -88,4 +95,88 @@ wstring setprecision_float(float _f, int cnt)
 	}
 
 	return result;
+}
+
+void SaveObject(const vector<CObject*> _vecObj, FILE* _pFile)
+{
+	// 해당 유형의 오브젝트의 수
+	UINT vecSize = _vecObj.size();
+	fwrite(&vecSize, sizeof(UINT), 1, _pFile);
+
+	for (int i = 0; i < vecSize; i++)
+	{
+		CObject* pObj = _vecObj[i];
+
+		// 이름 저장
+		SaveWString(pObj->GetName(), _pFile);
+
+		// Position 저장
+		Vec2 vPos = pObj->GetPos();
+		float fPosX = vPos.x;
+		float fPosY = vPos.y;
+		fwrite(&fPosX, sizeof(float), 1, _pFile);
+		fwrite(&fPosY, sizeof(float), 1, _pFile);
+
+		// Scale 저장
+		Vec2 vScale = pObj->GetScale();
+		float fScaleX = vScale.x;
+		float fScaleY = vScale.y;
+		fwrite(&fScaleX, sizeof(float), 1, _pFile);
+		fwrite(&fScaleY, sizeof(float), 1, _pFile);
+
+		// 콜라이더 유무
+		CCollider* pCol = pObj->GetComponent()->GetCollider();
+		bool bCollider = pCol == nullptr ? false : true;
+		fwrite(&bCollider, sizeof(bool), 1, _pFile);
+
+		// 콜라이더가 있다면 
+		if (pCol != nullptr)
+		{
+			// Offset Position 저장
+			Vec2 vColOffsetPos = pCol->GetOffssetPos();
+			float fOffsetX = vColOffsetPos.x;
+			float fOffsetY = vColOffsetPos.y;
+			fwrite(&fOffsetX, sizeof(float), 1, _pFile);
+			fwrite(&fOffsetY, sizeof(float), 1, _pFile);
+
+			// Collider Scale 저장
+			Vec2 vColScale = pCol->GetScale();
+			float fColScaleX = vColScale.x;
+			float fColScaleY = vColScale.y;
+			fwrite(&fColScaleX, sizeof(float), 1, _pFile);
+			fwrite(&fColScaleY, sizeof(float), 1, _pFile);
+		}
+
+		// 애니메이션 유무
+		CAnimator* pAni = pObj->GetComponent()->GetAnimator();
+		bool bAnimator = pAni == nullptr ? false : true;
+		fwrite(&bAnimator, sizeof(bool), 1, _pFile);
+
+		if (pAni != nullptr)
+		{
+			map<wstring, CAnimation*> mapAnim = pAni->GetMapAnim();
+			// 해당 오브젝트가 사용하는 animation 갯수 저장
+			UINT animSize = mapAnim.size();
+			fwrite(&animSize, sizeof(UINT), 1, _pFile);
+
+			for (auto iter = mapAnim.begin(); iter != mapAnim.end(); iter++)
+			{
+				// 불러올 애니메이션 경로를 저장
+				wstring animName = iter->first;
+				// 애니메이션 파일 경로 저장
+				wstring animPath = L"Animation\\" + animName + L".anim";
+				SaveWString(animPath, _pFile);
+			}
+		}
+
+		// 강체 (RigidBody) 유무
+		CRigidBody* pRigid = pObj->GetComponent()->GetRigidbody();
+		bool bRigidBody = pRigid == nullptr ? false : true;
+		fwrite(&bRigidBody, sizeof(bool), 1, _pFile);
+
+		// 중력 적용 유무
+		CGravity* pGravity = pObj->GetComponent()->GetGravity();
+		bool bGravity = pGravity == nullptr ? false : true;
+		fwrite(&bGravity, sizeof(bool), 1, _pFile);
+	}
 }
