@@ -66,6 +66,8 @@ void CMonster::update()
 	{
 		update_animation();
 	}
+
+	if (m_bDead) DeleteObject(this);
 }
 
 void CMonster::render(HDC _dc)
@@ -98,6 +100,10 @@ void CMonster::render(HDC _dc)
 		{
 			tempStr = L"TRACE";
 		}
+		else if (curState == MON_STATE::DEAD)
+		{
+			tempStr = L"DEAD";
+		}
 
 		//Vec2 vV = GetComponent()->GetRigidbody()->GetVelocity();
 		//tempStr = std::to_wstring(m_fLeftDist) + L" / " + std::to_wstring(m_fRightDist);
@@ -124,6 +130,9 @@ void CMonster::render(HDC _dc)
 		{
 			graphics.DrawRectangle(&pen, GetPos().x - m_tInfo.vRecogRange.x, GetPos().y - (GetScale().y / 2.f), m_tInfo.vRecogRange.x, GetScale().y);
 		}
+
+		tempStr = L"HP : " + std::to_wstring(m_tInfo.fHP);
+		graphics.DrawString(tempStr.c_str(), -1, &font, PointF(vPos.x + 40.f, vPos.y + 15.f), &brush);
 	}
 }
 
@@ -162,6 +171,10 @@ void CMonster::update_animation()
 	else if (curState == MON_STATE::TRACE)
 	{
 		currentChar += L"_WALK";
+	}
+	else if (curState == MON_STATE::DEAD)
+	{
+		currentChar += L"_DEAD";
 	}
 
 	GetComponent()->GetAnimator()->Play(currentChar.c_str(), true);

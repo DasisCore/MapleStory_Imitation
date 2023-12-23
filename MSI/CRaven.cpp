@@ -6,23 +6,9 @@
 #include "CAnimator.h"
 #include "CCollider.h"
 
-void CRaven::update_move()
-{
-	CPlayer::update_move();
-}
 
 CRaven::CRaven()
 {
-	setCurChar(L"RAVEN");
-
-	CreateComponent();
-	CreateCollider();
-	CreateRigidbody();
-	CreateAnimator();
-	CreateGravity();
-
-	GetComponent()->GetCollider()->SetScale(Vec2(45.f, 70.f));
-	GetComponent()->GetCollider()->SetOffsetPos(Vec2(0.f, 0.f));
 
 	//CTexture* m_pLeftTex = CResMgr::GetInst()->LoadTexture(L"RavenLeft", L"Texture\\Player\\Raven.png");
 	//CTexture* m_pRightTex = CResMgr::GetInst()->LoadTexture(L"RavenRight", L"Texture\\Player\\Raven.png", 1);
@@ -44,4 +30,10 @@ CRaven::CRaven()
 
 CRaven::~CRaven()
 {
+}
+
+
+void CRaven::update_move()
+{
+	CPlayer::update_move();
 }

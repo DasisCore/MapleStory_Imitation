@@ -8,6 +8,7 @@
 #include "CTraceState.h"
 #include "CPatrolState.h"
 #include "CAttackState.h"
+#include "CDeadState.h"
 
 #include "CComponent.h"
 #include "CRigidBody.h"
@@ -41,6 +42,7 @@ CMonster* CMonFactory::CreateMonster(MON_TYPE _eType, Vec2 _vPos)
 		pAI->AddState(new CTraceState);
 		pAI->AddState(new CPatrolState);
 		pAI->AddState(new CAttackState);
+		pAI->AddState(new CDeadState);
 		
 		pAI->SetCurState(MON_STATE::IDLE);
 
@@ -112,6 +114,7 @@ CMonster* CMonFactory::CreateMonster(MON_TYPE _eType
 		pAI->AddState(new CTraceState);
 		pAI->AddState(new CPatrolState);
 		pAI->AddState(new CAttackState);
+		pAI->AddState(new CDeadState);
 
 		pAI->SetCurState(MON_STATE::IDLE);
 

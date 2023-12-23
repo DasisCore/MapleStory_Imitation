@@ -97,21 +97,26 @@ CPlayer::~CPlayer()
 
 void CPlayer::update()
 {
-	update_move();
+	if (!m_bDelay)
+	{
+		update_move();
 
-	update_state();
+		update_state();
 
-	update_animation();
+		update_animation();
 
-	GetComponent()->GetAnimator()->update();
-	m_ePrevState = m_eCurState;
-	m_iPrevDir = m_iDir;
+		GetComponent()->GetAnimator()->update();
+		m_ePrevState = m_eCurState;
+		m_iPrevDir = m_iDir;
+	}
 
 	if (KEY_TAP(KEY::ENTER))
 	{
 		SetPos(Vec2(640.f, 384.f));
 		GetComponent()->GetRigidbody()->SetVelocity(Vec2(0.f, 0.f));
 	}
+
+	Delay();
 }
 
 void CPlayer::CreateMissile()
@@ -193,6 +198,7 @@ void CPlayer::update_state()
 
 void CPlayer::update_move()
 {
+
 	CRigidBody* pRigid = GetComponent()->GetRigidbody();
 
 	if (KEY_HOLD(KEY::LEFT))
@@ -279,6 +285,17 @@ void CPlayer::OnCollisionEnter(CCollider* _pOther)
 			m_bIsAir = 0;
 		}
 	}
+}
+
+void CPlayer::Delay()
+{
+	if (m_fDelayTime > 0)
+	{
+		m_fDelayTime -= fDT;
+		m_bDelay = true;
+		return;
+	}
+	m_bDelay = false;
 }
 
 void CPlayer::render(HDC _dc)

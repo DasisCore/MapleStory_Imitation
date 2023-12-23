@@ -43,21 +43,25 @@ private:
     bool m_bIsGround;
     bool m_bIsAir;
 
-public:
-    void setCurChar(wstring _wstrChar) { m_wCurChar = _wstrChar; }
+    float m_fDelayTime;
+    bool m_bDelay;
 
 public:
     virtual void update() override;
     //virtual void render(HDC _dc) override;
 
 public:
+    int GetDir() { return m_iDir; }
     void CreateMissile();
     void update_state();
     virtual void update_move();
     void update_animation();
 
     virtual void OnCollisionEnter(CCollider* _pOther) override;
-
+    
+    // 캐릭터 딜레이 계산
+    void Delay();
+    void SetDelay(float _fDelay) { m_fDelayTime = _fDelay; }
     virtual CPlayer* Clone() override { return new CPlayer(*this); }
 
 // 임시

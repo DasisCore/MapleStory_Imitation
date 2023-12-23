@@ -399,7 +399,7 @@ void CScene_Tool::renderDrag(HDC _dc)
 }
 
 void CScene_Tool::CreateFootHold()
-{
+{	
 	Vec2 vDragEnd = MOUSE_POS;
 
 	Vec2 vCenter = (m_vDragStart + vDragEnd) / 2.f;

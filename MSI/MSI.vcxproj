@@ -143,12 +143,14 @@
     <ClInclude Include="CAnimator.h" />
     <ClInclude Include="CAttackState.h" />
     <ClInclude Include="CBackground.h" />
+    <ClInclude Include="CBark.h" />
     <ClInclude Include="CBtnUI.h" />
     <ClInclude Include="CCamera.h" />
     <ClInclude Include="CCollider.h" />
     <ClInclude Include="CCollisionMgr.h" />
     <ClInclude Include="CComponent.h" />
     <ClInclude Include="CCore.h" />
+    <ClInclude Include="CDeadState.h" />
     <ClInclude Include="CDetect.h" />
     <ClInclude Include="CEventMgr.h" />
     <ClInclude Include="CFoothold.h" />
@@ -161,6 +163,7 @@
     <ClInclude Include="CMissile.h" />
     <ClInclude Include="CMonFactory.h" />
     <ClInclude Include="CMonster.h" />
+    <ClInclude Include="CNatureGrab.h" />
     <ClInclude Include="CObject.h" />
     <ClInclude Include="CPanelUI.h" />
     <ClInclude Include="CPathMgr.h" />
@@ -176,6 +179,7 @@
     <ClInclude Include="CScene_Start.h" />
     <ClInclude Include="CScene_Test.h" />
     <ClInclude Include="CScene_Tool.h" />
+    <ClInclude Include="CSkill.h" />
     <ClInclude Include="CSound.h" />
     <ClInclude Include="CSoundMgr.h" />
     <ClInclude Include="CSprite.h" />
@@ -208,12 +212,14 @@
     <ClCompile Include="CAnimator.cpp" />
     <ClCompile Include="CAttackState.cpp" />
     <ClCompile Include="CBackground.cpp" />
+    <ClCompile Include="CBark.cpp" />
     <ClCompile Include="CBtnUI.cpp" />
     <ClCompile Include="CCamera.cpp" />
     <ClCompile Include="CCollider.cpp" />
     <ClCompile Include="CCollisionMgr.cpp" />
     <ClCompile Include="CComponent.cpp" />
     <ClCompile Include="CCore.cpp" />
+    <ClCompile Include="CDeadState.cpp" />
     <ClCompile Include="CDetect.cpp" />
     <ClCompile Include="CEventMgr.cpp" />
     <ClCompile Include="CFoothold.cpp" />
@@ -226,6 +232,7 @@
     <ClCompile Include="CMissile.cpp" />
     <ClCompile Include="CMonFactory.cpp" />
     <ClCompile Include="CMonster.cpp" />
+    <ClCompile Include="CNatureGrab.cpp" />
     <ClCompile Include="CObject.cpp" />
     <ClCompile Include="CPanelUI.cpp" />
     <ClCompile Include="CPathMgr.cpp" />
@@ -241,6 +248,7 @@
     <ClCompile Include="CScene_Start.cpp" />
     <ClCompile Include="CScene_Test.cpp" />
     <ClCompile Include="CScene_Tool.cpp" />
+    <ClCompile Include="CSkill.cpp" />
     <ClCompile Include="CSound.cpp" />
     <ClCompile Include="CSoundMgr.cpp" />
     <ClCompile Include="CSprite.cpp" />

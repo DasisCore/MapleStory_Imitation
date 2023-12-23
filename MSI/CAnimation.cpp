@@ -11,6 +11,9 @@
 #include "CResMgr.h"
 #include "CPathMgr.h"
 
+#include "CCollider.h"
+#include "CComponent.h"
+
 CAnimation::CAnimation()
 	: m_strName()
 	, m_pAnimator(nullptr)
@@ -56,6 +59,9 @@ void CAnimation::render(HDC _dc)
 
 	CObject* pObj = m_pAnimator->GetObj();
 	Vec2 vPos = pObj->GetPos();
+
+	// 콜라이더의 오프셋만큼 애니메이션 출력 위치 변경
+	vPos += pObj->GetComponent()->GetCollider()->GetOffsetPos();
 
 	vPos += m_vecFrm[m_iCurFrm].vOffset;	// offset만큼 추가 이동
 

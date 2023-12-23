@@ -185,6 +185,21 @@
     <Filter Include="Engine\05. Scene\Scene_Test">
       <UniqueIdentifier>{81caf0aa-7adf-44cb-9574-029f0b8d68d4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\04. Object\Effect">
+      <UniqueIdentifier>{fa00e821-c6c8-434b-8e83-91faf09e24ac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\04. Object\Skill">
+      <UniqueIdentifier>{31a66c39-65b6-4158-b917-c95da7b2c652}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\07. Component\Skill">
+      <UniqueIdentifier>{4c6375d8-56e3-44eb-81bf-242174410d70}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\04. Object\Skill\NatureGrab">
+      <UniqueIdentifier>{f6629574-9e61-4a8b-966f-3f2a48f5cccf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\04. Object\Player\Bark">
+      <UniqueIdentifier>{02269fc0-58ef-4f1b-9cdd-430bec34fb5f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -374,6 +389,18 @@
     <ClInclude Include="CScene_Test.h">
       <Filter>Engine\05. Scene\Scene_Test</Filter>
     </ClInclude>
+    <ClInclude Include="CSkill.h">
+      <Filter>Engine\07. Component\Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="CNatureGrab.h">
+      <Filter>Engine\04. Object\Skill\NatureGrab</Filter>
+    </ClInclude>
+    <ClInclude Include="CBark.h">
+      <Filter>Engine\04. Object\Player\Bark</Filter>
+    </ClInclude>
+    <ClInclude Include="CDeadState.h">
+      <Filter>Engine\08. Module\AI\State\Dead</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CCore.cpp">
@@ -544,6 +571,18 @@
     </ClCompile>
     <ClCompile Include="CScene_Test.cpp">
       <Filter>Engine\05. Scene\Scene_Test</Filter>
+    </ClCompile>
+    <ClCompile Include="CSkill.cpp">
+      <Filter>Engine\07. Component\Skill</Filter>
+    </ClCompile>
+    <ClCompile Include="CNatureGrab.cpp">
+      <Filter>Engine\04. Object\Skill\NatureGrab</Filter>
+    </ClCompile>
+    <ClCompile Include="CBark.cpp">
+      <Filter>Engine\04. Object\Player\Bark</Filter>
+    </ClCompile>
+    <ClCompile Include="CDeadState.cpp">
+      <Filter>Engine\08. Module\AI\State\Dead</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

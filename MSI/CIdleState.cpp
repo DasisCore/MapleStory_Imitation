@@ -6,6 +6,7 @@
 
 #include "CPlayer.h"
 #include "CMonster.h"
+#include "CMonster_Normal.h"
 #include "CEventMgr.h"
 
 #include "CRandom.h"
@@ -47,6 +48,10 @@ void CIdleState::update()
 	{
 		ChangeAIState(GetAI(), MON_STATE::PATROL);
 	}
+
+	CMonster_Normal* pMon = (CMonster_Normal*)GetMonster();
+	if (pMon->GetInfo().fHP < 0) ChangeAIState(GetAI(), MON_STATE::DEAD);
+
 }
 
 

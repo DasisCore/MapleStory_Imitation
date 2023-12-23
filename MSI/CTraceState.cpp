@@ -5,6 +5,7 @@
 #include "CScene.h"
 #include "CPlayer.h"
 #include "CMonster.h"
+#include "CMonster_Normal.h"
 
 #include "CTimeMgr.h"
 #include "CCollider.h"
@@ -31,8 +32,8 @@ CTraceState::CTraceState()
 
 CTraceState::~CTraceState()
 {
+	if (m_pDetect) DeleteObject(m_pDetect);
 }
-
 
 void CTraceState::Enter()
 {
@@ -181,4 +182,7 @@ void CTraceState::update()
 	{
 		m_fRemainTraceTime = 3.f;
 	}
+
+	CMonster_Normal* pMon = (CMonster_Normal*)GetMonster();
+	if (pMon->GetInfo().fHP < 0) ChangeAIState(GetAI(), MON_STATE::DEAD);
 }

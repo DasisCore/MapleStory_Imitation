@@ -22,7 +22,7 @@ public:
 	void SetOffsetPos(Vec2 _vPos) { m_vOffsetPos = _vPos; }
 	void SetScale(Vec2 _vScale) { m_vScale = _vScale; }
 
-	Vec2 GetOffssetPos() { return m_vOffsetPos; }
+	Vec2 GetOffsetPos() { return m_vOffsetPos; }
 	Vec2 GetScale() { return m_vScale; }
 
 	Vec2 GetFinalPos() { return m_vFinalPos; }

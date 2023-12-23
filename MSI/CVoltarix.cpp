@@ -14,8 +14,6 @@
 CVoltarix::CVoltarix()
 	:CPlayer()
 {
-	setCurChar(L"VOLTARIX");
-
 	//CreateComponent();
 
 	// 캐릭터 기본 콜라이더 크기 (45, 70)

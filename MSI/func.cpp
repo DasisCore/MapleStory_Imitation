@@ -133,7 +133,7 @@ void SaveObject(const vector<CObject*> _vecObj, FILE* _pFile)
 		if (pCol != nullptr)
 		{
 			// Offset Position ÀúÀå
-			Vec2 vColOffsetPos = pCol->GetOffssetPos();
+			Vec2 vColOffsetPos = pCol->GetOffsetPos();
 			float fOffsetX = vColOffsetPos.x;
 			float fOffsetY = vColOffsetPos.y;
 			fwrite(&fOffsetX, sizeof(float), 1, _pFile);

@@ -24,6 +24,8 @@ private:
     float m_fLeftDist;
     float m_fRightDist;
 
+    bool m_bDead;
+
 
 public:
     float GetSpeed() { return m_tInfo.fSpeed; }
@@ -33,10 +35,11 @@ public:
     const tMonInfo& GetInfo() { return m_tInfo; }
     void SetRandomDir();
     void SetMonDir(int _iDir) { m_tInfo.iDir = _iDir; }
-
     void SetRemainDist(float _fLeft, float _fRight) { m_fLeftDist = _fLeft; m_fRightDist = _fRight; }
+    void TakeDamege(float m_fDamege) { m_tInfo.fHP -= m_fDamege; }
     // 편의상 Vec2로 리턴해줌. 몬스터가 접촉한 Ground의 남은 거리 (왼쪽, 오른쪽)
     Vec2 GetRemainDist() { return Vec2(m_fLeftDist, m_fRightDist); }
+    void SetDead() { m_bDead = true; }
 
 public:
     void update_animation();

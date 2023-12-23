@@ -31,7 +31,9 @@
 #include "CGround.h"
 #include "CFoothold.h"
 
+#include "CRaven.h"
 #include "CVoltarix.h"
+#include "CBark.h"
 
 #include "CRandom.h"
 
@@ -93,10 +95,10 @@ void CScene_Start::update()
 	}
 
 
-	if (KEY_TAP(KEY::ENTER))
-	{
-		ChangeScene(SCENE_TYPE::TOOL);
-	}
+	//if (KEY_TAP(KEY::ENTER))
+	//{
+	//	ChangeScene(SCENE_TYPE::TOOL);
+	//}
 
 	//if (KEY_TAP(KEY::LBTN))
 	//{
@@ -192,7 +194,7 @@ void CScene_Start::Enter()
 	//CCamera::GetInst()->SetTarget(pPlayer);
 
 	// Voltarix 추가
-	CPlayer* pVoltarix = new CPlayer;
+	CPlayer* pVoltarix = new CBark;
 	pVoltarix->SetName(L"RAVEN");
 	pVoltarix->SetPos(Vec2(740.f, 383.f));
 	pVoltarix->SetScale(Vec2(45.f, 70.f));
@@ -245,9 +247,11 @@ void CScene_Start::Enter()
 		= {   L"Animation\\LESH_LEFT_ATTACK.anim"
 			, L"Animation\\LESH_LEFT_IDLE.anim"
 			, L"Animation\\LESH_LEFT_WALK.anim"
+			, L"Animation\\LESH_LEFT_DEAD.anim"
 			, L"Animation\\LESH_RIGHT_IDLE.anim"
 			, L"Animation\\LESH_RIGHT_WALK.anim"
 			, L"Animation\\LESH_RIGHT_ATTACK.anim"
+			, L"Animation\\LESH_RIGHT_DEAD.anim"
 		};
 	CMonster* pMonLesh = CMonFactory::CreateMonster(MON_TYPE::NORMAL, L"LESH", Vec2(200.f, 200.f), Vec2(60.f, 60.f), true, Vec2(0.f, 0.f), Vec2(60.f, 60.f), true, MonVecPath, true, true);
 	AddObject(pMonLesh, GROUP_TYPE::MONSTER);
@@ -272,6 +276,7 @@ void CScene_Start::Enter()
 	CCollisionMgr::GetInst()->CheckGroup(GROUP_TYPE::PLAYER, GROUP_TYPE::GROUND);
 	CCollisionMgr::GetInst()->CheckGroup(GROUP_TYPE::MONSTER, GROUP_TYPE::GROUND);
 	CCollisionMgr::GetInst()->CheckGroup(GROUP_TYPE::PLAYER, GROUP_TYPE::DETECT);
+	CCollisionMgr::GetInst()->CheckGroup(GROUP_TYPE::MONSTER, GROUP_TYPE::SKILL);
 
 	// Camera Look 지정
 	CCamera::GetInst()->SetLookAt(vResolution / 2.f);

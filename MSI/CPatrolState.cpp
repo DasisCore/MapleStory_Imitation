@@ -6,6 +6,7 @@
 
 #include "CPlayer.h"
 #include "CMonster.h"
+#include "CMonster_Normal.h"
 
 #include "CRandom.h"
 #include "CTimeMgr.h"
@@ -50,6 +51,9 @@ void CPatrolState::update()
 	{
 		ChangeAIState(GetAI(), MON_STATE::IDLE);
 	}
+
+	CMonster_Normal* pMon = (CMonster_Normal*)GetMonster();
+	if (pMon->GetInfo().fHP < 0) ChangeAIState(GetAI(), MON_STATE::DEAD);
 
 	m_fMoveTime -= fDT;
 }
