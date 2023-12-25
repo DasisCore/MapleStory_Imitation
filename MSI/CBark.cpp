@@ -2,9 +2,12 @@
 #include "CBark.h"
 
 #include "CKeyMgr.h"
-#include "CNatureGrab.h"
 #include "CSceneMgr.h"
 #include "CScene.h"
+
+#include "CNatureGrab.h"
+#include "CFortress.h"
+#include "CBlessingSeed.h"
 
 CBark::CBark()
 {
@@ -25,6 +28,20 @@ void CBark::update()
 		CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
 		pCurScene->AddObject(pObj, GROUP_TYPE::SKILL);
 		SetDelay(0.25f);
+	}
+
+	if (KEY_TAP(KEY::Z))
+	{
+		CObject* pObj = (CObject*) new CFortress(this);
+		CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
+		pCurScene->AddObject(pObj, GROUP_TYPE::SKILL);
+	}
+
+	if (KEY_TAP(KEY::LSHIFT))
+	{
+		CObject* pObj = (CObject*) new CBlessingSeed(this);
+		CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
+		pCurScene->AddObject(pObj, GROUP_TYPE::SKILL);
 	}
 }
 

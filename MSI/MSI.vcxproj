@@ -144,6 +144,7 @@
     <ClInclude Include="CAttackState.h" />
     <ClInclude Include="CBackground.h" />
     <ClInclude Include="CBark.h" />
+    <ClInclude Include="CBlessingSeed.h" />
     <ClInclude Include="CBtnUI.h" />
     <ClInclude Include="CCamera.h" />
     <ClInclude Include="CCollider.h" />
@@ -154,6 +155,7 @@
     <ClInclude Include="CDetect.h" />
     <ClInclude Include="CEventMgr.h" />
     <ClInclude Include="CFoothold.h" />
+    <ClInclude Include="CFortress.h" />
     <ClInclude Include="CGravity.h" />
     <ClInclude Include="CGround.h" />
     <ClInclude Include="CIdleState.h" />
@@ -213,6 +215,7 @@
     <ClCompile Include="CAttackState.cpp" />
     <ClCompile Include="CBackground.cpp" />
     <ClCompile Include="CBark.cpp" />
+    <ClCompile Include="CBlessingSeed.cpp" />
     <ClCompile Include="CBtnUI.cpp" />
     <ClCompile Include="CCamera.cpp" />
     <ClCompile Include="CCollider.cpp" />
@@ -223,6 +226,7 @@
     <ClCompile Include="CDetect.cpp" />
     <ClCompile Include="CEventMgr.cpp" />
     <ClCompile Include="CFoothold.cpp" />
+    <ClCompile Include="CFortress.cpp" />
     <ClCompile Include="CGravity.cpp" />
     <ClCompile Include="CGround.cpp" />
     <ClCompile Include="CIdleState.cpp" />

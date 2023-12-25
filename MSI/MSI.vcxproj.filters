@@ -200,6 +200,12 @@
     <Filter Include="Engine\04. Object\Player\Bark">
       <UniqueIdentifier>{02269fc0-58ef-4f1b-9cdd-430bec34fb5f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\04. Object\Skill\Fortress">
+      <UniqueIdentifier>{faa8bebd-b98c-4689-a88e-7dc9147a2953}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\04. Object\Skill\BlessingSeed">
+      <UniqueIdentifier>{2a8728e7-4dd3-4f0b-855c-3b888756ee9b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -401,6 +407,12 @@
     <ClInclude Include="CDeadState.h">
       <Filter>Engine\08. Module\AI\State\Dead</Filter>
     </ClInclude>
+    <ClInclude Include="CFortress.h">
+      <Filter>Engine\04. Object\Skill\Fortress</Filter>
+    </ClInclude>
+    <ClInclude Include="CBlessingSeed.h">
+      <Filter>Engine\04. Object\Skill\BlessingSeed</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CCore.cpp">
@@ -583,6 +595,12 @@
     </ClCompile>
     <ClCompile Include="CDeadState.cpp">
       <Filter>Engine\08. Module\AI\State\Dead</Filter>
+    </ClCompile>
+    <ClCompile Include="CFortress.cpp">
+      <Filter>Engine\04. Object\Skill\Fortress</Filter>
+    </ClCompile>
+    <ClCompile Include="CBlessingSeed.cpp">
+      <Filter>Engine\04. Object\Skill\BlessingSeed</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -32,7 +32,7 @@ CTraceState::CTraceState()
 
 CTraceState::~CTraceState()
 {
-	if (m_pDetect) DeleteObject(m_pDetect);
+	//if (m_pDetect) DeleteObject(m_pDetect);
 }
 
 void CTraceState::Enter()
