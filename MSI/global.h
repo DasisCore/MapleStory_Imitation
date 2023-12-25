@@ -43,3 +43,6 @@ using std::map;
 using std::make_pair;
 
 #include "func.h"
+
+// 파일 입출력 (C++)
+#include <fstream>

@@ -65,6 +65,7 @@ public:
     tFrame GetFrameInfo(UINT _i);
     CSprite* GetSprite() { return m_pMainSprite; }
     wstring GetAbsolutePath() { return m_wStrPath; }
+    void SetAbsolutePath(wstring _strPath) { m_wStrPath = _strPath; }
     void temp_render(HDC _dc);
     void reset();
 

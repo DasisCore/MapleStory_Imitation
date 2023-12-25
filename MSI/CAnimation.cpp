@@ -174,31 +174,65 @@ void CAnimation::Load(const wstring& _strRelativePath)
 	wstring strFilePath = CPathMgr::GetInst()->GetContentPath();
 	strFilePath += _strRelativePath;
 
-	FILE* pFile = nullptr;
-	_wfopen_s(&pFile, strFilePath.c_str(), L"rb");
-	assert(pFile);
+	std::wifstream file(strFilePath);
+	if (!file.is_open()) assert(nullptr);
 
-	// 문자열 읽기
-	LoadWString(m_strName, pFile);
+	wstring temp1, temp2;
 
-	// 텍스쳐
+	// [Animation Name];
+	file >> m_strName >> m_strName >> m_strName;
+
+	// [Texture Key], [Relative Path]
 	wstring strTexKey, strTexPath;
-	LoadWString(strTexKey, pFile);
-	LoadWString(strTexPath, pFile);
+	file >> strTexKey >> strTexKey >> strTexKey;
+	file >> strTexPath >> strTexPath >> strTexPath;
 
-	// 좌우 반전 여부
-	fread(&m_bIsReverse, sizeof(bool), 1, pFile);
+	// [Reversed]
+	file >> temp1 >> temp1;
+	m_bIsReverse = temp1 == L"0" ? false : true;
+
 	m_pTex = CResMgr::GetInst()->LoadTexture(strTexKey, strTexPath, m_bIsReverse);
 
-	// 프레임 개수
+	// [Frame Count]
 	size_t iFrameCount = 0;
-	fread(&iFrameCount, sizeof(size_t), 1, pFile);
+	file >> temp1 >> temp1 >> temp1;
+	iFrameCount = stoi(temp1);
 
-	// 모든 프레임 정보
-	m_vecFrm.resize(iFrameCount);
-	fread(m_vecFrm.data(), sizeof(tAnimFrm), iFrameCount, pFile);
+	// [Frame Data]
+	file >> temp1 >> temp1;
+	for (int i = 0; i < iFrameCount; i++)
+	{
+		file >> temp1;	// Frame-n;
+		file >> temp1;	// Duration;
+		float duration;
+		file >> temp1;
+		duration = stof(temp1);
 
-	fclose(pFile);
+		file >> temp1;	// LeftTop;
+		float vLTx, vLTy;
+		file >> temp1 >> temp2;
+		vLTx = stof(temp1);
+		vLTy = stof(temp2);
+
+		file >> temp1;	// Offset;
+		float vOffsetX, vOffsetY;
+		file >> temp1 >> temp2;
+		vOffsetX = stof(temp1);
+		vOffsetY = stof(temp2);
+
+		file >> temp1;	// Slice;
+		float vSliceX, vSliceY;
+		file >> temp1 >> temp2;
+		vSliceX = stof(temp1);
+		vSliceY = stof(temp2);
+
+		tAnimFrm tFrm = {};
+		tFrm.fDuration = duration;
+		tFrm.vLT = Vec2(vLTx, vLTy);
+		tFrm.vOffset = Vec2(vOffsetX, vOffsetY);
+		tFrm.vSlice = Vec2(vSliceX, vSliceY);
+		m_vecFrm.push_back(tFrm);
+	}
 }
 
 

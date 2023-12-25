@@ -261,7 +261,7 @@ void CWorkshopWindow::PlayAnimation()
 
 	static int rewind = 1;
 
-	if (m_fCurTime > m_fDuration)
+	if (m_fCurTime > m_fDuration / (float)iLen)
 	{
 		m_fCurTime = 0.f;
 
@@ -508,7 +508,7 @@ void CWorkshopWindow::UI_render(HDC _dc)
 	graphics.DrawString(L"높이", -1, &font, PointF(10, 130), &GrayBrush);
 	graphics.DrawString(setprecision_float(vtargetSliceSize.y, 1).c_str(), -1, &font, PointF(100, 130), &BlackBrush);
 
-	graphics.DrawString(L"프레임당 시간", -1, &font, PointF(10, 160), &GrayBrush);
+	graphics.DrawString(L"재생 시간", -1, &font, PointF(10, 160), &GrayBrush);
 	graphics.DrawString(setprecision_float(m_fDuration, 2).c_str(), -1, &font, PointF(100, 160), &BlackBrush);
 
 	graphics.DrawString(L"좌우 반전", -1, &font, PointF(10, 190), &GrayBrush);
@@ -559,52 +559,86 @@ void CWorkshopWindow::LoadAnimation()
 
 void CWorkshopWindow::Load(const wstring& _strFilePath)
 {
-	FILE* pFile = nullptr;
-	_wfopen_s(&pFile, _strFilePath.c_str(), L"rb");
-	assert(pFile);
+	wstring temp1, temp2;
 
-	// 문자열 읽기
+	std::wifstream file(_strFilePath);
+	if (!file.is_open()) assert(nullptr);
+
+	// [Animation Name]
 	wstring strName;
-	LoadWString(strName, pFile);
-
-	// 텍스쳐
+	file >> strName >> strName >> strName;
+	
+	// [Texture Key], [Relative Path]
 	wstring strTexKey, strTexPath;
-	LoadWString(strTexKey, pFile);
-	LoadWString(strTexPath, pFile);
+	file >> strTexKey >> strTexKey >> strTexKey;
+	file >> strTexPath >> strTexPath >> strTexPath;
 
 	CScene_Ani_Workshop* pAniWorkshop = (CScene_Ani_Workshop*)CSceneMgr::GetInst()->GetCurScene();
+	pAniWorkshop->SetAbsolutePath(CPathMgr::GetInst()->GetContentPath() + strTexPath);
 
+	// [Reversed]
 	bool bIsReverse;
-	// 좌우 반전 여부
-	fread(&bIsReverse, sizeof(bool), 1, pFile);
+	file >> temp1 >> temp1;
+	bIsReverse = temp1 == L"0" ? false : true;
 
 	CResMgr::GetInst()->LoadTexture(strTexKey, strTexPath, bIsReverse);
 	CSprite* pOldSprite = pAniWorkshop->GetSprite();
 	CSprite* pNewSprite = new CSprite(CPathMgr::GetInst()->GetContentPath() + strTexPath);
-	//if (pOldSprite != nullptr) ChangeSprite(pOldSprite, pNewSprite);
 	if (pOldSprite != nullptr) DeleteObject(pOldSprite);
-
-	// 바로 메인 스프라이트를 교체하면, 오브젝트를 삭제하는 과정에서 포인터를 찾기 못하기 때문에 에러가 발생한다. 
-	// nullptr인 상태에서 부르려고 했기 때문에 에러 발생.
 
 	pAniWorkshop->m_pMainSprite = pNewSprite;
 	pAniWorkshop->m_pMainSprite->SetImageReverse(bIsReverse);
 	pAniWorkshop->m_pMainSprite->SetPos(Vec2(100.f, 100.f));
 	pAniWorkshop->AddObject(pAniWorkshop->m_pMainSprite, GROUP_TYPE::SPRITE);
 
-	// 프레임 개수
+	// [Frame Count]
 	size_t iFrameCount = 0;
-	fread(&iFrameCount, sizeof(size_t), 1, pFile);
+	file >> temp1 >> temp1 >> temp1;
+	iFrameCount = stoi(temp1);
 
 	vector<tAnimFrm> vecFrm;
-	vecFrm.resize(iFrameCount);
-	fread(vecFrm.data(), sizeof(tAnimFrm), iFrameCount, pFile);
+
+	// [Frame Data]
+	wstring frame;
+	file >> frame >> frame;
+	for (int i = 0; i < iFrameCount; i++)
+	{
+		file >> frame;	// Frame-n;
+		file >> frame;	// Duration;
+		float duration;
+		file >> temp1;
+		duration = stof(temp1);
+
+		file >> frame;	// LeftTop;
+		float vLTx, vLTy;
+		file >> temp1 >> temp2;
+		vLTx = stof(temp1);
+		vLTy = stof(temp2);
+
+		file >> frame;	// Offset;
+		float vOffsetX, vOffsetY;
+		file >> temp1 >> temp2;
+		vOffsetX = stof(temp1);
+		vOffsetY = stof(temp2);
+
+		file >> frame;	// Slice;
+		float vSliceX, vSliceY;
+		file >> temp1 >> temp2;
+		vSliceX = stof(temp1);
+		vSliceY = stof(temp2);
+
+		tAnimFrm tFrm = {};
+		tFrm.fDuration = duration;
+		tFrm.vLT = Vec2(vLTx, vLTy);
+		tFrm.vOffset = Vec2(vOffsetX, vOffsetY);
+		tFrm.vSlice = Vec2(vSliceX, vSliceY);
+		vecFrm.push_back(tFrm);
+	}
 
 	for (auto iter = pAniWorkshop->m_lMarquee.begin(); iter != pAniWorkshop->m_lMarquee.end(); iter++)
 	{
 		DeleteObject(*iter);
 	}
-	//Safe_Delete_List(pAniWorkshop->m_lMarquee);
 
 	// 포인터 자료구조가 아니므로 clear만.
 	pAniWorkshop->m_lFrame.clear();
@@ -621,10 +655,7 @@ void CWorkshopWindow::Load(const wstring& _strFilePath)
 	for (int i = 0; i < vecFrm.size(); i++)
 	{
 		CMarquee* pMarquee = new CMarquee;
-		//pMarquee->SetPos((vecFrm[i].vLT));
-		//pMarquee->SetPos((vecFrm[i].vLT));
 		pMarquee->SetPos((vSpritePos + vecFrm[i].vLT) + Vec2(vecFrm[i].vSlice.x / 2.f, vecFrm[i].vSlice.y / 2.f));
-		//pMarquee->SetPos(Vec2(0.f, 0.f) + vecFrm[i].vLT);
 		pMarquee->SetScale(vecFrm[i].vSlice);
 		pAniWorkshop->m_lMarquee.push_back(pMarquee);
 		pAniWorkshop->AddObject(pMarquee, GROUP_TYPE::MARQUEE);
@@ -633,9 +664,8 @@ void CWorkshopWindow::Load(const wstring& _strFilePath)
 		tFrm.vLT = vecFrm[i].vLT;
 		tFrm.vSliceSize = vecFrm[i].vSlice;
 		pAniWorkshop->m_lFrame.push_back(tFrm);
+		AddFrame(i + 1);
 	}
-
-	fclose(pFile);
 }
 
 // 만들어진 프레임 데이터 저장
@@ -679,6 +709,7 @@ void CWorkshopWindow::SaveAnimation()
 
 void CWorkshopWindow::Save(const wstring& _strFilePath)
 {
+	
 	wstring strName = L"";
 	bool flag = 0;
 	for (int i = _strFilePath.length() - 1; i >= 0; i--)
@@ -689,7 +720,6 @@ void CWorkshopWindow::Save(const wstring& _strFilePath)
 	}
 
 	CScene_Ani_Workshop* pAniWorkshop = (CScene_Ani_Workshop*)CSceneMgr::GetInst()->GetCurScene();
-
 	CSprite* pSprite = pAniWorkshop->GetSprite();
 	bool IsReverse = pSprite->GetIsReverse();
 
@@ -731,21 +761,60 @@ void CWorkshopWindow::Save(const wstring& _strFilePath)
 	_wfopen_s(&pFile, _strFilePath.c_str(), L"wb");
 	assert(pFile);
 
-	//// Animation의 이름을 저장한다. -> 데이터 직렬화
-	SaveWString(strName, pFile);
+	fprintf(pFile, "[Animation Name]\n");
+	string name = string(strName.begin(), strName.end());
+	fprintf(pFile, name.c_str());
+	fprintf(pFile, "\n");
 
-	// 텍스쳐 키
-	SaveWString(pTex->GetKey(), pFile);
-	SaveWString(pTex->GetRelativePath(), pFile);
+	fprintf(pFile, "[Texture Key]\n");
+	string key = string(pTex->GetKey().begin(), pTex->GetKey().end());
+	fprintf(pFile, key.c_str());
+	fprintf(pFile, "\n");
 
-	// 좌우 반전 여부
-	fwrite(&IsReverse, sizeof(bool), 1, pFile);
+	fprintf(pFile, "[Relative Path]\n");
+	string relativePath = string(pTex->GetRelativePath().begin(), pTex->GetRelativePath().end());
+	fprintf(pFile, relativePath.c_str());
+	fprintf(pFile, "\n");
 
-	size_t iFrameCount = vecFrm.size();
-	fwrite(&iFrameCount, sizeof(size_t), 1, pFile);
+	fprintf(pFile, "[reversed]\n");
+	string reversed = IsReverse == true ? "1" : "0";
+	fprintf(pFile, reversed.c_str());
+	fprintf(pFile, "\n");
 
-	//// 프레임 정보
-	fwrite(vecFrm.data(), sizeof(tAnimFrm), iFrameCount, pFile);
+	fprintf(pFile, "[Frame Count]\n");
+	string FrameCount = std::to_string(vecFrm.size());
+	fprintf(pFile, FrameCount.c_str());
+	fprintf(pFile, "\n");
+
+	fprintf(pFile, "[Frame Data]\n");
+	for (int i = 0; i < vecFrm.size(); i++)
+	{
+		string title = "Frame-" + std::to_string(i) + "\n";
+		fprintf(pFile, title.c_str());
+		
+		fprintf(pFile, "Duration ");
+		string duration = std::to_string(vecFrm[i].fDuration / vecFrm.size()) + "\n";
+		fprintf(pFile, duration.c_str());
+		
+		fprintf(pFile, "LeftTop ");
+		string vLTx = std::to_string(vecFrm[i].vLT.x) + " ";
+		fprintf(pFile, vLTx.c_str());
+		string vLTy = std::to_string(vecFrm[i].vLT.y) + "\n";
+		fprintf(pFile, vLTy.c_str());
+
+		fprintf(pFile, "Offset ");
+		string vOffsetX = std::to_string(vecFrm[i].vOffset.x) + " ";
+		fprintf(pFile, vOffsetX.c_str());
+		string vOffsetY = std::to_string(vecFrm[i].vOffset.y) + "\n";
+		fprintf(pFile, vOffsetY.c_str());
+
+		fprintf(pFile, "Slice ");
+		string vSliceX = std::to_string(vecFrm[i].vSlice.x) + " ";
+		fprintf(pFile, vSliceX.c_str());
+		string vSliceY = std::to_string(vecFrm[i].vSlice.y) + "\n";
+		fprintf(pFile, vSliceY.c_str());
+		fprintf(pFile, "\n");
+	}
 
 	fclose(pFile);
 

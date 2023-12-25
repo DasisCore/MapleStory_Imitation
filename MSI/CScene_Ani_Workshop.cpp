@@ -63,12 +63,12 @@ void CScene_Ani_Workshop::Enter()
 	pMarqueeOffBtn->SetClickCallBack(this, (SCENE_MEMFUNC)&CScene_Ani_Workshop::SetDefaultState);
 	pPanelUI->AddChild(pMarqueeOffBtn);
 
-	CBtnUI* pSaveBtn = new CBtnUI;
-	pSaveBtn->SetName(L"추출");
-	pSaveBtn->SetScale(Vec2(30.f, 25.f));
-	pSaveBtn->SetPos(Vec2(130.f, 0.f));
-	//pSaveBtn->SetClickCallBack(this, (SCENE_MEMFUNC)&CScene_Ani_Workshop::AddFrameInfo);
-	pPanelUI->AddChild(pSaveBtn);
+	//CBtnUI* pSaveBtn = new CBtnUI;
+	//pSaveBtn->SetName(L"추출");
+	//pSaveBtn->SetScale(Vec2(30.f, 25.f));
+	//pSaveBtn->SetPos(Vec2(130.f, 0.f));
+	////pSaveBtn->SetClickCallBack(this, (SCENE_MEMFUNC)&CScene_Ani_Workshop::AddFrameInfo);
+	//pPanelUI->AddChild(pSaveBtn);
 
 
 	AddObject(pPanelUI, GROUP_TYPE::UI);
