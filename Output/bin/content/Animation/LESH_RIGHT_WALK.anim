@@ -1,0 +1,47 @@
+[Animation Name]
+LESH_RIGHT_WALK
+[Texture Key]
+LESH_RIGHT_WALK
+[Relative Path]
+Texture\Monster\Lesh.png
+[reversed]
+1
+[Frame Count]
+6
+[Frame Data]
+Frame-0
+Duration 0.083333
+LeftTop 1657.134033 262.033325
+Offset 0.000000 0.000000
+Slice 95.000000 85.000000
+
+Frame-1
+Duration 0.083333
+LeftTop 1511.133301 262.033325
+Offset 0.000000 0.000000
+Slice 95.000000 85.000000
+
+Frame-2
+Duration 0.083333
+LeftTop 1365.133179 262.033356
+Offset 0.000000 0.000000
+Slice 95.000000 85.000000
+
+Frame-3
+Duration 0.083333
+LeftTop 1219.133301 262.033356
+Offset 0.000000 0.000000
+Slice 95.000000 85.000000
+
+Frame-4
+Duration 0.083333
+LeftTop 1073.133301 262.033325
+Offset 0.000000 0.000000
+Slice 95.000000 85.000000
+
+Frame-5
+Duration 0.083333
+LeftTop 927.133301 262.033325
+Offset 0.000000 0.000000
+Slice 95.000000 85.000000
+

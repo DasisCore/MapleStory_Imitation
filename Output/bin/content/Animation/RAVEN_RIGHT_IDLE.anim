@@ -1,0 +1,29 @@
+[Animation Name]
+RAVEN_RIGHT_IDLE
+[Texture Key]
+RAVEN_RIGHT_IDLE
+[Relative Path]
+Texture\Player\Bark.png
+[reversed]
+1
+[Frame Count]
+3
+[Frame Data]
+Frame-0
+Duration 0.736666
+LeftTop 530.600220 78.099976
+Offset 0.000000 0.000000
+Slice 54.000000 75.000000
+
+Frame-1
+Duration 0.736666
+LeftTop 457.600006 78.000000
+Offset 0.000000 0.000000
+Slice 54.000000 75.000000
+
+Frame-2
+Duration 0.736666
+LeftTop 384.000031 78.000015
+Offset 0.000000 0.000000
+Slice 54.000000 75.000000
+

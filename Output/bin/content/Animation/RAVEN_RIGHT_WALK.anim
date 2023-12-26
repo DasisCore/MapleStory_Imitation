@@ -1,0 +1,35 @@
+[Animation Name]
+RAVEN_RIGHT_WALK
+[Texture Key]
+RAVEN_RIGHT_WALK
+[Relative Path]
+Texture\Player\Bark.png
+[reversed]
+1
+[Frame Count]
+4
+[Frame Data]
+Frame-0
+Duration 0.150000
+LeftTop 92.599854 78.599960
+Offset 0.000000 0.000000
+Slice 54.000000 74.000000
+
+Frame-1
+Duration 0.150000
+LeftTop 165.799866 78.199982
+Offset 0.000000 0.000000
+Slice 54.000000 74.000000
+
+Frame-2
+Duration 0.150000
+LeftTop 239.600006 78.399979
+Offset 0.000000 0.000000
+Slice 54.000000 74.000000
+
+Frame-3
+Duration 0.150000
+LeftTop 311.600037 78.399979
+Offset 0.000000 0.000000
+Slice 54.000000 74.000000
+

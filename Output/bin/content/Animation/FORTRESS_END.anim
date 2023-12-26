@@ -1,0 +1,59 @@
+[Animation Name]
+FORTRESS_END
+[Texture Key]
+FORTRESS_END
+[Relative Path]
+Texture\Skill\Fortress_end.png
+[reversed]
+0
+[Frame Count]
+8
+[Frame Data]
+Frame-0
+Duration 0.060000
+LeftTop 0.000000 0.000000
+Offset 0.000000 -2.000000
+Slice 533.000000 328.000000
+
+Frame-1
+Duration 0.060000
+LeftTop 533.000000 984.000000
+Offset 0.000000 -2.000000
+Slice 533.000000 328.000000
+
+Frame-2
+Duration 0.060000
+LeftTop 0.000000 328.000000
+Offset 0.000000 -2.000000
+Slice 533.000000 328.000000
+
+Frame-3
+Duration 0.060000
+LeftTop 533.000000 0.000000
+Offset 0.000000 -2.000000
+Slice 533.000000 328.000000
+
+Frame-4
+Duration 0.060000
+LeftTop 533.000000 328.000000
+Offset 0.000000 -2.000000
+Slice 533.000000 328.000000
+
+Frame-5
+Duration 0.060000
+LeftTop 0.000000 656.000000
+Offset 0.000000 -2.000000
+Slice 533.000000 328.000000
+
+Frame-6
+Duration 0.060000
+LeftTop 533.000000 656.000000
+Offset 0.000000 -2.000000
+Slice 533.000000 328.000000
+
+Frame-7
+Duration 0.060000
+LeftTop 0.000000 984.000000
+Offset 0.000000 -2.000000
+Slice 533.000000 328.000000
+
