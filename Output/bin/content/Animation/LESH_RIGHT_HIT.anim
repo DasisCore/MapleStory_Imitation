@@ -1,0 +1,17 @@
+[Animation Name]
+LESH_RIGHT_HIT
+[Texture Key]
+LESH_RIGHT_HIT
+[Relative Path]
+Texture\Monster\Lesh.png
+[reversed]
+1
+[Frame Count]
+1
+[Frame Data]
+Frame-0
+Duration 0.500000
+LeftTop 1786.183838 262.083374
+Offset 0.000000 0.000000
+Slice 104.099976 90.099915
+

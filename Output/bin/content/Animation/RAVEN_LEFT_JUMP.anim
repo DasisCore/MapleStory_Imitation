@@ -1,0 +1,17 @@
+[Animation Name]
+RAVEN_LEFT_JUMP
+[Texture Key]
+RAVEN_LEFT_JUMP
+[Relative Path]
+Texture\Player\Bark.png
+[reversed]
+0
+[Frame Count]
+1
+[Frame Data]
+Frame-0
+Duration 0.300000
+LeftTop 0.000000 76.000000
+Offset 0.000000 0.000000
+Slice 58.000000 77.000000
+

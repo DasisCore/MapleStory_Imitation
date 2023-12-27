@@ -1,0 +1,47 @@
+[Animation Name]
+LESH_LEFT_IDLE
+[Texture Key]
+LESH_LEFT_IDLE
+[Relative Path]
+Texture\Monster\Lesh.png
+[reversed]
+0
+[Frame Count]
+6
+[Frame Data]
+Frame-0
+Duration 0.100000
+LeftTop 1022.199951 262.099976
+Offset 0.000000 0.000000
+Slice 95.000000 85.000000
+
+Frame-1
+Duration 0.100000
+LeftTop 1168.200073 262.500000
+Offset 0.000000 0.000000
+Slice 95.000000 85.000000
+
+Frame-2
+Duration 0.100000
+LeftTop 1314.400024 262.500000
+Offset 0.000000 0.000000
+Slice 95.000000 85.000000
+
+Frame-3
+Duration 0.100000
+LeftTop 1460.400024 262.500000
+Offset 0.000000 0.000000
+Slice 95.000000 85.000000
+
+Frame-4
+Duration 0.100000
+LeftTop 1606.800049 262.699982
+Offset 0.000000 0.000000
+Slice 95.000000 85.000000
+
+Frame-5
+Duration 0.100000
+LeftTop 1752.199951 262.500031
+Offset 0.000000 0.000000
+Slice 95.000000 85.000000
+
