@@ -308,9 +308,9 @@ void CScene_Ani_Workshop::reset()
 
 void CScene_Ani_Workshop::update()
 {
-	CWorkshopWindow::GetInst()->update();
-
 	CScene::update();
+	
+	CWorkshopWindow::GetInst()->update();
 
 	if (m_pMainUI->IsLbtnDown() && m_eState == TOOL_TYPE::MARQUEE)
 	{

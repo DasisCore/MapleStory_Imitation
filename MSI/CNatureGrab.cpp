@@ -10,7 +10,7 @@
 
 CNatureGrab::CNatureGrab(CObject* _pObj)
 	: m_pOwner(_pObj)
-	, m_fCastTime(0.25f)
+	, m_fCastTime(0.5f)
 {
 	CreateComponent();
 	CreateCollider();

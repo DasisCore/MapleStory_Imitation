@@ -176,6 +176,12 @@ void CMonster::update_animation()
 	{
 		currentChar += L"_DEAD";
 	}
+	
+	if (currentChar.substr(currentChar.size() - 5, 5) == L"_DEAD")
+	{
+		GetComponent()->GetAnimator()->Play(currentChar.c_str(), false);
+		return;
+	}
 
 	GetComponent()->GetAnimator()->Play(currentChar.c_str(), true);
 }

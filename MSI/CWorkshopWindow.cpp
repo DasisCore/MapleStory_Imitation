@@ -261,7 +261,8 @@ void CWorkshopWindow::PlayAnimation()
 
 	static int rewind = 1;
 
-	if (m_fCurTime > m_fDuration / (float)iLen)
+	float duration = m_fDuration / (float)iLen;
+	if (m_fCurTime > duration)
 	{
 		m_fCurTime = 0.f;
 
@@ -287,6 +288,7 @@ void CWorkshopWindow::PlayAnimation()
 			}
 		}
 	}
+
 	m_fCurTime += fDT;
 }
 
@@ -739,7 +741,7 @@ void CWorkshopWindow::Save(const wstring& _strFilePath)
 		tAnimFrm frm = {};
 		frm.vLT = (*iter).vLT;
 		frm.vSlice = (*iter).vSliceSize;
-		frm.fDuration = m_fDuration;
+		frm.fDuration = (m_fDuration / ((float)lFrame.size() - 1));
 		vecFrm.push_back(frm);
 	}
 
@@ -793,7 +795,7 @@ void CWorkshopWindow::Save(const wstring& _strFilePath)
 		fprintf(pFile, title.c_str());
 		
 		fprintf(pFile, "Duration ");
-		string duration = std::to_string(vecFrm[i].fDuration / vecFrm.size()) + "\n";
+		string duration = std::to_string(vecFrm[i].fDuration) + "\n";
 		fprintf(pFile, duration.c_str());
 		
 		fprintf(pFile, "LeftTop ");

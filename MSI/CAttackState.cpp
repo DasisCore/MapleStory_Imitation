@@ -19,7 +19,7 @@ CAttackState::CAttackState()
 
 CAttackState::~CAttackState()
 {
-	if(m_pDetect) DeleteObject(m_pDetect);
+	//if(m_pDetect) DeleteObject(m_pDetect);
 }
 
 void CAttackState::Enter()
@@ -48,7 +48,7 @@ void CAttackState::Enter()
 
 void CAttackState::Exit()
 {
-	DeleteObject(m_pDetect);
+	if (m_pDetect) DeleteObject(m_pDetect);
 	m_pDetect = nullptr;
 }
 
@@ -63,8 +63,9 @@ void CAttackState::update()
 
 	if (pMon->IsFinshAtt())
 	{
-		ChangeAIState(GetAI(), MON_STATE::IDLE);
 		pMon->SetAttTime();
+		ChangeAIState(GetAI(), MON_STATE::IDLE);
+		return;
 	}
 
 	if (pMon->GetInfo().fHP < 0) ChangeAIState(GetAI(), MON_STATE::DEAD);

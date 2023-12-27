@@ -8,6 +8,7 @@
 #include "CNatureGrab.h"
 #include "CFortress.h"
 #include "CBlessingSeed.h"
+#include "CSeed.h"
 
 CBark::CBark()
 {
@@ -33,6 +34,13 @@ void CBark::update()
 	if (KEY_TAP(KEY::Z))
 	{
 		CObject* pObj = (CObject*) new CFortress(this);
+		CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
+		pCurScene->AddObject(pObj, GROUP_TYPE::SKILL);
+	}
+
+	if (KEY_TAP(KEY::X))
+	{
+		CObject* pObj = (CObject*) new CSeed(this);
 		CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
 		pCurScene->AddObject(pObj, GROUP_TYPE::SKILL);
 	}

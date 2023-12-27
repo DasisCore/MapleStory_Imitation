@@ -53,8 +53,8 @@ CObject::~CObject()
 void CObject::finalupdate()
 {
 	//CheckLocation();
-	if (CSceneMgr::GetInst()->GetCurScene()->GetName() == L"Tool Scene")
-	//if (1)
+	//if (CSceneMgr::GetInst()->GetCurScene()->GetName() == L"Tool Scene")
+	if (1)
 	{
 		ObjectDrag();
 		if (m_bTarget && KEY_TAP(KEY::DEL)) DeleteObject(this);

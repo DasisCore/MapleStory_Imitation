@@ -258,23 +258,31 @@ void CScene_Start::Enter()
 
 
 	// 땅 물체 배치
-	CObject* pGround = new CGround;
-	pGround->SetName(L"Ground");
+	//CObject* pGround = new CGround;
+	//pGround->SetName(L"Ground");
+	//pGround->SetPos(Vec2(400.f, 584.f));
+	//pGround->SetScale(Vec2(700.f, 60.f));
+	//AddObject(pGround, GROUP_TYPE::FOOTHOLD);
+
+	CObject* pGround = new CFoothold;
+	pGround->SetName(L"Foothold");
 	pGround->SetPos(Vec2(400.f, 584.f));
 	pGround->SetScale(Vec2(700.f, 60.f));
-	AddObject(pGround, GROUP_TYPE::GROUND);
+	AddObject(pGround, GROUP_TYPE::FOOTHOLD);
 
 	CObject* pFoothold = new CFoothold;
 	pFoothold->SetName(L"Foothold");
 	pFoothold->SetPos(Vec2(700.f, 184.f));
 	pFoothold->SetScale(Vec2(700.f, 60.f));
-	AddObject(pFoothold, GROUP_TYPE::GROUND);
+	AddObject(pFoothold, GROUP_TYPE::FOOTHOLD);
 
 
 	// 충돌 지정
 	CCollisionMgr::GetInst()->CheckGroup(GROUP_TYPE::PLAYER, GROUP_TYPE::MONSTER);
 	CCollisionMgr::GetInst()->CheckGroup(GROUP_TYPE::PLAYER, GROUP_TYPE::GROUND);
+	CCollisionMgr::GetInst()->CheckGroup(GROUP_TYPE::PLAYER, GROUP_TYPE::FOOTHOLD);
 	CCollisionMgr::GetInst()->CheckGroup(GROUP_TYPE::MONSTER, GROUP_TYPE::GROUND);
+	CCollisionMgr::GetInst()->CheckGroup(GROUP_TYPE::MONSTER, GROUP_TYPE::FOOTHOLD);
 	CCollisionMgr::GetInst()->CheckGroup(GROUP_TYPE::PLAYER, GROUP_TYPE::DETECT);
 	CCollisionMgr::GetInst()->CheckGroup(GROUP_TYPE::MONSTER, GROUP_TYPE::SKILL);
 

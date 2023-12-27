@@ -169,7 +169,7 @@ void CFoothold::Blocking(CCollider* _pOther)
 	Vec2 vCurVelocity = pRigid->GetVelocity();
 
 	// »ó´Ü
-	if (int(vPos.y - (vScale.y / 2.f)) == int(vObjPos.y + (vObjScale.y / 2.f))
+	if (int(vPos.y - (vScale.y / 2.f)) >= int(vObjPos.y + (vObjScale.y / 2.f)) - 1
 		&& vPos.y - (vScale.y / 2.f) >= vObjPos.y - (vObjScale.y / 2.f)
 		&& vPos.x - (vScale.x / 2.f) < vObjPos.x + (vObjScale.x / 2.f)
 		&& vPos.x + (vScale.x / 2.f) > vObjPos.x - (vObjScale.x / 2.f)
