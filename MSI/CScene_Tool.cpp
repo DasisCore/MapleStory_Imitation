@@ -411,6 +411,8 @@ void CScene_Tool::CreateFootHold()
 	pObj->SetName(L"Foothold");
 	pObj->SetPos(vCenter);
 	pObj->SetScale(Vec2(rectWidth, rectHeight));
+	CCollider* pCol = pObj->GetComponent()->GetCollider();
+	pCol->SetScale(Vec2(rectWidth, rectHeight));
 	AddObject(pObj, GROUP_TYPE::FOOTHOLD);
 }
 
@@ -442,6 +444,10 @@ void CScene_Tool::DrawGizmo(HDC _dc)
 
 void CScene_Tool::renderMapBase(HDC _dc)
 {
+	Graphics graphics(_dc);
+
+
+
 	if (m_vMap != Vec2(0.f, 0.f))
 	{
 		Vec2 vResolution = CCore::GetInst()->GetResolution();
@@ -456,7 +462,6 @@ void CScene_Tool::renderMapBase(HDC _dc)
 		vPos = CCamera::GetInst()->GetRenderPos(vPos);
 
 		// map의 사이즈에 해상도만큼의 패딩처리를 하여 색칠한다.
-		Graphics graphics(_dc);
 		SolidBrush paddingBrush(Color(220, 220, 220, 220));
 		graphics.FillRectangle(&paddingBrush, vPos.x, vPos.y, vScale.x, vScale.y);
 
@@ -464,14 +469,20 @@ void CScene_Tool::renderMapBase(HDC _dc)
 		vPos = (m_vMap / 2.f);
 		vScale = m_vMap;
 
-		vPos = CCamera::GetInst()->GetRenderPos(vPos);
+		vPos = CCamera::GetInst()->GetRenderPos(-(vScale / 2.f));
 		
 		GraphicsPath path;
-		path.AddRectangle(Rect(vPos.x - (vScale.x / 2.f), vPos.y - (vScale.y / 2.f), vScale.x, vScale.y));
+		path.AddRectangle(Rect(vPos.x, vPos.y, vScale.x, vScale.y));
 
 		SolidBrush fillBrush(Color(255, 255, 255));
 		graphics.FillRegion(&fillBrush, new Region(&path));
 	}
+
+	// 중앙 표시
+	Vec2 vCenter = Vec2(0.f, 0.f);
+	vCenter = CCamera::GetInst()->GetRenderPos(vCenter);
+	Pen pen(Color(0, 0, 0), 3.f);
+	graphics.DrawRectangle(&pen, vCenter.x - 2.5f, vCenter.y - 2.5f, 5.f, 5.f);
 }
 
 

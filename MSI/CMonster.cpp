@@ -115,6 +115,7 @@ void CMonster::render(HDC _dc)
 		SolidBrush brush(Color(255, 0, 0, 0));
 
 		Vec2 vPos = GetPos();
+		vPos = CCamera::GetInst()->GetRenderPos(vPos);
 
 		PointF point(vPos.x + 40.f, vPos.y);
 
@@ -124,11 +125,11 @@ void CMonster::render(HDC _dc)
 		Pen pen(Color(255, 0, 0, 255));
 		if (m_tInfo.iDir == 1)
 		{
-			graphics.DrawRectangle(&pen, GetPos().x, GetPos().y - (GetScale().y / 2.f), m_tInfo.vRecogRange.x, GetScale().y);
+			graphics.DrawRectangle(&pen, vPos.x, vPos.y - (GetScale().y / 2.f), m_tInfo.vRecogRange.x, GetScale().y);
 		}
 		else
 		{
-			graphics.DrawRectangle(&pen, GetPos().x - m_tInfo.vRecogRange.x, GetPos().y - (GetScale().y / 2.f), m_tInfo.vRecogRange.x, GetScale().y);
+			graphics.DrawRectangle(&pen, vPos.x - m_tInfo.vRecogRange.x, vPos.y - (GetScale().y / 2.f), m_tInfo.vRecogRange.x, GetScale().y);
 		}
 
 		tempStr = L"HP : " + std::to_wstring(m_tInfo.fHP);

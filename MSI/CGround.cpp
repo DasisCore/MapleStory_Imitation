@@ -61,6 +61,8 @@ void CGround::update()
 
 void CGround::render(HDC _dc)
 {
+	CObject::render(_dc);
+
 	Graphics graphics(_dc);
 
 	Vec2 vPos = GetPos();

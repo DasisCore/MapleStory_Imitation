@@ -13,10 +13,10 @@
 
 
 CFoothold::CFoothold()
-	: m_bLeft(true)
+	: m_bLeft(false)
 	, m_bTop(true)
-	, m_bRight(true)
-	, m_bBottom(true)
+	, m_bRight(false)
+	, m_bBottom(false)
 {
 	CreateComponent();
 	CreateCollider();
@@ -24,9 +24,9 @@ CFoothold::CFoothold()
 
 CFoothold::CFoothold(wstring _strName, Vec2 _vPos, Vec2 _vScale, bool _bCollider, Vec2 _vColOffset, Vec2 _vColScale, bool _bAnimation, vector<wstring> _vecPath, bool _bGravity, bool _bRigidBody)
 	: m_bLeft(false)
-	, m_bTop(false)
-	, m_bRight(true)
-	, m_bBottom(true)
+	, m_bTop(true)
+	, m_bRight(false)
+	, m_bBottom(false)
 {
 	SetName(_strName);
 	SetPos(_vPos);
@@ -168,8 +168,11 @@ void CFoothold::Blocking(CCollider* _pOther)
 	CRigidBody* pRigid = pOtherObj->GetComponent()->GetRigidbody();
 	Vec2 vCurVelocity = pRigid->GetVelocity();
 
+
+	if (pRigid->GetVelocity().y < 0.f) return;
+
 	// »ó´Ü
-	if (int(vPos.y - (vScale.y / 2.f)) >= int(vObjPos.y + (vObjScale.y / 2.f)) - 1
+	if (int(vPos.y - (vScale.y / 2.f)) >= int(vObjPos.y + (vObjScale.y / 2.f)) - 3.f
 		&& vPos.y - (vScale.y / 2.f) >= vObjPos.y - (vObjScale.y / 2.f)
 		&& vPos.x - (vScale.x / 2.f) < vObjPos.x + (vObjScale.x / 2.f)
 		&& vPos.x + (vScale.x / 2.f) > vObjPos.x - (vObjScale.x / 2.f)

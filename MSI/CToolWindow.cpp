@@ -139,7 +139,8 @@ void CToolWindow::init()
     m_hWndGravityCheckBox = CreateCheckBox(L"Gravity", Vec2(10, 660), Vec2(10, 10), (HMENU)IDC_CHECKBOX_GRAVITY);
     m_hWndRigidBodyCheckBox = CreateCheckBox(L"RigidBody", Vec2(10, 690), Vec2(10, 10), (HMENU)IDC_CHECKBOX_RIGIDBODY);
 
-    m_hWndCreateObjBtn = CreateButton(L"Save Scene", Vec2(10, 720), Vec2(100.f, 30.f), (HMENU)IDC_BUTTON_SAVE_SCENE);
+    //m_hWndSaveSceneBtn = CreateButton(L"Save Scene", Vec2(10, 720), Vec2(100.f, 30.f), (HMENU)IDC_BUTTON_SAVE_SCENE);
+    m_hWndSaveSceneBtn = CreateButton(L"Save Scene", Vec2(10, 720), Vec2(100.f, 30.f), nullptr);
     m_hWndCreateObjBtn = CreateButton(L"Create", Vec2(340, 720), Vec2(70.f, 30.f), (HMENU)IDC_BUTTON_CREATE_OBJECT);
 
     HDC MainDC = GetDC(m_hWndTool);
@@ -396,11 +397,11 @@ void CToolWindow::CreateObject()
 
     // Scale
     GetWindowText(m_hWndScaleX, buffer, 256);
-    temp = wstring(buffer) == L"" ? L"0" : wstring(buffer);
+    temp = wstring(buffer) == L"" ? L"100" : wstring(buffer);
     float fscaleX = stof(temp);
 
     GetWindowText(m_hWndScaleY, buffer, 256);
-    temp = wstring(buffer) == L"" ? L"0" : wstring(buffer);
+    temp = wstring(buffer) == L"" ? L"100" : wstring(buffer);
     float fscaleY = stof(temp);
 
     Vec2 vScale = Vec2(fscaleX, fscaleY);
@@ -453,6 +454,22 @@ void CToolWindow::CreateObject()
     if (checkBoxState == BST_CHECKED) bUseRigidBody = true;
 
     CObject* pObj;
+
+    // 오브젝트 이름을 설정하지 않았을 경우, Animation의 첫번째 인자의 이름을 가져온다.
+    if (strName == L"")
+    {
+        wstring aniPath = m_vecAniPath[0];
+        bool flag = false;
+        for (int i = aniPath.length(); i >= 0; i--)
+        {
+            if (aniPath[i] == L'\\') break;
+            if (flag)
+            {
+                strName = aniPath[i] + strName;
+            }
+            if (aniPath[i] == L'.') flag = true;
+        }
+    }
 
     switch ((OBJTYPE)iObjType)
     {

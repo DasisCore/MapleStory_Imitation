@@ -61,7 +61,7 @@ void CAnimation::render(HDC _dc)
 	Vec2 vPos = pObj->GetPos();
 
 	// 콜라이더의 오프셋만큼 애니메이션 출력 위치 변경
-	vPos += pObj->GetComponent()->GetCollider()->GetOffsetPos();
+	if(pObj->GetComponent()->GetCollider() != nullptr) vPos += pObj->GetComponent()->GetCollider()->GetOffsetPos();
 
 	vPos += m_vecFrm[m_iCurFrm].vOffset;	// offset만큼 추가 이동
 

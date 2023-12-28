@@ -63,39 +63,39 @@ void CScene::update()
 void CScene::finalupdate()
 {
 	//if (CSceneMgr::GetInst()->GetCurScene()->GetName() == L"Tool Scene")
-	if (1)
-	{
-		// 파이널 업데이트 전에, 오브젝트 타겟팅 설정
-		bool flag = 0;
-		CObject* pObj = nullptr;
-		int idx = -1;
+	//if (1)
+	//{
+	//	// 파이널 업데이트 전에, 오브젝트 타겟팅 설정
+	//	bool flag = 0;
+	//	CObject* pObj = nullptr;
+	//	int idx = -1;
 
-		//for (int i = (UINT)GROUP_TYPE::END - 1; i > -1; i--)
-		//{
-		//	for (int j = m_vecObj[i].size() - 1; j > -1; j--)
-		//	{
-		//		if (flag == 1)
-		//		{
-		//			m_vecObj[i][j]->SetTarget(false);
-		//		}
+	//	//for (int i = (UINT)GROUP_TYPE::END - 1; i > -1; i--)
+	//	//{
+	//	//	for (int j = m_vecObj[i].size() - 1; j > -1; j--)
+	//	//	{
+	//	//		if (flag == 1)
+	//	//		{
+	//	//			m_vecObj[i][j]->SetTarget(false);
+	//	//		}
 
-		//		if (!flag && CKeyMgr::GetInst()->IsMouseInObj(m_vecObj[i][j]))
-		//		{
-		//			m_vecObj[i][j]->SetTarget(true);
-		//			pObj = m_vecObj[i][j];
-		//			idx = i;
-		//			flag = 1;
-		//		}
-		//	}
-		//}
+	//	//		if (!flag && CKeyMgr::GetInst()->IsMouseInObj(m_vecObj[i][j]))
+	//	//		{
+	//	//			m_vecObj[i][j]->SetTarget(true);
+	//	//			pObj = m_vecObj[i][j];
+	//	//			idx = i;
+	//	//			flag = 1;
+	//	//		}
+	//	//	}
+	//	//}
 
-		// 타겟팅 된 오브젝트를 맨 Object의 벡터의 맨 뒤로 옮긴다.
-		if (idx != -1 && pObj != nullptr)
-		{
-			m_vecObj[idx].erase(std::remove(m_vecObj[idx].begin(), m_vecObj[idx].end(), pObj), m_vecObj[idx].end());
-			m_vecObj[idx].push_back(pObj);
-		}
-	}
+	//	// 타겟팅 된 오브젝트를 맨 Object의 벡터의 맨 뒤로 옮긴다.
+	//	if (idx != -1 && pObj != nullptr)
+	//	{
+	//		m_vecObj[idx].erase(std::remove(m_vecObj[idx].begin(), m_vecObj[idx].end(), pObj), m_vecObj[idx].end());
+	//		m_vecObj[idx].push_back(pObj);
+	//	}
+	//}
 
 
 	for (UINT i = 0; i < (UINT)GROUP_TYPE::END; i++)
@@ -137,8 +137,13 @@ void CScene::render(HDC _dc)
 	// 맵 크기 관련해서 그리기
 	Pen pen(Color(240, 240, 240), 2);
 	Vec2 vCenter = m_vMapSize / 2.f;
-	vCenter = CCamera::GetInst()->GetRenderPos(vCenter);
-	graphics.DrawRectangle(&pen, Rect(vCenter.x - (m_vMapSize.x / 2.f), vCenter.y - (m_vMapSize.y / 2.f), m_vMapSize.x, m_vMapSize.y));
+	vCenter = CCamera::GetInst()->GetRenderPos(-vCenter);
+	graphics.DrawRectangle(&pen, Rect(vCenter.x, vCenter.y, m_vMapSize.x, m_vMapSize.y));
+
+	Vec2 vCenter2 = Vec2(0.f, 0.f);
+	vCenter2 = CCamera::GetInst()->GetRenderPos(vCenter2);
+	Pen pen2(Color(0, 0, 0), 3.f);
+	graphics.DrawRectangle(&pen2, vCenter2.x - 2.5f, vCenter2.y - 2.5f, 5.f, 5.f);
 }
 
 
