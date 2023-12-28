@@ -2,6 +2,9 @@
 #include "CKeyMgr.h"
 #include "CCore.h"
 #include "CObject.h"
+#include "CSceneMgr.h"
+#include "CScene.h"
+#include "CCamera.h"
 
 // KEY와 같은 순서로 만들어진 배열
 int g_arrVK[int(KEY::LAST)] =
@@ -42,6 +45,8 @@ CKeyMgr::~CKeyMgr()
 
 }
 
+
+
 void CKeyMgr::init()
 {
 	// 모든 키에 대한 정보를 초기화 시켜준다.
@@ -71,6 +76,7 @@ void CKeyMgr::update()
 				else
 				{
 					m_vecKey[i].eState = KEY_STATE::TAP;
+					m_vDragStart = CCamera::GetInst()->GetRealPos(m_vCurMousePos);
 				}
 				m_vecKey[i].bPrevPush = true;
 			}
@@ -89,11 +95,7 @@ void CKeyMgr::update()
 		}
 
 		// Mouse 위치 계산
-		POINT ptPos = {};
-		GetCursorPos(&ptPos);
-		ScreenToClient(CCore::GetInst()->GetMainHwnd(), &ptPos);
-
-		m_vCurMousePos = Vec2(ptPos);
+		MousePos();
 	}
 	// 윈도우 포커싱 해제 상태
 	else
@@ -110,8 +112,9 @@ void CKeyMgr::update()
 				m_vecKey[i].eState = KEY_STATE::NONE;
 			}
 		}
-
 	}
+
+	CheckObjectTarget();
 }
 
 bool CKeyMgr::IsMouseInsideClinet(HWND _hWnd)
@@ -143,4 +146,50 @@ bool CKeyMgr::IsMouseInObj(CObject* _pObj)
 	}
 
 	return false;
+}
+
+void CKeyMgr::MousePos()
+{
+	POINT ptPos = {};
+	GetCursorPos(&ptPos);
+	ScreenToClient(CCore::GetInst()->GetMainHwnd(), &ptPos);
+
+	m_vCurMousePos = Vec2(ptPos);
+}
+
+void CKeyMgr::CheckObjectTarget()
+{
+	CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
+
+	// 타겟은 항상 하나
+
+	for (int i = (int)GROUP_TYPE::END - 1; i >= (int)GROUP_TYPE::DEFAULT; i--)
+	{
+		vector<CObject*> vecObj = pCurScene->GetGroupObject((GROUP_TYPE)i);
+		for (int j = 0; j < vecObj.size(); j++)
+		{
+			CObject* pObj = vecObj[j];
+			if (IsMouseInObj(vecObj[j]) && KEY_TAP(KEY::LBTN) && !vecObj[j]->GetTarget())
+			{
+				vecObj[j]->SetTarget(true);
+				m_bIgnore = false;
+			}
+			else if (IsMouseInObj(vecObj[j]) && KEY_HOLD(KEY::LBTN) && vecObj[j]->GetTarget() == true)
+			{
+				vecObj[j]->SetTarget(true);
+
+				Vec2 vCurPos = vecObj[j]->GetPos();
+				Vec2 vDiff = CCamera::GetInst()->GetRealPos(MOUSE_POS) - m_vDragStart;
+
+				vCurPos += vDiff;
+				vecObj[j]->SetPos(vCurPos);
+				m_vDragStart = CCamera::GetInst()->GetRealPos(MOUSE_POS);
+			}
+			else if (IsMouseInObj(vecObj[j]) && KEY_AWAY(KEY::LBTN) && vecObj[j]->GetTarget() == true)
+			{
+				vecObj[j]->SetTarget(false);
+			}
+			else vecObj[j]->SetTarget(false);
+		}
+	}
 }

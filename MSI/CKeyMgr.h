@@ -51,6 +51,16 @@ private:
 	vector<tKeyInfo> m_vecKey;
 	Vec2 m_vCurMousePos;
 
+	Vec2 m_vDragStart;
+	bool m_bIgnore;
+
+private:
+	// 현재 마우스 위치를 계산하는 함수
+	void MousePos();
+
+	// 해당 오브젝트를 클릭했을 때, 타겟중인 오브젝트로 변경하고 + 드래그 기능
+	void CheckObjectTarget();
+
 public:
 	void init();
 	void update();
@@ -65,5 +75,6 @@ public:
 	KEY_STATE GetKeyState(KEY _eKey) { return m_vecKey[(int)_eKey].eState; }
 	// 마우스의 현재 위치
 	Vec2 GetMousePos() { return m_vCurMousePos;	}
+	Vec2 GetDragStart() { return m_vDragStart; }
 };
 

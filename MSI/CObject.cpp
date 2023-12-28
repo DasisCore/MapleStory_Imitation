@@ -99,37 +99,50 @@ void CObject::component_render(HDC _dc)
 
 void CObject::ObjectDrag()
 {
+	//if (m_bTarget)
+	//{
+	//	if (KEY_HOLD(KEY::LBTN))
+	//	{
+	//		Vec2 vCurPos = GetPos();
+	//		Vec2 vDiff = CCamera::GetInst()->GetRealPos(MOUSE_POS) - CKeyMgr::GetInst()->GetDragStart();
+
+	//		vCurPos += vDiff;
+	//		SetPos(vCurPos);
+	//		m_vDragStart = CCamera::GetInst()->GetRealPos(MOUSE_POS);
+	//	}
+	//}
+
 	//if (CKeyMgr::GetInst()->IsMouseInObj(this))
 	//{
-		if (KEY_TAP(KEY::LBTN))
-		{
-			if (CKeyMgr::GetInst()->IsMouseInObj(this))
-			{
-				m_vDragStart = CCamera::GetInst()->GetRealPos(MOUSE_POS);
-				m_bTarget = true;
-			}
-		}
+		//if (KEY_TAP(KEY::LBTN))
+		//{
+		//	if (CKeyMgr::GetInst()->IsMouseInObj(this))
+		//	{
+		//		m_vDragStart = CCamera::GetInst()->GetRealPos(MOUSE_POS);
+		//		m_bTarget = true;
+		//	}
+		//}
 
-		else if (m_bTarget && KEY_HOLD(KEY::LBTN))
-		{
-			if (CKeyMgr::GetInst()->IsMouseInObj(this))
-			{
-				Vec2 vCurPos = GetPos();
-				Vec2 vDiff = CCamera::GetInst()->GetRealPos(MOUSE_POS) - m_vDragStart;
+		//else if (m_bTarget && KEY_HOLD(KEY::LBTN))
+		//{
+		//	if (CKeyMgr::GetInst()->IsMouseInObj(this))
+		//	{
+		//		Vec2 vCurPos = GetPos();
+		//		Vec2 vDiff = CCamera::GetInst()->GetRealPos(MOUSE_POS) - m_vDragStart;
 
-				vCurPos += vDiff;
-				SetPos(vCurPos);
-				m_vDragStart = CCamera::GetInst()->GetRealPos(MOUSE_POS);
-			}
-		}
+		//		vCurPos += vDiff;
+		//		SetPos(vCurPos);
+		//		m_vDragStart = CCamera::GetInst()->GetRealPos(MOUSE_POS);
+		//	}
+		//}
 
-		else if (KEY_AWAY(KEY::LBTN))
-		{
-			if (CKeyMgr::GetInst()->IsMouseInObj(this))
-			{
-				m_bTarget = false;
-			}
-		}
+		//else if (KEY_AWAY(KEY::LBTN))
+		//{
+		//	if (CKeyMgr::GetInst()->IsMouseInObj(this))
+		//	{
+		//		m_bTarget = false;
+		//	}
+		//}
 	//}
 }
 

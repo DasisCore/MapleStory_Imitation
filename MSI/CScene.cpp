@@ -69,24 +69,25 @@ void CScene::finalupdate()
 		bool flag = 0;
 		CObject* pObj = nullptr;
 		int idx = -1;
-		for (int i = (UINT)GROUP_TYPE::END - 1; i > -1; i--)
-		{
-			for (int j = m_vecObj[i].size() - 1; j > -1; j--)
-			{
-				if (flag == 1)
-				{
-					m_vecObj[i][j]->SetTarget(false);
-				}
 
-				if (!flag && CKeyMgr::GetInst()->IsMouseInObj(m_vecObj[i][j]))
-				{
-					m_vecObj[i][j]->SetTarget(true);
-					pObj = m_vecObj[i][j];
-					idx = i;
-					flag = 1;
-				}
-			}
-		}
+		//for (int i = (UINT)GROUP_TYPE::END - 1; i > -1; i--)
+		//{
+		//	for (int j = m_vecObj[i].size() - 1; j > -1; j--)
+		//	{
+		//		if (flag == 1)
+		//		{
+		//			m_vecObj[i][j]->SetTarget(false);
+		//		}
+
+		//		if (!flag && CKeyMgr::GetInst()->IsMouseInObj(m_vecObj[i][j]))
+		//		{
+		//			m_vecObj[i][j]->SetTarget(true);
+		//			pObj = m_vecObj[i][j];
+		//			idx = i;
+		//			flag = 1;
+		//		}
+		//	}
+		//}
 
 		// 타겟팅 된 오브젝트를 맨 Object의 벡터의 맨 뒤로 옮긴다.
 		if (idx != -1 && pObj != nullptr)
