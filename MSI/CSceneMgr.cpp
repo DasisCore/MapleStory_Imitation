@@ -40,7 +40,7 @@ void CSceneMgr::init()
 	m_arrScene[(UINT)SCENE_TYPE::TEST] = new CScene_Test;
 	m_arrScene[(UINT)SCENE_TYPE::TEST]->SetName(L"Test Scene");
 
-	m_pCurScene = m_arrScene[(UINT)SCENE_TYPE::START];
+	m_pCurScene = m_arrScene[(UINT)SCENE_TYPE::TOOL];
 	m_pCurScene->Enter();
 }
 

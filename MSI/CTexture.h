@@ -13,6 +13,7 @@ private:
 public:
     void Load(const wstring& _strFilePath, bool _bIsReverse);
     void Create(UINT _iWidth, UINT _iHeight);
+    void Change(UINT _iWidth, UINT _iHeight);
     UINT Width() { return m_bitInfo.bmWidth; }
     UINT Height() { return m_bitInfo.bmHeight; }
 

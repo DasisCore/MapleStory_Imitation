@@ -56,10 +56,7 @@ void CScene_Tool::Enter()
 {
 	// 메뉴 바 붙이기
 	CCore::GetInst()->DockMenu();
-
-	// 타일 생성
-	//CreateTile(5, 5);
-
+	CCore::GetInst()->ChangeWindowSize(Vec2(1920, 1080), false);
 	// UI 하나 만들어보기
 	Vec2 vResolution = CCore::GetInst()->GetResolution();
 

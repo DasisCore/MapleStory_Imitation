@@ -318,7 +318,7 @@ void CScene_Ani_Workshop::update()
 		m_bDrag = false;
 	}
 	
-	if (KEY_TAP(KEY::ENTER))
+	if (KEY_TAP(KEY::F2))
 	{
 		ChangeScene(SCENE_TYPE::TOOL);
 	}

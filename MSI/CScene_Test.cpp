@@ -13,7 +13,7 @@ CScene_Test::~CScene_Test()
 
 void CScene_Test::Enter()
 {
-	LoadSceneData(L"ppp.scene");
+	LoadSceneData(L"plz.scene");
 }
 
 void CScene_Test::Exit()

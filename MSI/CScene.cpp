@@ -297,4 +297,6 @@ void CScene::LoadSceneData(const wstring& _strFilePath)
 		CObject* pMon = (CObject*)CMonFactory::CreateMonster(MON_TYPE::NORMAL, strName, vPos, vScale, bCollider, vColOffset, vColScale, bAnimator, vecPath, bGravity, bRigidBody);
 		AddObject(pMon, GROUP_TYPE::MONSTER);
 	}
+
+	fclose(pFile);
 }

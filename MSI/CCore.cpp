@@ -202,6 +202,14 @@ void CCore::DivideMenu()
 
 void CCore::ChangeWindowSize(Vec2 _vResolution, bool _bMenu)
 {
+	CTexture* pTex = CResMgr::GetInst()->FindTexture(L"BackBuffer");
+	
+	if (pTex != nullptr)
+	{
+		pTex->Change(_vResolution.x, _vResolution.y);
+		SetResolution(_vResolution);
+	}
+
 	// 사각형을 나타내는 구조체 RECT
 	RECT rt = { 0, 0, (long)_vResolution.x, (long)_vResolution.y };
 	

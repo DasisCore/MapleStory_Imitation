@@ -42,6 +42,11 @@ public:
 
 	HWND GetMainHwnd() { return m_hWnd; }
 	POINT GetResolution() { return m_ptResolution; }
+	void SetResolution(Vec2 _vResolution) 
+	{
+		POINT ptResolution = { _vResolution.x , _vResolution.y };
+		m_ptResolution = ptResolution;
+	}
 	HDC GetMainDC() { return m_hDC; }
 	HINSTANCE GetMainhInstance() { return m_hInstance; }
 	CTexture* GetMemTex() { return m_pMemTex; }
