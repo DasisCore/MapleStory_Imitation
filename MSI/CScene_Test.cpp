@@ -5,6 +5,8 @@
 #include "CBark.h"
 #include "CCollisionMgr.h"
 
+#include "CCamera.h"
+
 CScene_Test::CScene_Test()
 {
 }
@@ -35,6 +37,11 @@ void CScene_Test::Enter()
 	CCollisionMgr::GetInst()->CheckGroup(GROUP_TYPE::MONSTER, GROUP_TYPE::FOOTHOLD);
 	CCollisionMgr::GetInst()->CheckGroup(GROUP_TYPE::PLAYER, GROUP_TYPE::DETECT);
 	CCollisionMgr::GetInst()->CheckGroup(GROUP_TYPE::MONSTER, GROUP_TYPE::SKILL);
+
+
+	//CCamera::GetInst()->SetLookAt(pVoltarix->GetPos());
+	CCamera::GetInst()->SetTarget(pVoltarix);
+	
 }
 
 void CScene_Test::Exit()
