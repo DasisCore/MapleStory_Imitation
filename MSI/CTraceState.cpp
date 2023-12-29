@@ -184,5 +184,5 @@ void CTraceState::update()
 	}
 
 	CMonster_Normal* pMon = (CMonster_Normal*)GetMonster();
-	if (pMon->GetInfo().fHP < 0) ChangeAIState(GetAI(), MON_STATE::DEAD);
+	if (pMon->GetInfo().fHP <= 0) ChangeAIState(GetAI(), MON_STATE::DEAD);
 }

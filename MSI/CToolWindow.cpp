@@ -313,7 +313,7 @@ void CToolWindow::LoadAnimation()
 {
     OPENFILENAME ofn = {};
 
-    wchar_t szName[256] = {};
+    wchar_t szName[256 * 30] = {};
 
     ofn.lStructSize = sizeof(OPENFILENAME);
     ofn.hwndOwner = CCore::GetInst()->GetMainHwnd();
@@ -329,23 +329,57 @@ void CToolWindow::LoadAnimation()
     strAnimationFolder += L"Animation";
 
     ofn.lpstrInitialDir = strAnimationFolder.c_str();
-    ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+    ofn.Flags = OFN_EXPLORER | OFN_ALLOWMULTISELECT | OFN_FILEMUSTEXIST;;
 
     // 파일 읽기가 성공했다면.
     if (GetOpenFileName(&ofn))
     {
-        wstring strPath = CPathMgr::GetInst()->GetRelativePath(szName);
+        wchar_t* pFileName = szName;
 
-        // 리스트 뷰에 아이템 추가
+        //// 리스트 뷰에 아이템 추가
         LVITEM lvItem = { 0 };
         lvItem.mask = LVIF_TEXT;
         lvItem.iItem = 0; // 아이템 인덱스
         lvItem.iSubItem = 0; // 서브아이템 인덱스
-        lvItem.pszText = const_cast<LPWSTR>(strPath.c_str()); // 아이템 텍스트
-        ListView_InsertItem(m_hWndAniListView, &lvItem);
 
-        // 불러온 상대 경로를 저장한다.
-        m_vecAniPath.push_back(strPath);
+        // 파일이 하나만 선택된 경우
+        if (pFileName[wcslen(pFileName) + 1] == L'\0')
+        {
+            wstring strPath = wstring(pFileName);
+            strPath = CPathMgr::GetInst()->GetRelativePath(strPath.c_str());
+            lvItem.pszText = const_cast<LPWSTR>(strPath.c_str()); // 아이템 텍스트
+            ListView_InsertItem(m_hWndAniListView, &lvItem);
+            m_vecAniPath.push_back(strPath);
+        }
+        // 파일이 여러개 선택된 경우.
+        else
+        {
+            // 디렉터리 경로 뒤의 널 문자를 찾아 건너뛰고 나머지 파일들을 출력
+            pFileName += wcslen(pFileName) + 1;
+
+            while (*pFileName)
+            {
+                wstring strPath = wstring(pFileName);
+                strPath = L"Animation\\" + strPath;
+                lvItem.pszText = const_cast<LPWSTR>(strPath.c_str()); // 아이템 텍스트
+                ListView_InsertItem(m_hWndAniListView, &lvItem);
+                pFileName += wcslen(pFileName) + 1;
+                m_vecAniPath.push_back(strPath);
+            }
+        }
+
+        //wstring strPath = CPathMgr::GetInst()->GetRelativePath(szName);
+
+        //// 리스트 뷰에 아이템 추가
+        //LVITEM lvItem = { 0 };
+        //lvItem.mask = LVIF_TEXT;
+        //lvItem.iItem = 0; // 아이템 인덱스
+        //lvItem.iSubItem = 0; // 서브아이템 인덱스
+        //lvItem.pszText = const_cast<LPWSTR>(strPath.c_str()); // 아이템 텍스트
+        //ListView_InsertItem(m_hWndAniListView, &lvItem);
+
+        //// 불러온 상대 경로를 저장한다.
+        //m_vecAniPath.push_back(strPath);
     }
 }
 

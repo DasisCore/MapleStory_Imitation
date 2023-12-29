@@ -68,6 +68,6 @@ void CAttackState::update()
 		return;
 	}
 
-	if (pMon->GetInfo().fHP < 0) ChangeAIState(GetAI(), MON_STATE::DEAD);
+	if (pMon->GetInfo().fHP <= 0) ChangeAIState(GetAI(), MON_STATE::DEAD);
 }
 

@@ -5,6 +5,9 @@
 #include "CComponent.h"
 #include "CRigidBody.h"
 
+#include "CSceneMgr.h"
+#include "CScene.h"
+
 CGravity::CGravity()
 	: m_pOwner(nullptr)
 	, m_bGround(false)
@@ -27,5 +30,8 @@ void CGravity::SetGround(bool _b)
 
 void CGravity::finalupdate()
 {
-	m_pOwner->GetComponent()->GetRigidbody()->SetAccelAlpha(Vec2(0.f, 800.f));	
+	if (CSceneMgr::GetInst()->GetCurScene()->GetName() != L"Tool Scene")
+	{
+		m_pOwner->GetComponent()->GetRigidbody()->SetAccelAlpha(Vec2(0.f, 800.f));	
+	}
 }

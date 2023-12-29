@@ -58,42 +58,36 @@ CBlessingSeed::CBlessingSeed(CObject* _pObj)
 
 			for (int k = 0; k < vecSkill.size(); k++)
 			{
-				if (vecSkill[k]->GetName() != L"Seed") continue;
-				Vec2 vSkillPos = vecSkill[k]->GetPos();
-				Vec2 vSkillScale = vecSkill[k]->GetScale();
-
-				Vec2 vPoint = Vec2(j, Y - 10.f);
-
-				// vPoint가 이미 Seed 안에 있다면.
-				if (vSkillPos.x - (vSkillScale.x / 2.f) < vPoint.x
-					&& vSkillPos.x + (vSkillScale.x / 2.f) > vPoint.x
-					&& vSkillPos.y - (vSkillScale.y / 2.f) < vPoint.y
-					&& vSkillPos.y + (vSkillScale.y / 2.f) > vPoint.y)
+				if (vecSkill[k]->GetName() == L"Seed")
 				{
-					flag = true;
-					break;
+					//Vec2 vSkillPos = vecSkill[k]->GetPos();
+					Vec2 vSkillPos = vecSkill[k]->GetComponent()->GetCollider()->GetFinalPos();
+					//Vec2 vSkillScale = vecSkill[k]->GetScale();
+					Vec2 vSkillScale = vecSkill[k]->GetComponent()->GetCollider()->GetScale();
+
+					Vec2 vPoint = Vec2(j, Y - 30.f);
+
+					// vPoint가 이미 Seed 안에 있다면.
+					if (vSkillPos.x - (vSkillScale.x / 2.f) <= vPoint.x
+						&& vSkillPos.x + (vSkillScale.x / 2.f) >= vPoint.x
+						&& vSkillPos.y - (vSkillScale.y / 2.f) <= vPoint.y
+						&& vSkillPos.y + (vSkillScale.y / 2.f) >= vPoint.y)
+					{
+						flag = true;
+						break;
+					}
 				}
 			}
 
 			if (!flag)
 			{
 				CObject* pObj = (CObject*) new CSeed(_pObj);
-				Vec2 renderPos = CCamera::GetInst()->GetRenderPos(Vec2(j, Y + 20.f));
-				pObj->SetPos(renderPos);
+				pObj->SetPos(Vec2(j, Y + 20.f));
 				CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
 				pCurScene->AddObject(pObj, GROUP_TYPE::SKILL);
 			}
 		}
 	}
-
-	// foothold 중 BlessingSeed의 범위 안에 있는 foothold에 안겹치게 Seed 생성 (7 ~ 10개 or 개수 상관없이 영역 내)
-	
-	// 해당 위치에 Seed가 있는지 확인
-	// 영역내 foothold 확인
-
-	//CObject* pObj = (CObject*) new CSeed(_pObj);
-	//CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
-	//pCurScene->AddObject(pObj, GROUP_TYPE::SKILL);
 }
 
 CBlessingSeed::~CBlessingSeed()

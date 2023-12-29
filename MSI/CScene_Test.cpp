@@ -16,7 +16,7 @@ CScene_Test::~CScene_Test()
 
 void CScene_Test::Enter()
 {
-	LoadSceneData(L"STAGE02.scene");
+	LoadSceneData(L"STAGE01.scene");
 
 	CPlayer* pVoltarix = new CBark;
 	pVoltarix->SetName(L"RAVEN");
