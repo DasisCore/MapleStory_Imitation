@@ -23,14 +23,17 @@ void CBark::update()
 	CPlayer::update();
 
 	// 스킬 사용할때 딜레이 적용.
-	if (KEY_TAP(KEY::CTRL))
+	// 자연의 손아귀
+	if (KEY_TAP(KEY::CTRL) && GetCanOtherAction() && GetIsGround())
 	{
+		SetCurState(PLAYER_STATE::ATTACK);
 		CObject* pObj = (CObject*) new CNatureGrab(this);
 		CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
 		pCurScene->AddObject(pObj, GROUP_TYPE::SKILL);
-		SetDelay(0.25f);
+		SetDelay(0.53f);
 	}
 
+	// 요새
 	if (KEY_TAP(KEY::Z))
 	{
 		CObject* pObj = (CObject*) new CFortress(this);
@@ -38,18 +41,15 @@ void CBark::update()
 		pCurScene->AddObject(pObj, GROUP_TYPE::SKILL);
 	}
 
-	if (KEY_TAP(KEY::X))
+	// 축복의 씨앗
+	if (KEY_TAP(KEY::LSHIFT) && GetCanOtherAction() && GetIsGround())
 	{
-		CObject* pObj = (CObject*) new CSeed(this);
-		CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
-		pCurScene->AddObject(pObj, GROUP_TYPE::SKILL);
-	}
-
-	if (KEY_TAP(KEY::LSHIFT))
-	{
+		SetCurState(PLAYER_STATE::ATTACK);
 		CObject* pObj = (CObject*) new CBlessingSeed(this);
 		CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
 		pCurScene->AddObject(pObj, GROUP_TYPE::SKILL);
+		SetDelay(0.4f);
 	}
+
 }
 

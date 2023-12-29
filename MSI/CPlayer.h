@@ -11,7 +11,7 @@ enum class PLAYER_STATE
     DEAD,
     PRONE,
     PRONE_ATT,
-    END,
+    END = 20,
 };
 
 enum class PLAYER_ATTACK_STATE
@@ -42,6 +42,7 @@ private:
 
     bool m_bIsGround;
     bool m_bIsAir;
+    bool m_bCanOtherAction;
 
     float m_fDelayTime;
     bool m_bDelay;
@@ -59,15 +60,28 @@ public:
 
     virtual void OnCollisionEnter(CCollider* _pOther) override;
     
+    bool GetIsGround() { return m_bIsGround; }
+    void SetIsGround(bool _b) { m_bIsGround = _b; }
+    bool GetIsAir() { return m_bIsAir; }
+    void SetIsAir(bool _b) { m_bIsAir = _b; }
+
+    // 캐릭터의 상태 변환
+    void SetCurState(PLAYER_STATE _eState) { m_eCurState = _eState; }
+
     // 캐릭터 딜레이 계산
     void Delay();
     void SetDelay(float _fDelay) { m_fDelayTime = _fDelay; }
+    bool GetCanOtherAction() { return m_bCanOtherAction; }
     virtual CPlayer* Clone() override { return new CPlayer(*this); }
 
 // 임시
 public:
     virtual void render(HDC _dc);
     void show_state(HDC _dc);
+
+// 게임 플레이와 관련된 멤버 함수
+public:
+    void CharHit(int _iDir);
 
 
 public:

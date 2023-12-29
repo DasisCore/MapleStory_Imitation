@@ -32,6 +32,6 @@ void CGravity::finalupdate()
 {
 	if (CSceneMgr::GetInst()->GetCurScene()->GetName() != L"Tool Scene")
 	{
-		m_pOwner->GetComponent()->GetRigidbody()->SetAccelAlpha(Vec2(0.f, 800.f));	
+		m_pOwner->GetComponent()->GetRigidbody()->SetAccelAlpha(Vec2(0.f, 1500.f));	
 	}
 }

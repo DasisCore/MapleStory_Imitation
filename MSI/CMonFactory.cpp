@@ -38,11 +38,11 @@ CMonster* CMonFactory::CreateMonster(MON_TYPE _eType, Vec2 _vPos)
 		pMon->GetComponent()->GetRigidbody()->SetMass(1.f);
 
 		AI* pAI = new AI;
-		pAI->AddState(new CIdleState);
-		pAI->AddState(new CTraceState);
-		pAI->AddState(new CPatrolState);
 		pAI->AddState(new CAttackState);
 		pAI->AddState(new CDeadState);
+		pAI->AddState(new CIdleState);
+		pAI->AddState(new CPatrolState);
+		pAI->AddState(new CTraceState);
 		
 		pAI->SetCurState(MON_STATE::IDLE);
 

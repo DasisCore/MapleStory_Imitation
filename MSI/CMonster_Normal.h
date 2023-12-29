@@ -11,7 +11,7 @@ private:
 
 public:
     void Attack();
-    void SetAttTime() { m_fAttTime = 1.5f; }
+    void SetAttTime() { m_fAttTime = 1.46f; }
     bool IsFinshAtt()
     {
         if (m_fAttTime < 0)

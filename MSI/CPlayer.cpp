@@ -22,7 +22,7 @@
 
 CPlayer::CPlayer()
 	: m_wCurChar(L"RAVEN")
-	, m_eCurState(PLAYER_STATE::IDLE)
+	, m_eCurState(PLAYER_STATE::JUMP)
 	, m_ePrevState(PLAYER_STATE::WALK)
 	, m_iDir(1)
 	, m_iPrevDir(1)
@@ -54,6 +54,9 @@ CPlayer::CPlayer()
 
 	GetComponent()->GetAnimator()->LoadAnimation(L"Animation\\RAVEN_LEFT_JUMP.anim");
 	GetComponent()->GetAnimator()->LoadAnimation(L"Animation\\RAVEN_RIGHT_JUMP.anim");
+
+	GetComponent()->GetAnimator()->LoadAnimation(L"Animation\\RAVEN_LEFT_ATT.anim");
+	GetComponent()->GetAnimator()->LoadAnimation(L"Animation\\RAVEN_RIGHT_ATT.anim");
 
 	//////CTexture* m_pLeftTex = CResMgr::GetInst()->LoadTexture(L"RavenLeft", L"Texture\\Player\\Raven.png");
 	//////CTexture* m_pRightTex = CResMgr::GetInst()->LoadTexture(L"RavenRight", L"Texture\\Player\\Raven.png", 1);
@@ -116,6 +119,15 @@ void CPlayer::update()
 		GetComponent()->GetRigidbody()->SetVelocity(Vec2(0.f, 0.f));
 	}
 
+	if (KEY_TAP(KEY::O))
+	{
+		CharHit(-1);
+	}
+	if (KEY_TAP(KEY::P))
+	{
+		CharHit(+1);
+	}
+
 	Delay();
 }
 
@@ -138,7 +150,7 @@ void CPlayer::update_state()
 	if (KEY_HOLD(KEY::LEFT))
 	{
 		m_iDir = -1;
-		if (m_eCurState != PLAYER_STATE::JUMP && m_bIsGround)
+		if (m_eCurState == PLAYER_STATE::IDLE && m_bIsGround)
 		{
 			m_eCurState = PLAYER_STATE::WALK;
 		}
@@ -147,7 +159,7 @@ void CPlayer::update_state()
 	if (KEY_HOLD(KEY::RIGHT))
 	{
 		m_iDir = 1;
-		if (m_eCurState != PLAYER_STATE::JUMP && m_bIsGround)
+		if (m_eCurState == PLAYER_STATE::IDLE && m_bIsGround)
 		{
 			m_eCurState = PLAYER_STATE::WALK;
 		}
@@ -182,7 +194,10 @@ void CPlayer::update_state()
 	}
 
 
-	if (0.f == GetComponent()->GetRigidbody()->GetSpeed() && m_eCurState != PLAYER_STATE::JUMP && m_bIsGround)
+	if (0.f == GetComponent()->GetRigidbody()->GetSpeed() 
+		&& m_eCurState != PLAYER_STATE::JUMP 
+		&& m_eCurState != PLAYER_STATE::ATTACK 
+		&& m_bIsGround)
 	{
 		m_eCurState = PLAYER_STATE::IDLE;
 	}
@@ -192,7 +207,7 @@ void CPlayer::update_state()
 		m_eCurState = PLAYER_STATE::JUMP;
 		m_bIsAir = 1;
 		m_bIsGround = 0;
-		GetComponent()->GetRigidbody()->SetVelocity(Vec2(GetComponent()->GetRigidbody()->GetVelocity().x, -400.f));
+		GetComponent()->GetRigidbody()->SetVelocity(Vec2(GetComponent()->GetRigidbody()->GetVelocity().x, -740.f));
 	}
 }
 
@@ -203,20 +218,37 @@ void CPlayer::update_move()
 
 	if (KEY_HOLD(KEY::LEFT))
 	{
-		pRigid->AddForce(Vec2(-400.f, 0.f));
+		if (m_bIsGround)
+		{
+			pRigid->SetVelocity(Vec2(-300.f, pRigid->GetVelocity().y));
+			pRigid->AddForce(Vec2(-900.f, 0.f));
+		}
+		else 
+		{
+			pRigid->AddForce(Vec2(-100.f, 0.f));
+		}
+
 	}
 
 	if (KEY_HOLD(KEY::RIGHT))
 	{
-		pRigid->AddForce(Vec2(400.f, 0.f));
+		if (m_bIsGround)
+		{
+			pRigid->SetVelocity(Vec2(300.f, pRigid->GetVelocity().y));
+			pRigid->AddForce(Vec2(900.f, 0.f));
+		}
+		else
+		{
+			pRigid->AddForce(Vec2(100.f, 0.f));
+		}
 	}
 
 
-	if (KEY_TAP(KEY::LEFT))
+	if (KEY_TAP(KEY::LEFT) && m_bIsGround)
 	{
 		pRigid->SetVelocity(Vec2(-300.f, pRigid->GetVelocity().y));
 	}
-	if (KEY_TAP(KEY::RIGHT))
+	if (KEY_TAP(KEY::RIGHT) && m_bIsGround)
 	{
 		pRigid->SetVelocity(Vec2(300.f, pRigid->GetVelocity().y));
 	}
@@ -252,8 +284,12 @@ void CPlayer::update_animation()
 		break;
 
 	case PLAYER_STATE::ATTACK:
+	{
+		currentChar += L"_ATT";
+		GetComponent()->GetAnimator()->Play(currentChar.c_str(), false);
+		GetComponent()->GetAnimator()->FindAnimation(currentChar.c_str())->SetFrame(0);
+	}
 		break;
-
 	case PLAYER_STATE::JUMP:
 	{
 		currentChar += L"_JUMP";
@@ -293,8 +329,13 @@ void CPlayer::Delay()
 	{
 		m_fDelayTime -= fDT;
 		m_bDelay = true;
+		m_bCanOtherAction = false;
 		return;
 	}
+
+	if (m_eCurState == PLAYER_STATE::ATTACK) m_eCurState = PLAYER_STATE::IDLE;
+	
+	m_bCanOtherAction = true;
 	m_bDelay = false;
 }
 
@@ -328,7 +369,7 @@ void CPlayer::show_state(HDC _dc)
 	}
 	else if (m_eCurState == PLAYER_STATE::ATTACK)
 	{
-		current_state = L"ATTACK";
+		current_state = L"ATT";
 	}
 	else if (m_eCurState == PLAYER_STATE::DEAD)
 	{
@@ -366,4 +407,18 @@ void CPlayer::show_state(HDC _dc)
 
 	Font font2(L"Arial", 10);
 	graphics.DrawString(current_state.c_str(), -1, &font2, point, &brush);
+}
+
+void CPlayer::CharHit(int _iDir)
+{
+	CRigidBody* pRigid = GetComponent()->GetRigidbody();
+
+	if (_iDir == -1)
+	{
+		pRigid->SetVelocity(Vec2(-250.f, -250.f));
+	}
+	else if(_iDir == 1)
+	{
+		pRigid->SetVelocity(Vec2(+250.f, -250.f));
+	}
 }

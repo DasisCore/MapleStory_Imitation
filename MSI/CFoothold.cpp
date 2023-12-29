@@ -120,8 +120,9 @@ void CFoothold::OnCollision(CCollider* _pOther)
 	CObject* pOtherObj = _pOther->GetObj();
 	if (pOtherObj->GetGroundCheck())
 	{
+		CMonster* pMon = dynamic_cast<CMonster*>(pOtherObj);
 		//if (_pOther->GetObj()->GetName().substr(0, 7) == L"Monster")
-		if (1)
+		if (pMon != nullptr)
 		{
 			// 몬스터의 정보
 			float fMonPos = _pOther->GetFinalPos().x;
@@ -172,7 +173,7 @@ void CFoothold::Blocking(CCollider* _pOther)
 	if (pRigid->GetVelocity().y < 0.f) return;
 
 	// 상단
-	if (int(vPos.y - (vScale.y / 2.f)) >= int(vObjPos.y + (vObjScale.y / 2.f)) - 3.f
+	if (int(vPos.y - (vScale.y / 2.f)) >= int(vObjPos.y + (vObjScale.y / 2.f)) - 10.f
 		&& vPos.y - (vScale.y / 2.f) >= vObjPos.y - (vObjScale.y / 2.f)
 		&& vPos.x - (vScale.x / 2.f) < vObjPos.x + (vObjScale.x / 2.f)
 		&& vPos.x + (vScale.x / 2.f) > vObjPos.x - (vObjScale.x / 2.f)

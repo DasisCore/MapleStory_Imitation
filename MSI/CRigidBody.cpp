@@ -3,12 +3,13 @@
 
 #include "CObject.h"
 #include "CTimeMgr.h"
+#include "CPlayer.h"
 
 CRigidBody::CRigidBody()
 	: m_pOwner(nullptr)
 	, m_fMass(1.f)
-	, m_fFricCoeff(300.f)
-	, m_vMaxVelocity(Vec2(200.f, 600.f))
+	, m_fFricCoeff(900.f)
+	, m_vMaxVelocity(Vec2(220.f, 800.f))
 {
 }
 
@@ -42,12 +43,22 @@ void CRigidBody::finalupdate()
 	// 마찰력 적용
 	// 현재 마찰력은 모든 상황에서 마찰력이 발생한다는 가정이므로.
 	// 공중 상황에서의 마찰력은 제거해야함.
+	bool flag = true;
+	CPlayer* pPlayer = dynamic_cast<CPlayer*> (m_pOwner);
+	if (pPlayer != nullptr && pPlayer->GetIsAir())
+	{
+		flag = false;
+	}
+
 	if (!m_vVelocity.IsZero())
 	{
+		if (!flag) m_fFricCoeff = 100.f;
+		else m_fFricCoeff = 900.f;
+
 		Vec2 vFricDir = -m_vVelocity;
 		vFricDir.Normalize();
 
-		Vec2 vFriction = vFricDir * m_fFricCoeff * fDT;
+		Vec2 vFriction = vFricDir * m_fFricCoeff * fDT * m_fMass;
 
 		if (m_vVelocity.Length() <= vFriction.Length())
 		{

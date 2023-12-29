@@ -4,6 +4,7 @@
 #include "CComponent.h"
 #include "CCollider.h"
 #include "CAnimator.h"
+#include "CAnimation.h"
 #include "CRandom.h"
 #include "CRigidBody.h"
 
@@ -181,6 +182,7 @@ void CMonster::update_animation()
 	if (currentChar.substr(currentChar.size() - 5, 5) == L"_DEAD")
 	{
 		GetComponent()->GetAnimator()->Play(currentChar.c_str(), false);
+		GetComponent()->GetAnimator()->FindAnimation(currentChar.c_str())->SetFrame(0);
 		return;
 	}
 

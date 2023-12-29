@@ -41,17 +41,22 @@ void CIdleState::update()
 	if (InRangePlayer())
 	{
 		ChangeAIState(GetAI(), MON_STATE::TRACE);
+		return;
 	}
 
 	//// 지정된 대기 시간만큼 대기했다면 이동한다.
 	if (m_fWaitTime <= 0.f)
 	{
 		ChangeAIState(GetAI(), MON_STATE::PATROL);
+		return;
 	}
 
 	CMonster_Normal* pMon = (CMonster_Normal*)GetMonster();
-	if (pMon->GetInfo().fHP <= 0) ChangeAIState(GetAI(), MON_STATE::DEAD);
-
+	if (pMon->GetInfo().fHP <= 0)
+	{
+		ChangeAIState(GetAI(), MON_STATE::DEAD);
+		return;
+	}
 }
 
 

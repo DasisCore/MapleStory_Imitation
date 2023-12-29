@@ -30,7 +30,7 @@ CAnimation::~CAnimation()
 void CAnimation::update()
 {
 	if (m_bFinish) return;
-
+	
 	// 시간에 따른 프레임 변화
 	m_fAccTime += fDT;
 

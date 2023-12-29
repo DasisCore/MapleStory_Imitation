@@ -125,7 +125,8 @@ void CGround::OnCollision(CCollider* _pOther)
 	if (pOtherObj->GetGroundCheck())
 	{
 		//if (_pOther->GetObj()->GetName().substr(0, 7) == L"Monster")
-		if(1)
+		CMonster* pMon = dynamic_cast<CMonster*>(pOtherObj);
+		if(pMon != nullptr)
 		{
 			// 몬스터의 정보
 			float fMonPos = _pOther->GetFinalPos().x;
@@ -137,7 +138,7 @@ void CGround::OnCollision(CCollider* _pOther)
 
 			// 남은 거리를 계속 계산해줘야 함. (좌우)
 
-			CMonster* pMonster = (CMonster*)_pOther->GetObj();
+			CMonster* pMonster = (CMonster*)pOtherObj;
 		
 			float fLeftRemain = abs((fMonPos + fMonHalfSide) - (fGroundPos - fGroundHalfSide));
 			float fRightRemain = abs((fMonPos - fMonHalfSide) - (fGroundPos + fGroundHalfSide));

@@ -17,6 +17,7 @@ private:
 	CComponent* m_pComponent;
 
 	bool m_bAlive;
+	// 땅과 충돌체크를 하는지 확인
 	bool m_bGroundCheck;
 
 	Vec2 m_vDragStart;
@@ -37,8 +38,7 @@ public:
 	bool GetGroundCheck() { return m_bGroundCheck; }
 	void SetGroundCheck(bool _b) { m_bGroundCheck = _b; }
 
-	// 마우스를 이용해 오브젝트를 옮기는 기능.
-	void ObjectDrag();
+
 	bool GetTarget() { return m_bTarget; }
 	void SetTarget(bool _b) { m_bTarget = _b; }
 

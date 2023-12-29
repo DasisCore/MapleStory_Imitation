@@ -6,9 +6,12 @@ class CDetect :
 private:
     bool m_bIsDetect;
 
+    // Detect가 감지한 오브젝트.
+    CObject* m_pObject;
 
 public:
     bool IsDetect() { return m_bIsDetect; }
+    CObject* GetDetectObj() { return m_pObject; }
 
 public:
     virtual void update() override;
@@ -16,6 +19,7 @@ public:
 
 public:
     virtual void OnCollisionEnter(CCollider* _pOther);
+    virtual void OnCollisionExit(CCollider* _pOther);
 
 
 public:

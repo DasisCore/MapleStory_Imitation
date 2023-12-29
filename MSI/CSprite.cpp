@@ -124,15 +124,6 @@ void CSprite::update()
 				m_bMouseOn = false;
 			}
 		}
-		else
-		{
-			if (m_tInfo.bTarget)
-			{
-				ObjectDrag();
-			}
-			//IsLbtnDown();
-			//IsLbtnDrag();
-		}
 	}
 
 }

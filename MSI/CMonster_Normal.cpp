@@ -9,8 +9,8 @@
 
 CMonster_Normal::CMonster_Normal()
 	: CMonster()
-	, m_fAttDelay(1.5f)
-	, m_fAttTime(1.5f)
+	, m_fAttDelay(1.46f)
+	, m_fAttTime(1.46f)
 {
 	CreateGravity();
 	CreateRigidbody();
@@ -39,8 +39,8 @@ CMonster_Normal::CMonster_Normal(wstring _strName, Vec2 _vPos, Vec2 _vScale
 	, bool _bAnimation, vector<wstring> _vecPath
 	, bool _bGravity, bool _bRigidBody)
 	: CMonster()
-	, m_fAttDelay(1.5f)
-	, m_fAttTime(1.5f)
+	, m_fAttDelay(1.46f)
+	, m_fAttTime(1.46f)
 {
 	SetName(_strName);
 	SetPos(_vPos);
@@ -74,11 +74,9 @@ CMonster_Normal::~CMonster_Normal()
 void CMonster_Normal::update()
 {
 	CMonster::update();
-	//GetComponent()->GetAnimator()->Play(L"LESH_RIGHT_WALK", true);
 }
 
 void CMonster_Normal::Attack()
 {
 	m_fAttTime -= fDT;
-	//GetComponent()->GetAnimator()->Play(L"LESH_RIGHT_ATTACK", true);
 }

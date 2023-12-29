@@ -16,7 +16,7 @@ CNatureGrab::CNatureGrab(CObject* _pObj)
 	CreateCollider();
 	
 	CCollider* pCol = GetComponent()->GetCollider();
-	pCol->SetScale(Vec2(580.f, 260.f));
+	pCol->SetScale(Vec2(580.f, 280.f));
 	
 	CreateAnimator();
 	CAnimator* pAni = GetComponent()->GetAnimator();
@@ -45,8 +45,8 @@ void CNatureGrab::update()
 	m_iDir = pPlayer->GetDir();
 
 	CCollider* pCol = GetComponent()->GetCollider();
-	if (m_iDir == -1) pCol->SetOffsetPos(Vec2(-300.f, -80.f));
-	else pCol->SetOffsetPos(Vec2(300.f, -80.f));
+	if (m_iDir == -1) pCol->SetOffsetPos(Vec2(-310.f, -100.f));
+	else pCol->SetOffsetPos(Vec2(310.f, -100.f));
 
 	CalCastingTime();
 }

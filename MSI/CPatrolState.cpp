@@ -45,16 +45,21 @@ void CPatrolState::update()
 	if (InRangePlayer())
 	{
 		ChangeAIState(GetAI(), MON_STATE::TRACE);
+		return;
 	}
 
 	if (m_fMoveTime <= 0.f)
 	{
 		ChangeAIState(GetAI(), MON_STATE::IDLE);
+		return;
 	}
 
 	CMonster_Normal* pMon = (CMonster_Normal*)GetMonster();
-	if (pMon->GetInfo().fHP <= 0) ChangeAIState(GetAI(), MON_STATE::DEAD);
-
+	if (pMon->GetInfo().fHP <= 0)
+	{
+		ChangeAIState(GetAI(), MON_STATE::DEAD);
+		return;
+	}
 	m_fMoveTime -= fDT;
 }
 
@@ -75,6 +80,7 @@ void CPatrolState::Patrol()
 			{
 				vMonRigid->SetVelocity(Vec2(0.f, 0.f));
 				ChangeAIState(GetAI(), MON_STATE::IDLE);
+				return;
 			}
 			m_iDir = 1;
 		}
@@ -89,6 +95,7 @@ void CPatrolState::Patrol()
 			{
 				vMonRigid->SetVelocity(Vec2(0.f, 0.f));
 				ChangeAIState(GetAI(), MON_STATE::IDLE);
+				return;
 			}
 			m_iDir = -1;
 		}
