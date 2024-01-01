@@ -206,6 +206,9 @@
     <Filter Include="Engine\04. Object\Skill\BlessingSeed">
       <UniqueIdentifier>{2a8728e7-4dd3-4f0b-855c-3b888756ee9b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\04. Object\Damege">
+      <UniqueIdentifier>{379365dd-a40c-468a-bbc8-adb3681e87d1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -416,6 +419,9 @@
     <ClInclude Include="CSeed.h">
       <Filter>Engine\04. Object\Skill\BlessingSeed</Filter>
     </ClInclude>
+    <ClInclude Include="CDamege.h">
+      <Filter>Engine\04. Object\Damege</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CCore.cpp">
@@ -607,6 +613,9 @@
     </ClCompile>
     <ClCompile Include="CSeed.cpp">
       <Filter>Engine\04. Object\Skill\BlessingSeed</Filter>
+    </ClCompile>
+    <ClCompile Include="CDamege.cpp">
+      <Filter>Engine\04. Object\Damege</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

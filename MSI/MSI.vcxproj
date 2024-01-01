@@ -151,6 +151,7 @@
     <ClInclude Include="CCollisionMgr.h" />
     <ClInclude Include="CComponent.h" />
     <ClInclude Include="CCore.h" />
+    <ClInclude Include="CDamege.h" />
     <ClInclude Include="CDeadState.h" />
     <ClInclude Include="CDetect.h" />
     <ClInclude Include="CEventMgr.h" />
@@ -223,6 +224,7 @@
     <ClCompile Include="CCollisionMgr.cpp" />
     <ClCompile Include="CComponent.cpp" />
     <ClCompile Include="CCore.cpp" />
+    <ClCompile Include="CDamege.cpp" />
     <ClCompile Include="CDeadState.cpp" />
     <ClCompile Include="CDetect.cpp" />
     <ClCompile Include="CEventMgr.cpp" />

@@ -5,6 +5,7 @@ class CScene_Test :
 {
 
 public:
+    virtual void update() override;
     virtual void Enter();
     virtual void Exit();
 

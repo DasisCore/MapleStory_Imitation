@@ -113,11 +113,11 @@ void CPlayer::update()
 		m_iPrevDir = m_iDir;
 	}
 
-	if (KEY_TAP(KEY::ENTER))
-	{
-		SetPos(Vec2(640.f, 384.f));
-		GetComponent()->GetRigidbody()->SetVelocity(Vec2(0.f, 0.f));
-	}
+	//if (KEY_TAP(KEY::ENTER))
+	//{
+	//	SetPos(Vec2(640.f, 384.f));
+	//	GetComponent()->GetRigidbody()->SetVelocity(Vec2(0.f, 0.f));
+	//}
 
 	if (KEY_TAP(KEY::O))
 	{
