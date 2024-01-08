@@ -96,5 +96,6 @@ enum class MON_STATE
 	ATT,
 	RUN,
 	DEAD,
+	HIT,
 };
 

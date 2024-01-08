@@ -209,6 +209,12 @@
     <Filter Include="Engine\04. Object\Damege">
       <UniqueIdentifier>{379365dd-a40c-468a-bbc8-adb3681e87d1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\08. Module\AI\State\Hit">
+      <UniqueIdentifier>{009653b8-06c2-4e49-a855-162ffd4327a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\04. Object\UI\CSkillUI">
+      <UniqueIdentifier>{feb8b133-afd3-4d92-b749-0b3c6d775784}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -422,6 +428,12 @@
     <ClInclude Include="CDamege.h">
       <Filter>Engine\04. Object\Damege</Filter>
     </ClInclude>
+    <ClInclude Include="CHitState.h">
+      <Filter>Engine\08. Module\AI\State\Hit</Filter>
+    </ClInclude>
+    <ClInclude Include="CSkillUI.h">
+      <Filter>Engine\04. Object\UI\CSkillUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CCore.cpp">
@@ -616,6 +628,12 @@
     </ClCompile>
     <ClCompile Include="CDamege.cpp">
       <Filter>Engine\04. Object\Damege</Filter>
+    </ClCompile>
+    <ClCompile Include="CHitState.cpp">
+      <Filter>Engine\08. Module\AI\State\Hit</Filter>
+    </ClCompile>
+    <ClCompile Include="CSkillUI.cpp">
+      <Filter>Engine\04. Object\UI\CSkillUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

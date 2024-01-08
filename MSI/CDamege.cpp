@@ -9,7 +9,7 @@
 
 CDamege::CDamege(int _iDamege)
 	: m_iDamege(_iDamege)
-	, m_fDisplay(0.35f)
+	, m_fDisplay(0.4f)
 	, m_fAlpha(255.f)
 {
 	CreateComponent();
@@ -46,8 +46,8 @@ CDamege::CDamege(int _iDamege)
 		int iHeight = CRandom::GetInst()->GetBetweenInt(1, 3);
 		wstring no = contentPath + L"NoRed" + number[i] + L".png";
 		Image* numberImage = Image::FromFile(no.c_str());
-
-		graphics.DrawImage(numberImage, (i * 23.5), iHeight, 31 + iHeight, 33 + iHeight);
+		graphics.DrawImage(numberImage, (i * 24), iHeight, 31 + iHeight, 33 + iHeight);
+		delete numberImage;
 	}
 	// 해당 데미지에 맞는 이미지를 불러와 m_pBitmap에 그린다.
 
@@ -65,8 +65,8 @@ void CDamege::update()
 	if (m_fDisplay < 0) DeleteObject(this);
 
 	Vec2 vPos = GetPos();
-	SetPos(Vec2(vPos.x, vPos.y - (12.f * fDT)));
-	m_fAlpha -= fDT * 550.f;
+	SetPos(Vec2(vPos.x, vPos.y - (20.f * fDT)));
+	m_fAlpha -= fDT * 500.f;
 	m_fDisplay -= fDT;
 }
 

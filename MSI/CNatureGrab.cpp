@@ -55,7 +55,7 @@ void CNatureGrab::update()
 void CNatureGrab::OnCollisionEnter(CCollider* _pOther)
 {
 	CMonster* pMon = (CMonster*) _pOther->GetObj();
-	pMon->TakeDamege(10.f);
+	pMon->TakeDamege(60.f, m_iDir);
 }
 
 void CNatureGrab::OnCollision(CCollider* _pOther)

@@ -143,6 +143,7 @@
     <ClInclude Include="CAnimator.h" />
     <ClInclude Include="CAttackState.h" />
     <ClInclude Include="CBackground.h" />
+    <ClInclude Include="CSkillUI.h" />
     <ClInclude Include="CBark.h" />
     <ClInclude Include="CBlessingSeed.h" />
     <ClInclude Include="CBtnUI.h" />
@@ -159,6 +160,7 @@
     <ClInclude Include="CFortress.h" />
     <ClInclude Include="CGravity.h" />
     <ClInclude Include="CGround.h" />
+    <ClInclude Include="CHitState.h" />
     <ClInclude Include="CIdleState.h" />
     <ClInclude Include="CKeyMgr.h" />
     <ClInclude Include="CMonster_Normal.h" />
@@ -216,6 +218,7 @@
     <ClCompile Include="CAnimator.cpp" />
     <ClCompile Include="CAttackState.cpp" />
     <ClCompile Include="CBackground.cpp" />
+    <ClCompile Include="CSkillUI.cpp" />
     <ClCompile Include="CBark.cpp" />
     <ClCompile Include="CBlessingSeed.cpp" />
     <ClCompile Include="CBtnUI.cpp" />
@@ -232,6 +235,7 @@
     <ClCompile Include="CFortress.cpp" />
     <ClCompile Include="CGravity.cpp" />
     <ClCompile Include="CGround.cpp" />
+    <ClCompile Include="CHitState.cpp" />
     <ClCompile Include="CIdleState.cpp" />
     <ClCompile Include="CKeyMgr.cpp" />
     <ClCompile Include="CMonster_Normal.cpp" />

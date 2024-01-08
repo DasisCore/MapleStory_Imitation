@@ -28,6 +28,7 @@ CPlayer::CPlayer()
 	, m_iPrevDir(1)
 	, m_bIsGround(0)
 	, m_bIsAir(0)
+	, m_tPlayerInfo{ 37, 1367, 857, 100, 20, 3300, 30 }
 {
 	CreateComponent();
 
@@ -127,6 +128,8 @@ void CPlayer::update()
 	{
 		CharHit(+1);
 	}
+
+	if (m_fUnbeatableTime >= 0) m_fUnbeatableTime -= fDT;
 
 	Delay();
 }
@@ -321,6 +324,30 @@ void CPlayer::OnCollisionEnter(CCollider* _pOther)
 			m_bIsAir = 0;
 		}
 	}
+
+
+}
+
+void CPlayer::OnCollision(CCollider* _pOther)
+{
+	if (m_fUnbeatableTime < 0)
+	{
+		CObject* pOtherObj = _pOther->GetObj();
+		if (pOtherObj->GetName() == L"LESH")
+		{
+			Vec2 otherObjvPos = pOtherObj->GetPos();
+			Vec2 vPos = GetPos();
+
+			if (otherObjvPos.x - vPos.x <= 0)
+			{
+				CharHit(1);
+			}
+			else
+			{
+				CharHit(-1);
+			}
+		}
+	}
 }
 
 void CPlayer::Delay()
@@ -411,14 +438,20 @@ void CPlayer::show_state(HDC _dc)
 
 void CPlayer::CharHit(int _iDir)
 {
-	CRigidBody* pRigid = GetComponent()->GetRigidbody();
+	if (m_fUnbeatableTime < 0)
+	{
+		m_fUnbeatableTime = 1.f;
 
-	if (_iDir == -1)
-	{
-		pRigid->SetVelocity(Vec2(-250.f, -250.f));
+		CRigidBody* pRigid = GetComponent()->GetRigidbody();
+
+		if (_iDir == -1)
+		{
+			pRigid->SetVelocity(Vec2(-250.f, -250.f));
+		}
+		else if(_iDir == 1)
+		{
+			pRigid->SetVelocity(Vec2(+250.f, -250.f));
+		}
 	}
-	else if(_iDir == 1)
-	{
-		pRigid->SetVelocity(Vec2(+250.f, -250.f));
-	}
+
 }

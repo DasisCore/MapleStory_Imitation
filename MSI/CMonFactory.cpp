@@ -9,6 +9,7 @@
 #include "CPatrolState.h"
 #include "CAttackState.h"
 #include "CDeadState.h"
+#include "CHitState.h"
 
 #include "CComponent.h"
 #include "CRigidBody.h"
@@ -31,6 +32,7 @@ CMonster* CMonFactory::CreateMonster(MON_TYPE _eType, Vec2 _vPos)
 		info.fRecogRange = 300.f;
 		info.fHP = 100.f;
 		info.fSpeed = 300.f;
+		info.iExp = 20;
 
 		pMon->SetMonInfo(info);
 
@@ -43,6 +45,7 @@ CMonster* CMonFactory::CreateMonster(MON_TYPE _eType, Vec2 _vPos)
 		pAI->AddState(new CIdleState);
 		pAI->AddState(new CPatrolState);
 		pAI->AddState(new CTraceState);
+		pAI->AddState(new CHitState);
 		
 		pAI->SetCurState(MON_STATE::IDLE);
 
@@ -81,6 +84,7 @@ CMonster* CMonFactory::CreateMonster(MON_TYPE _eType
 		info.fRecogRange = 300.f;
 		info.fHP = 100.f;
 		info.fSpeed = 300.f;
+		info.iExp = 20;
 
 		pMon->SetMonInfo(info);
 
@@ -101,6 +105,7 @@ CMonster* CMonFactory::CreateMonster(MON_TYPE _eType
 		info.fRecogRange = 300.f;
 		info.fHP = 100.f;
 		info.fSpeed = 300.f;
+		info.iExp = 20;
 
 		pMon->SetMonInfo(info);
 
@@ -115,6 +120,7 @@ CMonster* CMonFactory::CreateMonster(MON_TYPE _eType
 		pAI->AddState(new CPatrolState);
 		pAI->AddState(new CAttackState);
 		pAI->AddState(new CDeadState);
+		pAI->AddState(new CHitState);
 
 		pAI->SetCurState(MON_STATE::IDLE);
 

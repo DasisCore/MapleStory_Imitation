@@ -10,6 +10,7 @@ struct tMonInfo
     float fAttRange;        // 공격 사거리
     float fAtt;             // 공격력
     int iDir;               // 방향
+    int iExp;               // 경험치
 };
 
 class AI;
@@ -24,6 +25,8 @@ private:
     float m_fLeftDist;
     float m_fRightDist;
 
+    // 몬스터가 데미지를 받으면 HitTime이 양수가 된다.
+    float m_fHitTime;
     bool m_bDead;
 
 
@@ -36,7 +39,10 @@ public:
     void SetRandomDir();
     void SetMonDir(int _iDir) { m_tInfo.iDir = _iDir; }
     void SetRemainDist(float _fLeft, float _fRight) { m_fLeftDist = _fLeft; m_fRightDist = _fRight; }
-    void TakeDamege(float m_fDamege) { m_tInfo.fHP -= m_fDamege; }
+
+    // 몬스터가 데미지를 받았다면
+    void TakeDamege(float _fDamege, int _iDir);
+
     // 편의상 Vec2로 리턴해줌. 몬스터가 접촉한 Ground의 남은 거리 (왼쪽, 오른쪽)
     Vec2 GetRemainDist() { return Vec2(m_fLeftDist, m_fRightDist); }
     void SetDead() { m_bDead = true; }

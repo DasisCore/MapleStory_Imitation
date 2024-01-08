@@ -26,6 +26,18 @@ enum class PLAYER_ATTACK_STATE
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+
+struct tPlayerInfo
+{
+    int iLevel;
+    int iMaxHP;
+    int iHP;
+    int iMaxMP;
+    int iMP;
+    int iMaxExp;
+    int iExp;
+};
+
 class CTexture;
 
 class CPlayer :
@@ -33,6 +45,7 @@ class CPlayer :
 {
 private:
     wstring m_wCurChar;
+    tPlayerInfo m_tPlayerInfo;
 
     PLAYER_STATE m_eCurState;
     PLAYER_STATE m_ePrevState;
@@ -47,6 +60,9 @@ private:
     float m_fDelayTime;
     bool m_bDelay;
 
+    // 무적 시간
+    float m_fUnbeatableTime;
+
 public:
     virtual void update() override;
     //virtual void render(HDC _dc) override;
@@ -59,7 +75,8 @@ public:
     void update_animation();
 
     virtual void OnCollisionEnter(CCollider* _pOther) override;
-    
+    virtual void OnCollision(CCollider* _pOther) override;
+
     bool GetIsGround() { return m_bIsGround; }
     void SetIsGround(bool _b) { m_bIsGround = _b; }
     bool GetIsAir() { return m_bIsAir; }
@@ -67,6 +84,10 @@ public:
 
     // 캐릭터의 상태 변환
     void SetCurState(PLAYER_STATE _eState) { m_eCurState = _eState; }
+
+    // 캐릭터 정보 가져오기
+    const tPlayerInfo GetPlayerInfo() { return m_tPlayerInfo; }
+
 
     // 캐릭터 딜레이 계산
     void Delay();
@@ -82,6 +103,7 @@ public:
 // 게임 플레이와 관련된 멤버 함수
 public:
     void CharHit(int _iDir);
+    void AddExp(int _iExp) { m_tPlayerInfo.iExp += _iExp; }
 
 
 public:

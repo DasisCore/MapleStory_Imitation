@@ -155,31 +155,31 @@ void CCamera::CalDiff()
 	CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
 	Vec2 vMapSize = pCurScene->GetMapSize();
 
-	// 맵의 사이즈가 정해져있다면.
-	if (vMapSize != Vec2(0.f, 0.f))
-	{
-		vMapSize -= vResolution;
-		vMapSize = vMapSize / 2.f;
+	//// 맵의 사이즈가 정해져있다면.
+	//if (vMapSize != Vec2(0.f, 0.f))
+	//{
+	//	vMapSize -= vResolution;
+	//	vMapSize = vMapSize / 2.f;
 
-		// 맵사이즈 내만 카메라가 보여준다.
-		m_vCurLookAt.ClampX(-vMapSize.x, vMapSize.x);
-		m_vCurLookAt.ClampY(-vMapSize.y, vMapSize.y);
-		m_vLookAt.ClampX(-vMapSize.x, vMapSize.x);
-		m_vLookAt.ClampY(-vMapSize.y, vMapSize.y);
-		m_vPrevLookAt.ClampX(-vMapSize.x, vMapSize.x);
-		m_vPrevLookAt.ClampY(-vMapSize.y, vMapSize.y);
+	//	// 맵사이즈 내만 카메라가 보여준다.
+	//	m_vCurLookAt.ClampX(-vMapSize.x, vMapSize.x);
+	//	m_vCurLookAt.ClampY(-vMapSize.y, vMapSize.y);
+	//	m_vLookAt.ClampX(-vMapSize.x, vMapSize.x);
+	//	m_vLookAt.ClampY(-vMapSize.y, vMapSize.y);
+	//	m_vPrevLookAt.ClampX(-vMapSize.x, vMapSize.x);
+	//	m_vPrevLookAt.ClampY(-vMapSize.y, vMapSize.y);
 
 
-		// 만약 카메라가 상하좌우의 끝에 붙어있다면.
-		// 카메라의 이동속도를 500.f로 고정한다.
-		if (m_vCurLookAt.x == -vMapSize.x
-			|| m_vCurLookAt.x == vMapSize.x
-			|| m_vCurLookAt.y == -vMapSize.y
-			|| m_vCurLookAt.y == vMapSize.y)
-		{
-			m_fSpeed = 500.f;
-		}
-	}
+	//	// 만약 카메라가 상하좌우의 끝에 붙어있다면.
+	//	// 카메라의 이동속도를 500.f로 고정한다.
+	//	if (m_vCurLookAt.x == -vMapSize.x
+	//		|| m_vCurLookAt.x == vMapSize.x
+	//		|| m_vCurLookAt.y == -vMapSize.y
+	//		|| m_vCurLookAt.y == vMapSize.y)
+	//	{
+	//		m_fSpeed = 500.f;
+	//	}
+	//}
 
 
 	if (m_pTargetObj != nullptr)

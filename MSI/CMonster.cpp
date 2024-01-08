@@ -51,13 +51,20 @@ void CMonster::SetRandomDir()
 	else m_tInfo.iDir = -1;
 }
 
+void CMonster::TakeDamege(float _fDamege, int _iDir)
+{
+	m_tInfo.fHP -= _fDamege;
+	m_fHitTime = 0.5f;
+	m_pAI->ChangeState(MON_STATE::HIT);
+	m_tInfo.iDir = _iDir * -1;
+
+	// 몬스터 넉백 구현
+	GetComponent()->GetRigidbody()->AddVelocity(Vec2(300.f * _iDir, -200.f));
+}
+
 
 void CMonster::update()
 {
-	//Vec2 vV = GetComponent()->GetRigidbody()->GetVelocity();
-	//if (vV.x < 0) m_tInfo.iDir = -1;
-	//else m_tInfo.iDir = 1;
-
 	if (m_pAI)
 	{
 		m_pAI->update();
@@ -104,6 +111,10 @@ void CMonster::render(HDC _dc)
 		else if (curState == MON_STATE::DEAD)
 		{
 			tempStr = L"DEAD";
+		}
+		else if (curState == MON_STATE::HIT)
+		{
+			tempStr = L"HIT";
 		}
 
 		//Vec2 vV = GetComponent()->GetRigidbody()->GetVelocity();
@@ -178,11 +189,15 @@ void CMonster::update_animation()
 	{
 		currentChar += L"_DEAD";
 	}
+	else if (curState == MON_STATE::HIT)
+	{
+		currentChar += L"_HIT";
+	}
 	
 	if (currentChar.substr(currentChar.size() - 5, 5) == L"_DEAD")
 	{
 		GetComponent()->GetAnimator()->Play(currentChar.c_str(), false);
-		GetComponent()->GetAnimator()->FindAnimation(currentChar.c_str())->SetFrame(0);
+		//GetComponent()->GetAnimator()->FindAnimation(currentChar.c_str())->SetFrame(0);
 		return;
 	}
 

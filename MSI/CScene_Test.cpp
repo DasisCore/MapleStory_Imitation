@@ -15,6 +15,11 @@
 #include "CScene.h"
 
 #include "CRandom.h"
+#include "CUI.h"
+#include "CPanelUI.h"
+#include "CSkillUI.h"
+#include "CBtnUI.h"
+
 
 CScene_Test::CScene_Test()
 {
@@ -47,17 +52,35 @@ void CScene_Test::update()
 
 void CScene_Test::Enter()
 {
-	LoadSceneData(L"STAGE01.scene");
+	LoadSceneData(L"TEST.scene");
 
+	// 플레이어 삽입
 	CPlayer* pVoltarix = new CBark;
 	pVoltarix->SetName(L"RAVEN");
-	pVoltarix->SetPos(Vec2(740.f, 383.f));
+	pVoltarix->SetPos(Vec2(0.f, 0.f));
 	pVoltarix->SetScale(Vec2(45.f, 70.f));
 	RegisterPlayer(pVoltarix);
 
-	RegisterPlayer(pVoltarix);
-
 	AddObject(pVoltarix, GROUP_TYPE::PLAYER);
+
+	
+	// 게임 ui 삽입.
+
+	Vec2 vResolution = CCore::GetInst()->GetResolution();
+
+	CUI* pPanelUI = new CSkillUI(L"Texture\\SkillBar\\Skillbar.png");
+	pPanelUI->SetName(L"SkillBar");
+	pPanelUI->SetPos(Vec2(vResolution.x - pPanelUI->GetScale().x, 0.f));
+
+	//CBtnUI* pBtnUI = new CBtnUI;
+	//pBtnUI->SetName(L"Create MAP");
+	//pBtnUI->SetScale(Vec2(55.f, 25.f));
+	//pBtnUI->SetPos(Vec2(5.f, 5.f));
+	//pPanelUI->AddChild(pBtnUI);
+
+	AddObject(pPanelUI, GROUP_TYPE::UI);
+
+
 
 	// 충돌 지정
 	CCollisionMgr::GetInst()->CheckGroup(GROUP_TYPE::PLAYER, GROUP_TYPE::MONSTER);
