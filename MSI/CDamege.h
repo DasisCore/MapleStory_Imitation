@@ -1,6 +1,14 @@
 #pragma once
 #include "CObject.h"
 
+enum class DAMEGE_TYPE
+{
+    NORED,
+    VIOLET,
+    END,
+};
+
+
 class CDamege :
     public CObject
 {
@@ -23,7 +31,7 @@ public:
     CDamege* Clone() { return new CDamege(*this); }
 
 public:
-    CDamege(int _iDamege);
+    CDamege(int _iDamege, DAMEGE_TYPE _eDamegeType);
     ~CDamege();
 };
 

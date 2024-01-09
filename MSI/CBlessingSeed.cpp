@@ -19,7 +19,6 @@ CBlessingSeed::CBlessingSeed(CObject* _pObj)
 	CreateComponent();
 	CreateCollider();
 
-
 	CCollider* pCol = GetComponent()->GetCollider();
 	pCol->SetScale(Vec2(600.f, 300.f));
 	pCol->SetOffsetPos(Vec2(0.f, -100.f));

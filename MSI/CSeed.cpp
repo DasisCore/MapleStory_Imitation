@@ -6,6 +6,10 @@
 #include "CCollider.h"
 #include "CAnimator.h"
 
+#include "CPlayer.h"
+
+float CSeed::m_fHealDelay = 1.f;
+
 CSeed::CSeed(CObject* _pObj)
 	: m_pOwner(_pObj)
 	, m_fCastBegin(0.54f)
@@ -58,6 +62,8 @@ void CSeed::CalCastingTime()
 		m_fCastEnd -= fDT;
 	}
 	else if (m_fCastEnd < 0) DeleteObject(this);
+
+	if (m_fHealDelay > 0) m_fHealDelay -= fDT;
 }
 
 void CSeed::OnCollisionEnter(CCollider* _pOther)
@@ -66,4 +72,13 @@ void CSeed::OnCollisionEnter(CCollider* _pOther)
 
 void CSeed::OnCollision(CCollider* _pOther)
 {
+	if (m_fHealDelay < 0)
+	{
+		CPlayer* pPlayer = dynamic_cast<CPlayer*> (_pOther->GetObj());
+		if (pPlayer != nullptr)
+		{
+			pPlayer->AddPlayerHP(100);
+			m_fHealDelay = 10.f;
+		}
+	}
 }

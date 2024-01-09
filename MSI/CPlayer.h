@@ -63,6 +63,9 @@ private:
     // 무적 시간
     float m_fUnbeatableTime;
 
+    // 무적시 깜박거림 시간 계산
+    float m_fBlinkTime;
+
 public:
     virtual void update() override;
     //virtual void render(HDC _dc) override;
@@ -73,6 +76,9 @@ public:
     void update_state();
     virtual void update_move();
     void update_animation();
+
+    // 캐릭터 상태 업데이트 (HP, MP, EXP...)
+    void update_status();
 
     virtual void OnCollisionEnter(CCollider* _pOther) override;
     virtual void OnCollision(CCollider* _pOther) override;
@@ -88,6 +94,8 @@ public:
     // 캐릭터 정보 가져오기
     const tPlayerInfo GetPlayerInfo() { return m_tPlayerInfo; }
 
+    // 체력 더해줌.
+    void AddPlayerHP(int _i) { m_tPlayerInfo.iHP += _i; }
 
     // 캐릭터 딜레이 계산
     void Delay();

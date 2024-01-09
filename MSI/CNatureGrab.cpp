@@ -54,8 +54,11 @@ void CNatureGrab::update()
 // 무조건 몬스터만 충돌판정으로 들어온다.
 void CNatureGrab::OnCollisionEnter(CCollider* _pOther)
 {
-	CMonster* pMon = (CMonster*) _pOther->GetObj();
-	pMon->TakeDamege(60.f, m_iDir);
+	CMonster* pMon = dynamic_cast<CMonster*>(_pOther->GetObj());
+	if (pMon != nullptr && pMon->GetInfo().fHP > 0)
+	{
+		pMon->TakeDamege(60.f, m_iDir);
+	}
 }
 
 void CNatureGrab::OnCollision(CCollider* _pOther)

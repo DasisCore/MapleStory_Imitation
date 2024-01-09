@@ -19,6 +19,8 @@
 #include "CAnimation.h"
 #include "CRigidBody.h"
 #include "CGravity.h"
+#include "CDamegeFactory.h"
+#include "CDamege.h"
 
 CPlayer::CPlayer()
 	: m_wCurChar(L"RAVEN")
@@ -113,6 +115,8 @@ void CPlayer::update()
 		m_ePrevState = m_eCurState;
 		m_iPrevDir = m_iDir;
 	}
+
+	update_status();
 
 	//if (KEY_TAP(KEY::ENTER))
 	//{
@@ -216,7 +220,6 @@ void CPlayer::update_state()
 
 void CPlayer::update_move()
 {
-
 	CRigidBody* pRigid = GetComponent()->GetRigidbody();
 
 	if (KEY_HOLD(KEY::LEFT))
@@ -260,12 +263,29 @@ void CPlayer::update_move()
 
 void CPlayer::update_animation()
 {
-	if (m_ePrevState == m_eCurState && m_iPrevDir == m_iDir) return;
+	if (m_fUnbeatableTime >= 0)
+	{
+		float temp = fDT;
+		m_fBlinkTime -= fDT;
+
+		if (m_fBlinkTime > 0)
+		{
+			GetComponent()->GetAnimator()->Play(L"VOID", true);
+			return;
+		}
+		else
+		{
+			m_fBlinkTime = 0.009f;
+		}
+	}
+
+	if (m_ePrevState == m_eCurState && m_iPrevDir == m_iDir && m_fUnbeatableTime <= 0) return;
 
 	wstring currentChar = m_wCurChar;
 
 	if (m_iDir == -1) currentChar += L"_LEFT";
 	else currentChar += L"_RIGHT";
+
 
 	switch (m_eCurState)
 	{
@@ -310,6 +330,17 @@ void CPlayer::update_animation()
 	}
 }
 
+void CPlayer::update_status()
+{
+	if (m_tPlayerInfo.iHP < 0) m_tPlayerInfo.iHP = 0;
+	if (m_tPlayerInfo.iMP < 0) m_tPlayerInfo.iMP = 0;
+	if (m_tPlayerInfo.iExp < 0) m_tPlayerInfo.iExp = 0;
+
+	if (m_tPlayerInfo.iHP > m_tPlayerInfo.iMaxHP) m_tPlayerInfo.iHP = m_tPlayerInfo.iMaxHP;
+	if (m_tPlayerInfo.iMP > m_tPlayerInfo.iMaxMP) m_tPlayerInfo.iMP = m_tPlayerInfo.iMaxMP;
+	if (m_tPlayerInfo.iExp > m_tPlayerInfo.iMaxExp) m_tPlayerInfo.iExp = m_tPlayerInfo.iMaxExp;
+}
+
 
 void CPlayer::OnCollisionEnter(CCollider* _pOther)
 {
@@ -324,30 +355,11 @@ void CPlayer::OnCollisionEnter(CCollider* _pOther)
 			m_bIsAir = 0;
 		}
 	}
-
-
 }
 
 void CPlayer::OnCollision(CCollider* _pOther)
 {
-	if (m_fUnbeatableTime < 0)
-	{
-		CObject* pOtherObj = _pOther->GetObj();
-		if (pOtherObj->GetName() == L"LESH")
-		{
-			Vec2 otherObjvPos = pOtherObj->GetPos();
-			Vec2 vPos = GetPos();
 
-			//if (otherObjvPos.x - vPos.x <= 0)
-			//{
-			//	CharHit(1);
-			//}
-			//else
-			//{
-			//	CharHit(-1);
-			//}
-		}
-	}
 }
 
 void CPlayer::Delay()
@@ -453,7 +465,8 @@ void CPlayer::CharHit(int _iDir, int _iDamege)
 			pRigid->SetVelocity(Vec2(+250.f, -250.f));
 		}
 
-
 		m_tPlayerInfo.iHP -= _iDamege;
+
+		CDamegeFactory::CreateSingleDamege(this, _iDamege, DAMEGE_TYPE::VIOLET);
 	}
 }

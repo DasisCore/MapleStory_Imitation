@@ -143,6 +143,7 @@
     <ClInclude Include="CAnimator.h" />
     <ClInclude Include="CAttackState.h" />
     <ClInclude Include="CBackground.h" />
+    <ClInclude Include="CDamegeFactory.h" />
     <ClInclude Include="CSkillUI.h" />
     <ClInclude Include="CBark.h" />
     <ClInclude Include="CBlessingSeed.h" />
@@ -218,6 +219,7 @@
     <ClCompile Include="CAnimator.cpp" />
     <ClCompile Include="CAttackState.cpp" />
     <ClCompile Include="CBackground.cpp" />
+    <ClCompile Include="CDamegeFactory.cpp" />
     <ClCompile Include="CSkillUI.cpp" />
     <ClCompile Include="CBark.cpp" />
     <ClCompile Include="CBlessingSeed.cpp" />

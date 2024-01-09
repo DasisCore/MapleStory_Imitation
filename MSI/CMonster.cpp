@@ -12,6 +12,8 @@
 #include "AI.h"
 
 #include "CState.h"
+#include "CDamege.h"
+#include "CDamegeFactory.h"
 
 CMonster::CMonster()
 	: m_tInfo{}
@@ -54,13 +56,17 @@ void CMonster::SetRandomDir()
 
 void CMonster::TakeDamege(float _fDamege, int _iDir)
 {
-	m_tInfo.fHP -= _fDamege;
-	m_fHitTime = 0.5f;
-	m_pAI->ChangeState(MON_STATE::HIT);
-	m_tInfo.iDir = _iDir * -1;
+	if (!m_bDead)
+	{
+		m_tInfo.fHP -= _fDamege;
+		m_fHitTime = 0.5f;
+		m_pAI->ChangeState(MON_STATE::HIT);
+		m_tInfo.iDir = _iDir * -1;
 
-	// 몬스터 넉백 구현
-	GetComponent()->GetRigidbody()->AddVelocity(Vec2(300.f * _iDir, -200.f));
+		// 몬스터 넉백 구현
+		GetComponent()->GetRigidbody()->AddVelocity(Vec2(300.f * _iDir, -200.f));
+		CDamegeFactory::CreateSingleDamege(this, _fDamege, DAMEGE_TYPE::NORED);
+	}
 }
 
 

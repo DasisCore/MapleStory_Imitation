@@ -9,7 +9,7 @@
 
 CDeadState::CDeadState()
 	: CState(MON_STATE::DEAD)
-	, m_DeadDelay(2.2f)
+	, m_DeadDelay(1.0f)
 {
 }
 

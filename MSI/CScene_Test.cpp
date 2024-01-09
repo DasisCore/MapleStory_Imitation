@@ -20,6 +20,8 @@
 #include "CSkillUI.h"
 #include "CBtnUI.h"
 
+#include "CDamegeFactory.h"
+
 
 CScene_Test::CScene_Test()
 {
@@ -36,17 +38,10 @@ void CScene_Test::update()
 
 	if (KEY_TAP(KEY::ENTER))
 	{
-
 		int damege = CRandom::GetInst()->GetBetweenInt(300, 50000);
-		CObject* pObj = new CDamege(damege);
-		pObj->SetName(L"Damege");
-
 		CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
 		CObject* pPlayer = pCurScene->GetPlayer();
-		Vec2 vPos = pPlayer->GetPos();
-		Vec2 vScale = pPlayer->GetScale();
-		pObj->SetPos(Vec2(vPos.x + (vScale.x / 2.f), vPos.y - (vScale.y / 2.f)));
-		AddObject(pObj, GROUP_TYPE::DAMEGE);
+		CDamegeFactory::CreateSingleDamege(pPlayer, damege, DAMEGE_TYPE::VIOLET);
 	}
 }
 
@@ -70,14 +65,7 @@ void CScene_Test::Enter()
 
 	CUI* pPanelUI = new CSkillUI(L"Texture\\SkillBar\\Skillbar.png");
 	pPanelUI->SetName(L"SkillBar");
-	pPanelUI->SetPos(Vec2(vResolution.x - pPanelUI->GetScale().x, 0.f));
-
-	//CBtnUI* pBtnUI = new CBtnUI;
-	//pBtnUI->SetName(L"Create MAP");
-	//pBtnUI->SetScale(Vec2(55.f, 25.f));
-	//pBtnUI->SetPos(Vec2(5.f, 5.f));
-	//pPanelUI->AddChild(pBtnUI);
-
+	pPanelUI->SetPos(Vec2(vResolution.x / 2.f - pPanelUI->GetScale().x / 2.f, vResolution.y - pPanelUI->GetScale().y - 20));
 	AddObject(pPanelUI, GROUP_TYPE::UI);
 
 
@@ -90,6 +78,7 @@ void CScene_Test::Enter()
 	CCollisionMgr::GetInst()->CheckGroup(GROUP_TYPE::MONSTER, GROUP_TYPE::FOOTHOLD);
 	CCollisionMgr::GetInst()->CheckGroup(GROUP_TYPE::PLAYER, GROUP_TYPE::DETECT);
 	CCollisionMgr::GetInst()->CheckGroup(GROUP_TYPE::MONSTER, GROUP_TYPE::SKILL);
+	CCollisionMgr::GetInst()->CheckGroup(GROUP_TYPE::PLAYER, GROUP_TYPE::SKILL);
 
 
 	//CCamera::GetInst()->SetLookAt(pVoltarix->GetPos());

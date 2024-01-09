@@ -6,9 +6,9 @@
 #include "CPathMgr.h"
 #include "CCamera.h"
 
-
-CDamege::CDamege(int _iDamege)
+CDamege::CDamege(int _iDamege, DAMEGE_TYPE _eDamegeType)
 	: m_iDamege(_iDamege)
+	, m_pImage(nullptr)
 	, m_fDisplay(0.4f)
 	, m_fAlpha(255.f)
 {
@@ -30,7 +30,7 @@ CDamege::CDamege(int _iDamege)
 
 	// 출력할 데미지에 맞는 크기의 비트맵을 생성한다.
 	// 300이 아니라 자리수
-	m_pBitmap = new Bitmap(iWidth, 40, PixelFormat32bppARGB);
+	m_pBitmap = new Bitmap(iWidth + 10, 40, PixelFormat32bppARGB);
 	
 	Graphics graphics(m_pBitmap);
 
@@ -39,13 +39,27 @@ CDamege::CDamege(int _iDamege)
 
 	// 1234567890 -> 0987654321
 	wstring number = std::to_wstring(_iDamege);
-	reverse(number.begin(), number.end());
 	
 	for (int i = 0; i < number.length(); i++)
 	{
 		int iHeight = CRandom::GetInst()->GetBetweenInt(1, 3);
-		wstring no = contentPath + L"NoRed" + number[i] + L".png";
-		Image* numberImage = Image::FromFile(no.c_str());
+		wstring damegeType;
+
+		switch (_eDamegeType)
+		{
+		case DAMEGE_TYPE::NORED:
+			damegeType = L"NORED";
+			break;
+		case DAMEGE_TYPE::VIOLET:
+			damegeType = L"VIOLET";
+			break;
+		default:
+			damegeType = L"NORED";
+			break;
+		}
+
+		wstring absolutePath = contentPath + damegeType + number[i] + L".png";
+		Image* numberImage = Image::FromFile(absolutePath.c_str());
 		graphics.DrawImage(numberImage, (i * 24), iHeight, 31 + iHeight, 33 + iHeight);
 		delete numberImage;
 	}
@@ -56,8 +70,8 @@ CDamege::CDamege(int _iDamege)
 
 CDamege::~CDamege()
 {
+	if (m_pBitmap) delete m_pBitmap;
 }
-
 
 
 void CDamege::update()

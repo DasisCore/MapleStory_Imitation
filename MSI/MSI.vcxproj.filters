@@ -215,6 +215,9 @@
     <Filter Include="Engine\04. Object\UI\CSkillUI">
       <UniqueIdentifier>{feb8b133-afd3-4d92-b749-0b3c6d775784}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\09. Factory\DamegeFactory">
+      <UniqueIdentifier>{861dc25f-afa1-4226-b860-00fa63ac7c23}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -434,6 +437,9 @@
     <ClInclude Include="CSkillUI.h">
       <Filter>Engine\04. Object\UI\CSkillUI</Filter>
     </ClInclude>
+    <ClInclude Include="CDamegeFactory.h">
+      <Filter>Engine\09. Factory\DamegeFactory</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CCore.cpp">
@@ -634,6 +640,9 @@
     </ClCompile>
     <ClCompile Include="CSkillUI.cpp">
       <Filter>Engine\04. Object\UI\CSkillUI</Filter>
+    </ClCompile>
+    <ClCompile Include="CDamegeFactory.cpp">
+      <Filter>Engine\09. Factory\DamegeFactory</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

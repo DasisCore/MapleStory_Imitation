@@ -15,6 +15,10 @@
 
 CSkillUI::CSkillUI(wstring _imageRelativePath)
 	: CUI(false)
+	, m_pPlayer(nullptr)
+	, m_pBackImage(nullptr)
+	, m_pCharType(nullptr)
+	, m_fDisplayHP(1.f)
 {
 	wstring contentPath = wstring(CPathMgr::GetInst()->GetContentPath());
 	wstring backImagePath = contentPath + _imageRelativePath;
@@ -25,6 +29,9 @@ CSkillUI::CSkillUI(wstring _imageRelativePath)
 	float fWidth = m_pBackImage->GetWidth();
 	float fHeight = m_pBackImage->GetHeight();
 
+	CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
+	m_pPlayer = (CPlayer*)pCurScene->GetPlayer();
+
 	SetScale(Vec2(fWidth, fHeight));
 }
 
@@ -34,17 +41,25 @@ CSkillUI::~CSkillUI()
 
 void CSkillUI::update()
 {
+	const tPlayerInfo tInfo = m_pPlayer->GetPlayerInfo();
+
+	// hp persent update
+	GaugePersentUpdate(tInfo.iMaxHP, tInfo.iHP, m_fDisplayHP);
+
+	// mp persent update
+	GaugePersentUpdate(tInfo.iMaxMP, tInfo.iMP, m_fDisplayMP);
+	
+	// exp persent update
+	GaugePersentUpdate(tInfo.iMaxExp, tInfo.iExp, m_fDisplayEXP);
+
+
 }
 
 void CSkillUI::render(HDC _dc)
 {
-	CUI::render(_dc);
-
 	wstring contentPath = wstring(CPathMgr::GetInst()->GetContentPath());
-	CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
-	CPlayer* pPlayer = (CPlayer*)pCurScene->GetPlayer();
 
-	const tPlayerInfo tInfo = pPlayer->GetPlayerInfo();
+	const tPlayerInfo tInfo = m_pPlayer->GetPlayerInfo();
 
 	Graphics graphics(_dc);
 
@@ -58,31 +73,21 @@ void CSkillUI::render(HDC _dc)
 		graphics.DrawImage(m_pCharType, vPos.x + 20.f, vPos.y + 35.f);
 
 		// 캐릭터 레벨 출력
-		wstring lvNumberPath = contentPath + L"Texture\\Skillbar\\lvNumber\\";
-		wstring strLv = std::to_wstring(tInfo.iLevel);
-		for (int i = 0; i < strLv.length(); i++)
-		{
-			wstring strNo = lvNumberPath + strLv[i] + L".png";
-			Image* numberImage = Image::FromFile(strNo.c_str());
-			graphics.DrawImage(numberImage, vPos.x + (i * 11.f) + 43.f, vPos.y + 10.f);
-			delete numberImage;
-		}
-
-		wstring gaugeNumberPath = contentPath + L"Texture\\Skillbar\\gaugeNumber\\";
+		DisplayLevel(graphics);
 
 		float gaugePosX = vPos.x + 141.f;
 
 		// 캐릭터 hp 출력
 		SolidBrush hpBrush(Color(255, 34, 102));
-		graphics.FillRectangle(&hpBrush, Rect(gaugePosX, vPos.y + 14.f, 189, 11.f));
+		graphics.FillRectangle(&hpBrush, Rect(gaugePosX, vPos.y + 14.f, 189 * m_fDisplayHP, 11.f));
 
 		// 캐릭터 mp 출력
 		SolidBrush mpBrush(Color(0, 187, 238));
-		graphics.FillRectangle(&mpBrush, Rect(gaugePosX, vPos.y + 32.f, 189, 11.f));
+		graphics.FillRectangle(&mpBrush, Rect(gaugePosX, vPos.y + 32.f, 189 * m_fDisplayMP, 11.f));
 
 		// 캐릭터 exp 출력
 		SolidBrush expBrush(Color(187, 221, 0));
-		graphics.FillRectangle(&expBrush, Rect(gaugePosX, vPos.y + 50.f, 189, 11.f));
+		graphics.FillRectangle(&expBrush, Rect(gaugePosX, vPos.y + 50.f, 189 * m_fDisplayEXP, 11.f));
 
 		// 게이지 커버 
 		wstring gaugeCoverPath = contentPath + L"Texture\\Skillbar\\cover.png";
@@ -93,7 +98,6 @@ void CSkillUI::render(HDC _dc)
 		DrawGaugeNumber(_dc, tInfo.iMaxHP, tInfo.iHP, vPos.y + 14.f);
 		DrawGaugeNumber(_dc, tInfo.iMaxMP, tInfo.iMP, vPos.y + 32.f);
 		DrawExpGauge(_dc, tInfo.iMaxExp, tInfo.iExp, vPos.y + 50.f);
-
 	}
 }
 
@@ -209,6 +213,35 @@ void CSkillUI::DrawExpGauge(HDC _dc, int _iMaxGauge, int _iGauge, float _fHeight
 	graphics.DrawImage(numberImage, gaugeX, _fHeight);
 	gaugeX += 7.f;
 	delete numberImage;
+}
+
+void CSkillUI::DisplayLevel(Graphics& _graphics)
+{
+	wstring contentPath = wstring(CPathMgr::GetInst()->GetContentPath());
+	const tPlayerInfo tInfo = m_pPlayer->GetPlayerInfo();
+	Vec2 vPos = GetPos();
+
+	// 캐릭터 레벨 출력
+	wstring lvNumberPath = contentPath + L"Texture\\Skillbar\\lvNumber\\";
+	wstring strLv = std::to_wstring(tInfo.iLevel);
+	for (int i = 0; i < strLv.length(); i++)
+	{
+		wstring strNo = lvNumberPath + strLv[i] + L".png";
+		Image* numberImage = Image::FromFile(strNo.c_str());
+		_graphics.DrawImage(numberImage, vPos.x + (i * 11.f) + 43.f, vPos.y + 10.f);
+		delete numberImage;
+	}
+
+}
+
+void CSkillUI::GaugePersentUpdate(const int _iMaxGauge, const int _iGauge, float& _fDisplayGauge)
+{
+	const tPlayerInfo tInfo = m_pPlayer->GetPlayerInfo();
+
+	float iGauge = _iGauge;
+	float iMaxGauge = _iMaxGauge;
+
+	if (iGauge / iMaxGauge != _fDisplayGauge) _fDisplayGauge += ((iGauge / iMaxGauge) - _fDisplayGauge) * fDT;
 }
 
 

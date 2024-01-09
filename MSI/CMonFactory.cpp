@@ -26,7 +26,7 @@ CMonster* CMonFactory::CreateMonster(MON_TYPE _eType, Vec2 _vPos)
 		pMon->SetPos(_vPos);
 
 		tMonInfo info = {};
-		info.fAtt = 10.f;
+		info.fAtt = 30.f;
 		info.fAttRange = 50.f;
 		info.vRecogRange = Vec2(250.f, 50.f);
 		info.fRecogRange = 300.f;
@@ -78,7 +78,7 @@ CMonster* CMonFactory::CreateMonster(MON_TYPE _eType
 		pMon = new CMonster_Normal(_strName, _vPos, _vScale, _bCollider, _vColOffset, _vColScale, _bAnimation, _vecPath, _bGravity, _bRigidBody);
 
 		tMonInfo info = {};
-		info.fAtt = 10.f;
+		info.fAtt = 30.f;
 		info.fAttRange = 50.f;
 		info.vRecogRange = Vec2(250.f, 50.f);
 		info.fRecogRange = 300.f;
@@ -99,7 +99,7 @@ CMonster* CMonFactory::CreateMonster(MON_TYPE _eType
 		pMon = new CMonster_Normal(_strName, _vPos, _vScale, _bCollider, _vColOffset, _vColScale, _bAnimation, _vecPath, _bGravity, _bRigidBody);
 		
 		tMonInfo info = {};
-		info.fAtt = 10.f;
+		info.fAtt = 100.f;
 		info.fAttRange = 50.f;
 		info.vRecogRange = Vec2(250.f, 50.f);
 		info.fRecogRange = 300.f;
