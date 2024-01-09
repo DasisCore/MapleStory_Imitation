@@ -122,11 +122,11 @@ void CPlayer::update()
 
 	if (KEY_TAP(KEY::O))
 	{
-		CharHit(-1);
+		CharHit(-1, 10);
 	}
 	if (KEY_TAP(KEY::P))
 	{
-		CharHit(+1);
+		CharHit(1, 10);
 	}
 
 	if (m_fUnbeatableTime >= 0) m_fUnbeatableTime -= fDT;
@@ -338,14 +338,14 @@ void CPlayer::OnCollision(CCollider* _pOther)
 			Vec2 otherObjvPos = pOtherObj->GetPos();
 			Vec2 vPos = GetPos();
 
-			if (otherObjvPos.x - vPos.x <= 0)
-			{
-				CharHit(1);
-			}
-			else
-			{
-				CharHit(-1);
-			}
+			//if (otherObjvPos.x - vPos.x <= 0)
+			//{
+			//	CharHit(1);
+			//}
+			//else
+			//{
+			//	CharHit(-1);
+			//}
 		}
 	}
 }
@@ -436,7 +436,7 @@ void CPlayer::show_state(HDC _dc)
 	graphics.DrawString(current_state.c_str(), -1, &font2, point, &brush);
 }
 
-void CPlayer::CharHit(int _iDir)
+void CPlayer::CharHit(int _iDir, int _iDamege)
 {
 	if (m_fUnbeatableTime < 0)
 	{
@@ -452,6 +452,8 @@ void CPlayer::CharHit(int _iDir)
 		{
 			pRigid->SetVelocity(Vec2(+250.f, -250.f));
 		}
-	}
 
+
+		m_tPlayerInfo.iHP -= _iDamege;
+	}
 }

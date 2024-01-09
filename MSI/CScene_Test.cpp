@@ -56,7 +56,7 @@ void CScene_Test::Enter()
 
 	// 플레이어 삽입
 	CPlayer* pVoltarix = new CBark;
-	pVoltarix->SetName(L"RAVEN");
+	pVoltarix->SetName(L"PLAYER");
 	pVoltarix->SetPos(Vec2(0.f, 0.f));
 	pVoltarix->SetScale(Vec2(45.f, 70.f));
 	RegisterPlayer(pVoltarix);

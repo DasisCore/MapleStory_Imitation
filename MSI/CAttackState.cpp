@@ -80,7 +80,7 @@ void CAttackState::update()
 			{
 				int iMonDir = pMon->GetInfo().iDir;
 				// 공격 방향에 맞춰 hit 판정을 낸다.
-				pPlayer->CharHit(iMonDir);
+				pPlayer->CharHit(iMonDir, int(pMonster->GetInfo().fAtt));
 				m_bAttack = true;
 				ChangeAIState(GetAI(), MON_STATE::TRACE);
 			}

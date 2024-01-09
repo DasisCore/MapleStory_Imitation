@@ -163,33 +163,36 @@ void CKeyMgr::CheckObjectTarget()
 
 	// 타겟은 항상 하나
 
-	for (int i = (int)GROUP_TYPE::END - 1; i >= (int)GROUP_TYPE::DEFAULT; i--)
+	if (pCurScene->GetName() == L"Tool scene")
 	{
-		vector<CObject*> vecObj = pCurScene->GetGroupObject((GROUP_TYPE)i);
-		for (int j = 0; j < vecObj.size(); j++)
+		for (int i = (int)GROUP_TYPE::END - 1; i >= (int)GROUP_TYPE::DEFAULT; i--)
 		{
-			CObject* pObj = vecObj[j];
-			if (IsMouseInObj(vecObj[j]) && KEY_TAP(KEY::LBTN) && !vecObj[j]->GetTarget())
+			vector<CObject*> vecObj = pCurScene->GetGroupObject((GROUP_TYPE)i);
+			for (int j = 0; j < vecObj.size(); j++)
 			{
-				vecObj[j]->SetTarget(true);
-				m_bIgnore = false;
-			}
-			else if (IsMouseInObj(vecObj[j]) && KEY_HOLD(KEY::LBTN) && vecObj[j]->GetTarget() == true)
-			{
-				vecObj[j]->SetTarget(true);
+				CObject* pObj = vecObj[j];
+				if (IsMouseInObj(vecObj[j]) && KEY_TAP(KEY::LBTN) && !vecObj[j]->GetTarget())
+				{
+					vecObj[j]->SetTarget(true);
+					m_bIgnore = false;
+				}
+				else if (IsMouseInObj(vecObj[j]) && KEY_HOLD(KEY::LBTN) && vecObj[j]->GetTarget() == true)
+				{
+					vecObj[j]->SetTarget(true);
 
-				Vec2 vCurPos = vecObj[j]->GetPos();
-				Vec2 vDiff = CCamera::GetInst()->GetRealPos(MOUSE_POS) - m_vDragStart;
+					Vec2 vCurPos = vecObj[j]->GetPos();
+					Vec2 vDiff = CCamera::GetInst()->GetRealPos(MOUSE_POS) - m_vDragStart;
 
-				vCurPos += vDiff;
-				vecObj[j]->SetPos(vCurPos);
-				m_vDragStart = CCamera::GetInst()->GetRealPos(MOUSE_POS);
+					vCurPos += vDiff;
+					vecObj[j]->SetPos(vCurPos);
+					m_vDragStart = CCamera::GetInst()->GetRealPos(MOUSE_POS);
+				}
+				else if (IsMouseInObj(vecObj[j]) && KEY_AWAY(KEY::LBTN) && vecObj[j]->GetTarget() == true)
+				{
+					vecObj[j]->SetTarget(false);
+				}
+				else vecObj[j]->SetTarget(false);
 			}
-			else if (IsMouseInObj(vecObj[j]) && KEY_AWAY(KEY::LBTN) && vecObj[j]->GetTarget() == true)
-			{
-				vecObj[j]->SetTarget(false);
-			}
-			else vecObj[j]->SetTarget(false);
 		}
 	}
 }

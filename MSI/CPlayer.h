@@ -94,6 +94,9 @@ public:
     void SetDelay(float _fDelay) { m_fDelayTime = _fDelay; }
     bool GetCanOtherAction() { return m_bCanOtherAction; }
     virtual CPlayer* Clone() override { return new CPlayer(*this); }
+    
+    // 현재 캐릭터가 무적인지 아닌지
+    bool IsUnbeatable() { return m_fUnbeatableTime >= 0; }
 
 // 임시
 public:
@@ -102,7 +105,7 @@ public:
 
 // 게임 플레이와 관련된 멤버 함수
 public:
-    void CharHit(int _iDir);
+    void CharHit(int _iDir, int _iDamege);
     void AddExp(int _iExp) { m_tPlayerInfo.iExp += _iExp; }
 
 

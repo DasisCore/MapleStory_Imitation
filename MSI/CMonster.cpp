@@ -7,6 +7,7 @@
 #include "CAnimation.h"
 #include "CRandom.h"
 #include "CRigidBody.h"
+#include "CPlayer.h"
 
 #include "AI.h"
 
@@ -202,4 +203,18 @@ void CMonster::update_animation()
 	}
 
 	GetComponent()->GetAnimator()->Play(currentChar.c_str(), true);
+}
+
+void CMonster::OnCollision(CCollider* _pOther)
+{
+	CObject* pObj = _pOther->GetObj();
+
+	if (pObj->GetName() == L"PLAYER")
+	{
+		CPlayer* pPlayer = (CPlayer*) pObj;
+		if (!pPlayer->IsUnbeatable())
+		{
+			pPlayer->CharHit(m_tInfo.iDir, m_tInfo.fAtt);
+		}
+	}
 }

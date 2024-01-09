@@ -50,6 +50,9 @@ public:
 public:
     void update_animation();
 
+public:
+    virtual void OnCollision(CCollider* _pOther) override;
+
 
 public:
     virtual void update() override;
