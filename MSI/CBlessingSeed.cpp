@@ -9,6 +9,7 @@
 #include "CSeed.h"
 #include "CSceneMgr.h"
 #include "CScene.h"
+#include "CSkillUI.h"
 
 CBlessingSeed::CBlessingSeed(CObject* _pObj)
 	: m_pOwner(_pObj)
@@ -87,6 +88,23 @@ CBlessingSeed::CBlessingSeed(CObject* _pObj)
 			}
 		}
 	}
+
+
+	// skill ui에 해당 스킬의 쿨타임 표시
+	vector<CObject*> vecObj = CSceneMgr::GetInst()->GetCurScene()->GetGroupObject(GROUP_TYPE::UI);
+
+	CObject* pObj = nullptr;
+	for (int i = 0; i < vecObj.size(); i++)
+	{
+		if (vecObj[i]->GetName() == L"SKILLBAR")
+		{
+			pObj = vecObj[i];
+			break;
+		}
+	}
+
+	CSkillUI* pSkillUI = dynamic_cast<CSkillUI*>(pObj);
+	if (pSkillUI != nullptr) pSkillUI->SetCoolTimeSkill1();
 }
 
 CBlessingSeed::~CBlessingSeed()

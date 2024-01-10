@@ -10,8 +10,13 @@
 #include "CBlessingSeed.h"
 #include "CSeed.h"
 
+#include "CSceneMgr.h"
+#include "CScene.h"
+#include "CSkillUI.h"
+
 CBark::CBark()
 {
+
 }
 
 CBark::~CBark()
@@ -36,19 +41,57 @@ void CBark::update()
 	// ¿ä»õ
 	if (KEY_TAP(KEY::Z))
 	{
-		CObject* pObj = (CObject*) new CFortress(this);
-		CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
-		pCurScene->AddObject(pObj, GROUP_TYPE::SKILL);
+		vector<CObject*> vecObj = CSceneMgr::GetInst()->GetCurScene()->GetGroupObject(GROUP_TYPE::UI);
+
+		CSkillUI* pSkillUI = nullptr;
+		for (int i = 0; i < vecObj.size(); i++)
+		{
+			if (vecObj[i]->GetName() == L"SKILLBAR")
+			{
+				pSkillUI = dynamic_cast<CSkillUI*> (vecObj[i]);
+				break;
+			}
+		}
+
+		if (pSkillUI != nullptr)
+		{
+			float fSkillCoolTime = pSkillUI->GetCoolTimeSkill2();
+			if (fSkillCoolTime <= 0)
+			{
+				CObject* pObj = (CObject*) new CFortress(this);
+				CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
+				pCurScene->AddObject(pObj, GROUP_TYPE::SKILL);
+			}
+		}
 	}
 
 	// Ãàº¹ÀÇ ¾¾¾Ñ
 	if (KEY_TAP(KEY::LSHIFT) && GetCanOtherAction() && GetIsGround())
 	{
-		SetCurState(PLAYER_STATE::ATTACK);
-		CObject* pObj = (CObject*) new CBlessingSeed(this);
-		CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
-		pCurScene->AddObject(pObj, GROUP_TYPE::SKILL);
-		SetDelay(0.4f);
+		vector<CObject*> vecObj = CSceneMgr::GetInst()->GetCurScene()->GetGroupObject(GROUP_TYPE::UI);
+
+		CSkillUI* pSkillUI = nullptr;
+		for (int i = 0; i < vecObj.size(); i++)
+		{
+			if (vecObj[i]->GetName() == L"SKILLBAR")
+			{
+				pSkillUI = dynamic_cast<CSkillUI*> (vecObj[i]);
+				break;
+			}
+		}
+
+		if (pSkillUI != nullptr)
+		{
+			float fSkillCoolTime = pSkillUI->GetCoolTimeSkill1();
+			if (fSkillCoolTime <= 0)
+			{
+				SetCurState(PLAYER_STATE::ATTACK);
+				CObject* pObj = (CObject*) new CBlessingSeed(this);
+				CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
+				pCurScene->AddObject(pObj, GROUP_TYPE::SKILL);
+				SetDelay(0.4f);
+			}
+		}
 	}
 
 }

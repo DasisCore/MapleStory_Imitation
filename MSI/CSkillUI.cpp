@@ -19,6 +19,10 @@ CSkillUI::CSkillUI(wstring _imageRelativePath)
 	, m_pBackImage(nullptr)
 	, m_pCharType(nullptr)
 	, m_fDisplayHP(1.f)
+	, m_fCoolTimeSkill1(4.f)
+	, m_fCoolTimeSkill2(4.f)
+	, m_fCurCoolTimeSkill1(0.f)
+	, m_fCurCoolTimeSkill2(0.f)
 {
 	wstring contentPath = wstring(CPathMgr::GetInst()->GetContentPath());
 	wstring backImagePath = contentPath + _imageRelativePath;
@@ -51,8 +55,6 @@ void CSkillUI::update()
 	
 	// exp persent update
 	GaugePersentUpdate(tInfo.iMaxExp, tInfo.iExp, m_fDisplayEXP);
-
-
 }
 
 void CSkillUI::render(HDC _dc)
@@ -95,13 +97,17 @@ void CSkillUI::render(HDC _dc)
 		graphics.DrawImage(coverImage, vPos.x + 141.f, vPos.y + 14.f);
 		delete coverImage;
 
-		DrawGaugeNumber(_dc, tInfo.iMaxHP, tInfo.iHP, vPos.y + 14.f);
-		DrawGaugeNumber(_dc, tInfo.iMaxMP, tInfo.iMP, vPos.y + 32.f);
-		DrawExpGauge(_dc, tInfo.iMaxExp, tInfo.iExp, vPos.y + 50.f);
+		renderGaugeNumber(_dc, tInfo.iMaxHP, tInfo.iHP, vPos.y + 14.f);
+		renderGaugeNumber(_dc, tInfo.iMaxMP, tInfo.iMP, vPos.y + 32.f);
+		renderExpGauge(_dc, tInfo.iMaxExp, tInfo.iExp, vPos.y + 50.f);
+
+		renderSkillImage(graphics);
+
+		renderSkillCoolTime(graphics);
 	}
 }
 
-void CSkillUI::DrawGaugeNumber(HDC _dc, int _iMaxGauge, int _iGauge, float _fHeight)
+void CSkillUI::renderGaugeNumber(HDC _dc, int _iMaxGauge, int _iGauge, float _fHeight)
 {
 	wstring contentPath = wstring(CPathMgr::GetInst()->GetContentPath());
 	CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
@@ -147,7 +153,7 @@ void CSkillUI::DrawGaugeNumber(HDC _dc, int _iMaxGauge, int _iGauge, float _fHei
 	}
 }
 
-void CSkillUI::DrawExpGauge(HDC _dc, int _iMaxGauge, int _iGauge, float _fHeight)
+void CSkillUI::renderExpGauge(HDC _dc, int _iMaxGauge, int _iGauge, float _fHeight)
 {
 	wstring contentPath = wstring(CPathMgr::GetInst()->GetContentPath());
 	CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
@@ -215,6 +221,56 @@ void CSkillUI::DrawExpGauge(HDC _dc, int _iMaxGauge, int _iGauge, float _fHeight
 	delete numberImage;
 }
 
+void CSkillUI::renderSkillImage(Graphics& _graphics)
+{
+	wstring contentPath = wstring(CPathMgr::GetInst()->GetContentPath());
+	contentPath += L"Texture\\Skillbar\\";
+
+	//wstring strPlayerName = m_pPlayer->GetCurChar();
+	wstring strPlayerName = L"BARK";
+	
+	Vec2 vPos = GetPos();
+
+	for (int i = 0; i < 6; i++)
+	{
+		wstring skillPath = contentPath + strPlayerName + std::to_wstring(i) + L".png";
+		Image* skillImage = Image::FromFile(skillPath.c_str());
+		_graphics.DrawImage(skillImage, Rect(vPos.x + 364 + (i * 55), vPos.y + 13, skillImage->GetWidth(), skillImage->GetHeight()));
+		delete skillImage;
+	}
+}
+
+void CSkillUI::renderSkillCoolTime(Graphics& _graphics)
+{
+	Vec2 vPos = GetPos();
+	wstring contentPath = wstring(CPathMgr::GetInst()->GetContentPath());
+	contentPath += L"Texture\\Skillbar\\CoolTime\\";
+
+	if (m_fCurCoolTimeSkill1 > 0)
+	{
+		int iCurImage = m_fCurCoolTimeSkill1 / m_fCoolTimeSkill1 * 17;
+		wstring coolTimePath = contentPath + std::to_wstring(iCurImage) + L".png";
+		Image* coolTimeImage = Image::FromFile(coolTimePath.c_str());
+		_graphics.DrawImage(coolTimeImage, Rect(vPos.x + 419, vPos.y + 13, coolTimeImage->GetWidth(), coolTimeImage->GetHeight()));
+		delete coolTimeImage;
+
+		m_fCurCoolTimeSkill1 -= fDT;
+
+	}
+
+	if (m_fCurCoolTimeSkill2 > 0)
+	{
+		int iCurImage = m_fCurCoolTimeSkill2 / m_fCoolTimeSkill2 * 17;
+		wstring coolTimePath = contentPath + std::to_wstring(iCurImage) + L".png";
+		Image* coolTimeImage = Image::FromFile(coolTimePath.c_str());
+		_graphics.DrawImage(coolTimeImage, Rect(vPos.x + 474, vPos.y + 13, coolTimeImage->GetWidth(), coolTimeImage->GetHeight()));
+		delete coolTimeImage;
+
+		m_fCurCoolTimeSkill2 -= fDT;
+
+	}
+}
+
 void CSkillUI::DisplayLevel(Graphics& _graphics)
 {
 	wstring contentPath = wstring(CPathMgr::GetInst()->GetContentPath());
@@ -229,7 +285,7 @@ void CSkillUI::DisplayLevel(Graphics& _graphics)
 		wstring strNo = lvNumberPath + strLv[i] + L".png";
 		Image* numberImage = Image::FromFile(strNo.c_str());
 		_graphics.DrawImage(numberImage, vPos.x + (i * 11.f) + 43.f, vPos.y + 10.f);
-		delete numberImage;
+		delete numberImage; 
 	}
 
 }

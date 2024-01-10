@@ -9,6 +9,11 @@
 #include "CTimeMgr.h"
 #include "CMonster.h"
 
+#include "CSceneMgr.h"
+#include "CScene.h"
+#include "CObject.h"
+#include "CSkillUI.h"
+
 CFortress::CFortress(CObject* _pObj)
 	: m_pOwner(_pObj)
 	, m_fCastBegin(0.54f)
@@ -28,6 +33,22 @@ CFortress::CFortress(CObject* _pObj)
 	pAni->LoadAnimation(L"Animation\\FORTRESS_REPEAT.anim");	// 16 프레임
 	pAni->LoadAnimation(L"Animation\\FORTRESS_END.anim");		// 8 프레임
 	pAni->Play(L"FORTRESS_BEGIN", true);
+
+
+	// skill ui에 해당 스킬의 쿨타임 표시
+	vector<CObject*> vecObj = CSceneMgr::GetInst()->GetCurScene()->GetGroupObject(GROUP_TYPE::UI);
+	CObject* pObj = nullptr;
+	for (int i = 0; i < vecObj.size(); i++)
+	{
+		if (vecObj[i]->GetName() == L"SKILLBAR")
+		{
+			pObj = vecObj[i];
+			break;
+		}
+	}
+
+	CSkillUI* pSkillUI = dynamic_cast<CSkillUI*>(pObj);
+	if (pSkillUI != nullptr) pSkillUI->SetCoolTimeSkill2();
 }
 
 CFortress::~CFortress()

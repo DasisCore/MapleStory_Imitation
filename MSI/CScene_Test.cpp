@@ -64,10 +64,9 @@ void CScene_Test::Enter()
 	Vec2 vResolution = CCore::GetInst()->GetResolution();
 
 	CUI* pPanelUI = new CSkillUI(L"Texture\\SkillBar\\Skillbar.png");
-	pPanelUI->SetName(L"SkillBar");
+	pPanelUI->SetName(L"SKILLBAR");
 	pPanelUI->SetPos(Vec2(vResolution.x / 2.f - pPanelUI->GetScale().x / 2.f, vResolution.y - pPanelUI->GetScale().y - 20));
 	AddObject(pPanelUI, GROUP_TYPE::UI);
-
 
 
 	// 충돌 지정

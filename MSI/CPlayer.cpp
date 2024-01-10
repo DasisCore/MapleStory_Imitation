@@ -138,20 +138,6 @@ void CPlayer::update()
 	Delay();
 }
 
-void CPlayer::CreateMissile()
-{
-	Vec2 vMissilePos = GetPos();
-
-	vMissilePos.y -= GetScale().y / 2.f;
-
-	CMissile* pMissile = new CMissile;
-	pMissile->SetPos(vMissilePos);
-	pMissile->SetScale(Vec2(25.f, 25.f));
-
-	CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
-	pCurScene->AddObject(pMissile, GROUP_TYPE::MISSILE);
-}
-
 void CPlayer::update_state()
 {
 	if (KEY_HOLD(KEY::LEFT))
@@ -275,11 +261,11 @@ void CPlayer::update_animation()
 		}
 		else
 		{
-			m_fBlinkTime = 0.009f;
+			m_fBlinkTime = 0.03f;
 		}
 	}
 
-	if (m_ePrevState == m_eCurState && m_iPrevDir == m_iDir && m_fUnbeatableTime <= 0) return;
+	//if (m_ePrevState == m_eCurState && m_iPrevDir == m_iDir && m_fUnbeatableTime <= 0) return;
 
 	wstring currentChar = m_wCurChar;
 

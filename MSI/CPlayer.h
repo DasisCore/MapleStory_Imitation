@@ -72,7 +72,6 @@ public:
 
 public:
     int GetDir() { return m_iDir; }
-    void CreateMissile();
     void update_state();
     virtual void update_move();
     void update_animation();
@@ -90,6 +89,7 @@ public:
 
     // 캐릭터의 상태 변환
     void SetCurState(PLAYER_STATE _eState) { m_eCurState = _eState; }
+    wstring GetCurChar() { return m_wCurChar; }
 
     // 캐릭터 정보 가져오기
     const tPlayerInfo GetPlayerInfo() { return m_tPlayerInfo; }
