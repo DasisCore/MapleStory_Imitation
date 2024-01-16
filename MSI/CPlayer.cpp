@@ -453,6 +453,6 @@ void CPlayer::CharHit(int _iDir, int _iDamege)
 
 		m_tPlayerInfo.iHP -= _iDamege;
 
-		CDamegeFactory::CreateSingleDamege(this, _iDamege, DAMEGE_TYPE::VIOLET);
+		CDamegeFactory::CreateSingleDamege(this, _iDamege, 0, DAMEGE_TYPE::VIOLET);
 	}
 }

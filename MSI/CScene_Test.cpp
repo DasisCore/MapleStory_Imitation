@@ -21,6 +21,7 @@
 #include "CBtnUI.h"
 
 #include "CDamegeFactory.h"
+#include "CEffect.h"
 
 
 CScene_Test::CScene_Test()
@@ -36,13 +37,20 @@ void CScene_Test::update()
 {
 	CScene::update();
 
-	if (KEY_TAP(KEY::ENTER))
-	{
-		int damege = CRandom::GetInst()->GetBetweenInt(300, 50000);
-		CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
-		CObject* pPlayer = pCurScene->GetPlayer();
-		CDamegeFactory::CreateSingleDamege(pPlayer, damege, DAMEGE_TYPE::VIOLET);
-	}
+	//if (KEY_TAP(KEY::ENTER))
+	//{
+	//	int damege = CRandom::GetInst()->GetBetweenInt(300, 50000);
+	//	CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
+	//	CObject* pPlayer = pCurScene->GetPlayer();
+	//	CDamegeFactory::CreateSingleDamege(pPlayer, damege, DAMEGE_TYPE::VIOLET);
+	//}
+
+	//if (KEY_TAP(KEY::ENTER))
+	//{
+	//	CEffect* pObj = new CEffect(6, 0.05f);
+	//	AddObject(pObj, GROUP_TYPE::EFFECT);
+	//}
+
 }
 
 void CScene_Test::Enter()

@@ -12,6 +12,7 @@
 #include "CResMgr.h"
 #include "CCamera.h"
 #include "CSoundMgr.h"
+#include "CDamegeMgr.h"
 
 #include "CSound.h"
 
@@ -99,6 +100,8 @@ int CCore::init(HWND _hWnd, POINT _ptResolution, HINSTANCE _hInstance)
 	CCamera::GetInst()->init();
 	//CSoundMgr::GetInst()->init();
 	CSceneMgr::GetInst()->init();
+	CDamegeMgr::GetInst()->init();
+	
 
 
 	// 사운드 테스트 이후 fmod로 변경
@@ -131,6 +134,9 @@ void CCore::progress()
 	
 	// UI 이벤트 체크
 	CUIMgr::GetInst()->update();
+
+	// 데미지 관련 체크
+	CDamegeMgr::GetInst()->update();
 
 
 	// =======================================

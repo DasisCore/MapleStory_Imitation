@@ -8,6 +8,7 @@
 #include "CRandom.h"
 #include "CRigidBody.h"
 #include "CPlayer.h"
+#include "CDamegeMgr.h"
 
 #include "AI.h"
 
@@ -58,14 +59,26 @@ void CMonster::TakeDamege(float _fDamege, int _iDir)
 {
 	if (!m_bDead)
 	{
-		m_tInfo.fHP -= _fDamege;
+		//m_tInfo.fHP -= _fDamege;
+		m_tInfo.fHP -= 1.f;
 		m_fHitTime = 0.5f;
 		m_pAI->ChangeState(MON_STATE::HIT);
 		m_tInfo.iDir = _iDir * -1;
 
 		// 몬스터 넉백 구현
 		GetComponent()->GetRigidbody()->AddVelocity(Vec2(300.f * _iDir, -200.f));
-		CDamegeFactory::CreateSingleDamege(this, _fDamege, DAMEGE_TYPE::NORED);
+
+		for (int i = 0; i < 5; i++)
+		{
+			DAMEGE_INFO tInfo;
+			tInfo.eType = DAMEGE_TYPE::NORED;
+			tInfo.fDamege = _fDamege;
+			tInfo.flatencyTime = 0.1f * i;
+			tInfo.pObj = this;
+			tInfo.fOffset = 27.f * i;
+			CDamegeMgr::GetInst()->AddDamege(tInfo);
+			//CDamegeFactory::CreateSingleDamege(this, _fDamege, 27.f * i, DAMEGE_TYPE::NORED);
+		}
 	}
 }
 

@@ -218,6 +218,9 @@
     <Filter Include="Engine\09. Factory\DamegeFactory">
       <UniqueIdentifier>{861dc25f-afa1-4226-b860-00fa63ac7c23}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\03. Manager\CDamgeMgr">
+      <UniqueIdentifier>{f51bc1cc-cb4a-4fee-8c30-11dc5d161832}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -440,6 +443,12 @@
     <ClInclude Include="CDamegeFactory.h">
       <Filter>Engine\09. Factory\DamegeFactory</Filter>
     </ClInclude>
+    <ClInclude Include="CEffect.h">
+      <Filter>Engine\04. Object\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="CDamegeMgr.h">
+      <Filter>Engine\03. Manager\CDamgeMgr</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CCore.cpp">
@@ -643,6 +652,12 @@
     </ClCompile>
     <ClCompile Include="CDamegeFactory.cpp">
       <Filter>Engine\09. Factory\DamegeFactory</Filter>
+    </ClCompile>
+    <ClCompile Include="CEffect.cpp">
+      <Filter>Engine\04. Object\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="CDamegeMgr.cpp">
+      <Filter>Engine\03. Manager\CDamgeMgr</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

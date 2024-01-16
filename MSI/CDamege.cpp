@@ -14,7 +14,7 @@ CDamege::CDamege(int _iDamege, DAMEGE_TYPE _eDamegeType)
 {
 	CreateComponent();
 	CreateAnimator();
-	CreateCollider();
+	//CreateCollider();
 
 	int iDamege = _iDamege;
 	int iWidth = 0;

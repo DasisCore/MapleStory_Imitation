@@ -56,6 +56,7 @@ enum class GROUP_TYPE
 	PROJ_MONSTER,
 	MISSILE,
 	DETECT,
+	EFFECT,
 
 	UI = 31,
 	END = 32,
