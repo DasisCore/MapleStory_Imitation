@@ -27,7 +27,7 @@ private:
 	map<wstring, Sound*> m_mapSound;
 	
 	Sound* m_Sound[(unsigned long long)SOUND_TYPE::END];
-	Channel* m_Channel[32];
+	Channel* m_Channel[(unsigned long long)SOUND_TYPE::END];
 
 	FMOD_RESULT m_eResult;
 	unsigned int m_iVersion;
@@ -45,9 +45,8 @@ public:
 	bool isPlaying(SOUND_TYPE _eSoundType);
 
 public:
-	int init(void);
+	int init();
 	void update();
-
 };
 
 

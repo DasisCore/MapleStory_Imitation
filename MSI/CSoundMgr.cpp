@@ -5,11 +5,9 @@
 
 #include "fmod.hpp"
 #include "CKeyMgr.h"
-//#include <conio.h>
 
 CSoundMgr::CSoundMgr()
 {
-
 }
 
 CSoundMgr::~CSoundMgr()
@@ -58,7 +56,7 @@ bool CSoundMgr::isPlaying(SOUND_TYPE _eSoundType)
 	return bPlaying;
 }
 
-int CSoundMgr::init(void)
+int CSoundMgr::init()
 {
 	m_eResult = FMOD::System_Create(&m_pSystem);
 	if (m_eResult != FMOD_OK) return false;
@@ -69,6 +67,11 @@ int CSoundMgr::init(void)
 	m_eResult = m_pSystem->init(32, FMOD_INIT_NORMAL, extradriverdata);
 	if (m_eResult != FMOD_OK) return false;
 
+	for (int i = 0; i < (int)SOUND_TYPE::END; i++)
+	{
+		m_Channel[i] = nullptr;
+	}
+
 	return true;
 }
 
@@ -77,5 +80,15 @@ void CSoundMgr::update()
 	m_eResult = m_pSystem->update();
 
 	m_Channel[(unsigned long long)SOUND_TYPE::BGM]->setVolume(0.1f);
+	m_Channel[(unsigned long long)SOUND_TYPE::BGM]->setPaused(false);
+
+	m_Channel[(unsigned long long)SOUND_TYPE::EFFECT1]->setVolume(0.2f);
+	m_Channel[(unsigned long long)SOUND_TYPE::EFFECT1]->setPaused(false);
+
+	m_Channel[(unsigned long long)SOUND_TYPE::EFFECT2]->setVolume(0.2f);
+	m_Channel[(unsigned long long)SOUND_TYPE::EFFECT2]->setPaused(false);
+
+	m_Channel[(unsigned long long)SOUND_TYPE::EFFECT3]->setVolume(0.3f);
+	m_Channel[(unsigned long long)SOUND_TYPE::EFFECT3]->setPaused(false);
 }
 
