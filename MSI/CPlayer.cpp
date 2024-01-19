@@ -21,6 +21,7 @@
 #include "CGravity.h"
 #include "CDamegeFactory.h"
 #include "CDamege.h"
+#include "CSoundMgr.h"
 
 CPlayer::CPlayer()
 	: m_wCurChar(L"RAVEN")
@@ -95,6 +96,8 @@ CPlayer::CPlayer()
 	// 중력 추가
 	// =====================================
 	CreateGravity();
+
+	CSoundMgr::GetInst()->CreateSound(L"JUMP", "jump.mp3", false);
 }
 
 CPlayer::~CPlayer()
@@ -201,6 +204,7 @@ void CPlayer::update_state()
 		m_bIsAir = 1;
 		m_bIsGround = 0;
 		GetComponent()->GetRigidbody()->SetVelocity(Vec2(GetComponent()->GetRigidbody()->GetVelocity().x, -740.f));
+		CSoundMgr::GetInst()->Play(L"JUMP", SOUND_TYPE::EFFECT1);
 	}
 }
 

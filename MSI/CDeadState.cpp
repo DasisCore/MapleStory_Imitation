@@ -6,11 +6,13 @@
 #include "CSceneMgr.h"
 #include "CScene.h"
 #include "CPlayer.h"
+#include "CSoundMgr.h"
 
 CDeadState::CDeadState()
 	: CState(MON_STATE::DEAD)
 	, m_DeadDelay(1.0f)
 {
+	CSoundMgr::GetInst()->CreateSound(L"LeshDie", "LeshDie.mp3", false);
 }
 
 CDeadState::~CDeadState()
@@ -20,7 +22,7 @@ CDeadState::~CDeadState()
 void CDeadState::Enter()
 {
 	// 아이템 뱉어야 함.
-
+	CSoundMgr::GetInst()->Play(L"LeshDie", SOUND_TYPE::EFFECT2);
 }
 
 void CDeadState::Exit()

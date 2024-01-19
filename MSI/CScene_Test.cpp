@@ -23,9 +23,11 @@
 #include "CDamegeFactory.h"
 #include "CEffect.h"
 
+#include "CSoundMgr.h"
 
 CScene_Test::CScene_Test()
 {
+
 }
 
 CScene_Test::~CScene_Test()
@@ -90,7 +92,9 @@ void CScene_Test::Enter()
 
 	//CCamera::GetInst()->SetLookAt(pVoltarix->GetPos());
 	CCamera::GetInst()->SetTarget(pVoltarix);
-	
+
+	CSoundMgr::GetInst()->CreateSound(L"MysteriousJourney", "MysteriousJourney.mp3", true);
+	CSoundMgr::GetInst()->Play(L"MysteriousJourney", SOUND_TYPE::BGM);
 }
 
 void CScene_Test::Exit()

@@ -99,8 +99,10 @@ int CCore::init(HWND _hWnd, POINT _ptResolution, HINSTANCE _hInstance)
 	CKeyMgr::GetInst()->init();
 	CCamera::GetInst()->init();
 	//CSoundMgr::GetInst()->init();
+	CSoundMgr::GetInst()->init();
 	CSceneMgr::GetInst()->init();
 	CDamegeMgr::GetInst()->init();
+
 	
 
 
@@ -126,6 +128,12 @@ void CCore::progress()
 	CKeyMgr::GetInst()->update();
 	CCamera::GetInst()->update();
 
+	// 사운드 관련 업데이트
+	CSoundMgr::GetInst()->update();
+
+	// 데미지 관련 체크
+	CDamegeMgr::GetInst()->update();
+
 	// Scene update
 	CSceneMgr::GetInst()->update();
 
@@ -135,8 +143,7 @@ void CCore::progress()
 	// UI 이벤트 체크
 	CUIMgr::GetInst()->update();
 
-	// 데미지 관련 체크
-	CDamegeMgr::GetInst()->update();
+
 
 
 	// =======================================

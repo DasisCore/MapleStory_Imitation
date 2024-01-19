@@ -12,12 +12,16 @@
 #include "CEventMgr.h"
 #include "CMonster_Normal.h"
 #include "CTimeMgr.h"
+#include "CSoundMgr.h"
+#include "CAnimator.h"
+#include "CAnimation.h"
 
 CAttackState::CAttackState()
 	:CState(MON_STATE::ATT)
 	, m_pDetect(nullptr)
 	, m_fAttack(0.73f)
 {
+	CSoundMgr::GetInst()->CreateSound(L"LeshAttack", "LeshAttack.mp3", false);
 }
 
 CAttackState::~CAttackState()
@@ -46,6 +50,17 @@ void CAttackState::Enter()
 		pCurScene->AddObject(m_pDetect, GROUP_TYPE::DETECT);
 	}
 
+	if (!CSoundMgr::GetInst()->isPlaying(SOUND_TYPE::EFFECT3))
+	{
+		CSoundMgr::GetInst()->Play(L"LeshAttack", SOUND_TYPE::EFFECT3);
+	}
+	else
+	{
+		CMonster* pMonster = GetMonster();
+		pMonster->GetComponent()->GetAnimator()->FindAnimation(L"LESH_LEFT_ATTACK")->SetFrame(0);
+		pMonster->GetComponent()->GetAnimator()->FindAnimation(L"LESH_RIGHT_ATTACK")->SetFrame(0);
+		ChangeAIState(GetAI(), MON_STATE::TRACE);
+	}
 }
 
 void CAttackState::Exit()

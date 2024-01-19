@@ -1,29 +1,53 @@
 #pragma once
 
-// sound 용도 - 헤더 순서 중요
-#include <mmsystem.h>
-#include <dsound.h>
-#include <dinput.h>
+#include "fmod.h"
+#include "fmod.hpp"
 
+using namespace FMOD;
 
-// 코드
-#pragma comment(lib, "winmm.lib")
-#pragma comment(lib, "dsound.lib")
+enum class SOUND_TYPE
+{
+	BGM,
+	EFFECT1,
+	EFFECT2,
+	EFFECT3,
+	MOUSE,
+	KEYBOARD,
+	ETC,
+	END = 32,
+};
 
 class CSound;
-
 class CSoundMgr
 {
 	SINGLE(CSoundMgr);
 
 private:
-	LPDIRECTSOUND8 m_pSound;	// 사운드카드 대표 객체
-	CSound* m_pBGM;	// 현재 저장된 BGM Sound
+	System* m_pSystem;
+	map<wstring, Sound*> m_mapSound;
+	
+	Sound* m_Sound[(unsigned long long)SOUND_TYPE::END];
+	Channel* m_Channel[32];
+
+	FMOD_RESULT m_eResult;
+	unsigned int m_iVersion;
+	void* extradriverdata;
+
+public:
+	// 사운드를 생성하는 함수
+	Sound* CreateSound(wstring _strSoundName, string _strFileName, bool _bLoop);
+
+	// 사운드를 찾는 함수
+	Sound* FindSound(wstring _strSoundName);
+
+	void Play(wstring _strSoundName, SOUND_TYPE _eType);
+
+	bool isPlaying(SOUND_TYPE _eSoundType);
 
 public:
 	int init(void);
-	LPDIRECTSOUND8 GetSoundDevice() { return m_pSound; }
-	void RegisterToBGM(CSound* _pSound);
+	void update();
+
 };
 
 

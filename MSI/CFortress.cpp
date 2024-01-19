@@ -14,6 +14,8 @@
 #include "CObject.h"
 #include "CSkillUI.h"
 
+#include "CSoundMgr.h"
+
 CFortress::CFortress(CObject* _pObj)
 	: m_pOwner(_pObj)
 	, m_fCastBegin(0.54f)
@@ -49,6 +51,9 @@ CFortress::CFortress(CObject* _pObj)
 
 	CSkillUI* pSkillUI = dynamic_cast<CSkillUI*>(pObj);
 	if (pSkillUI != nullptr) pSkillUI->SetCoolTimeSkill2();
+
+	CSoundMgr::GetInst()->CreateSound(L"Fortress", "Fortress.mp3", false);
+	CSoundMgr::GetInst()->Play(L"Fortress", SOUND_TYPE::EFFECT1);
 }
 
 CFortress::~CFortress()

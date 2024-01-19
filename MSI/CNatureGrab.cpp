@@ -7,6 +7,7 @@
 #include "CAnimator.h"
 #include "CTimeMgr.h"
 #include "CMonster.h"
+#include "CSoundMgr.h"
 
 CNatureGrab::CNatureGrab(CObject* _pObj)
 	: m_pOwner(_pObj)
@@ -22,6 +23,10 @@ CNatureGrab::CNatureGrab(CObject* _pObj)
 	CAnimator* pAni = GetComponent()->GetAnimator();
 	pAni->LoadAnimation(L"Animation\\NatureGrab.anim");
 	pAni->Play(L"NatureGrab", false);
+
+	CSoundMgr::GetInst()->CreateSound(L"NatureGraspUse", "NatureGraspUse.mp3", false);
+	CSoundMgr::GetInst()->CreateSound(L"NatureGraspHit", "NatureGraspHit.mp3", false);
+	CSoundMgr::GetInst()->Play(L"NatureGraspUse", SOUND_TYPE::EFFECT1);
 }
 
 CNatureGrab::~CNatureGrab()

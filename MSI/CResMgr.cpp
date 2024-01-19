@@ -14,7 +14,7 @@ CResMgr::CResMgr()
 CResMgr::~CResMgr()
 {
 	Safe_Delete_Map(m_mapTex);
-	Safe_Delete_Map(m_mapSound);
+	//Safe_Delete_Map(m_mapSound);
 }
 
 // 좌우 반전을 원할 경우 마지막 인자로 1을 넣어주면 된다.
@@ -63,36 +63,36 @@ CTexture* CResMgr::FindTexture(const wstring& _strKey)
 	return (CTexture*) iter->second;
 }
 
-CSound* CResMgr::LoadSound(const wstring& _strKey, const wstring& _strRelativePath)
-{
-	CSound* pSound = FindSound(_strKey);
+//CSound* CResMgr::LoadSound(const wstring& _strKey, const wstring& _strRelativePath)
+//{
+//	CSound* pSound = FindSound(_strKey);
+//
+//	if (nullptr != pSound)
+//	{
+//		return pSound;
+//	}
+//
+//	wstring strFilePath = CPathMgr::GetInst()->GetContentPath();
+//	strFilePath += _strRelativePath;
+//
+//	pSound = new CSound;
+//	pSound->Load(strFilePath.c_str());
+//	pSound->SetKey(_strKey);
+//	pSound->SetRelativePath(_strRelativePath);
+//
+//	m_mapSound.insert(make_pair(_strKey, pSound));
+//
+//	return pSound;
+//}
 
-	if (nullptr != pSound)
-	{
-		return pSound;
-	}
-
-	wstring strFilePath = CPathMgr::GetInst()->GetContentPath();
-	strFilePath += _strRelativePath;
-
-	pSound = new CSound;
-	pSound->Load(strFilePath.c_str());
-	pSound->SetKey(_strKey);
-	pSound->SetRelativePath(_strRelativePath);
-
-	m_mapSound.insert(make_pair(_strKey, pSound));
-
-	return pSound;
-}
-
-CSound* CResMgr::FindSound(const wstring& _strKey)
-{
-	map<wstring, CRes*>::iterator iter = m_mapSound.find(_strKey);
-
-	if (iter == m_mapSound.end())
-	{
-		return nullptr;
-	}
-
-	return (CSound*)iter->second;
-}
+//CSound* CResMgr::FindSound(const wstring& _strKey)
+//{
+//	map<wstring, CRes*>::iterator iter = m_mapSound.find(_strKey);
+//
+//	if (iter == m_mapSound.end())
+//	{
+//		return nullptr;
+//	}
+//
+//	return (CSound*)iter->second;
+//}

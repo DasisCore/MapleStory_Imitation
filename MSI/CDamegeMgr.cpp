@@ -5,6 +5,7 @@
 #include "CEffect.h"
 #include "CSceneMgr.h"
 #include "CScene.h"
+#include "CSoundMgr.h"
 
 CDamegeMgr::CDamegeMgr()
 {
@@ -37,6 +38,7 @@ void CDamegeMgr::update()
 
 				CEffect* pEffect = new CEffect(tInfo.pObj, 6, 0.05f);
 				pCurScene->AddObject(pEffect, GROUP_TYPE::EFFECT);
+				CSoundMgr::GetInst()->Play(L"NATUREGRASPHIT", SOUND_TYPE::EFFECT2);
 			}
 			else
 			{

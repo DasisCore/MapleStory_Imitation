@@ -10,6 +10,7 @@
 #include "CSceneMgr.h"
 #include "CScene.h"
 #include "CSkillUI.h"
+#include "CSoundMgr.h"
 
 CBlessingSeed::CBlessingSeed(CObject* _pObj)
 	: m_pOwner(_pObj)
@@ -105,6 +106,9 @@ CBlessingSeed::CBlessingSeed(CObject* _pObj)
 
 	CSkillUI* pSkillUI = dynamic_cast<CSkillUI*>(pObj);
 	if (pSkillUI != nullptr) pSkillUI->SetCoolTimeSkill1();
+
+	CSoundMgr::GetInst()->CreateSound(L"BlessingSeed", "BlessingSeed.mp3", false);
+	CSoundMgr::GetInst()->Play(L"BlessingSeed", SOUND_TYPE::EFFECT1);
 }
 
 CBlessingSeed::~CBlessingSeed()
