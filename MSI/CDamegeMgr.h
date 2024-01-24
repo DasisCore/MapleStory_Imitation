@@ -10,7 +10,7 @@ struct DAMEGE_INFO
 	float fDamege;
 	DAMEGE_TYPE eType;
 	float fOffset;
-	float flatencyTime;
+	float fLatencyTime;
 };
 
 

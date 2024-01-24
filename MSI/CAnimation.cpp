@@ -50,7 +50,7 @@ void CAnimation::update()
 	}
 }
 
-void CAnimation::render(HDC _dc)
+void CAnimation::render(HDC _dc, float _fAlpha)
 {
 	if (m_bFinish)
 	{
@@ -72,7 +72,7 @@ void CAnimation::render(HDC _dc)
 	BLENDFUNCTION bf;
 	bf.BlendOp = AC_SRC_OVER;
 	bf.BlendFlags = 0;
-	bf.SourceConstantAlpha = 255;  // 투명도 (0~255, 0이 완전투명, 255가 완전불투명)
+	bf.SourceConstantAlpha = _fAlpha;  // 투명도 (0~255, 0이 완전투명, 255가 완전불투명)
 	bf.AlphaFormat = AC_SRC_ALPHA;
 
 	AlphaBlend(_dc

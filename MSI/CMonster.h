@@ -29,6 +29,8 @@ private:
     float m_fHitTime;
     bool m_bDead;
 
+    float m_fAlpha;
+
 
 public:
     float GetSpeed() { return m_tInfo.fSpeed; }

@@ -4,6 +4,21 @@
 
 class CObject;
 
+struct MON_GEN_INFO
+{
+	MON_TYPE eMonType;
+	wstring strName;
+	Vec2 vPos;
+	Vec2 vScale;
+	bool bCollider;
+	Vec2 vColOffset;
+	Vec2 vColScale;
+	bool bAnimaiton;
+	vector<wstring> vecPath;
+	bool bGravity;
+	bool bRigidBody;
+};
+
 class CScene
 {
 private:
@@ -13,6 +28,12 @@ private:
 	Vec2 m_vMapSize;
 
 	CObject* m_pPlayer;
+
+	// 해당 맵에 어느정도의 몬스터가 초기에 존재하는지
+	// 이를 토대로 매 시간마다 몬스터 젠을 시킬 것.
+	int m_iMonGen;
+	float m_GenCycle;
+	vector<MON_GEN_INFO> m_vecMonGenData;
 
 
 public:
@@ -47,6 +68,9 @@ public:
 	void DeleteAll_Except_UI();
 
 	void LoadSceneData(const wstring& _strFilePath);
+
+	void MonsterGenCountCheck();
+	void MonGenerate();
 
 public:
 	CScene();

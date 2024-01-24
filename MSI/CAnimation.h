@@ -44,7 +44,7 @@ private:
 
 public:
 	void update();
-	void render(HDC _dc);
+	void render(HDC _dc, float _fAlpha = 255);
 	void Create(CTexture* _pTex, vector<tAnimFrm> _vFrame, float _fDuration);
 	// 되감는 애니메이션
 	void Create_rewind(CTexture* _pTex, vector<tAnimFrm> _vFrame, float _fDuration);

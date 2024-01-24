@@ -17,10 +17,18 @@
 #include "CGround.h"
 #include "CFoothold.h"
 #include "CBackground.h"
+#include "CTimeMgr.h"
+#include "CRandom.h"
+#include "CMonster.h"
+#include "CComponent.h"
+#include "CAnimator.h"
+#include "CCollider.h"
 
 
 CScene::CScene()
 	: m_pPlayer(nullptr)
+	, m_iMonGen(0)
+	, m_GenCycle(7.f)
 {
 }
 
@@ -58,6 +66,13 @@ void CScene::update()
 			m_vecObj[i][j]->update();
 		}
 	}
+
+	if (m_GenCycle < 0)
+	{
+		MonGenerate();
+		m_GenCycle = 7.f;
+	}
+	m_GenCycle -= fDT;
 }
 
 void CScene::finalupdate()
@@ -305,4 +320,57 @@ void CScene::LoadSceneData(const wstring& _strFilePath)
 	}
 
 	fclose(pFile);
+}
+
+void CScene::MonsterGenCountCheck()
+{
+	vector<CObject*> vecObj = GetGroupObject(GROUP_TYPE::MONSTER);
+	
+	for (int i = 0; i < vecObj.size(); i++)
+	{
+		MON_GEN_INFO pGenInfo;
+		CMonster* pObj = (CMonster*)vecObj[i];
+		pGenInfo.strName = pObj->GetName();
+		pGenInfo.vPos = pObj->GetPos();
+		pGenInfo.vScale = pObj->GetScale();
+		pGenInfo.bCollider = pObj->GetComponent()->GetCollider() == nullptr ? false : true;
+		pGenInfo.vColOffset = pObj->GetComponent()->GetCollider() == nullptr ? Vec2(0.f, 0.f) : pObj->GetComponent()->GetCollider()->GetOffsetPos();
+		pGenInfo.vColScale = pObj->GetComponent()->GetCollider() == nullptr ? Vec2(0.f, 0.f) : pObj->GetComponent()->GetCollider()->GetScale();
+		pGenInfo.bAnimaiton = pObj->GetComponent()->GetAnimator() == nullptr ? false : true;
+
+		map<wstring, CAnimation*> mapAnimation = pObj->GetComponent()->GetAnimator()->GetMapAnim();
+		map<wstring, CAnimation*>::iterator iter = mapAnimation.begin();
+
+		if (pObj->GetComponent()->GetAnimator() != nullptr)
+		{
+			for (; iter != mapAnimation.end(); iter++) pGenInfo.vecPath.push_back(L"\\Animation\\" + iter->first + L".anim");
+		}
+		pGenInfo.bGravity = pObj->GetComponent()->GetGravity() == nullptr ? false : true;
+		pGenInfo.bRigidBody = pObj->GetComponent()->GetRigidbody() == nullptr ? false : true;
+
+		m_vecMonGenData.push_back(pGenInfo);
+	}
+	
+	m_iMonGen = vecObj.size();
+}
+
+void CScene::MonGenerate()
+{
+	int GenCnt = m_iMonGen - GetGroupObject(GROUP_TYPE::MONSTER).size();
+	if (GenCnt > 0)
+	{
+		vector<int> randomMonGenPos = CRandom::GetInst()->GetBetweenIntCnt(0, m_vecMonGenData.size(), GenCnt);
+
+		for (int i = 0; i < randomMonGenPos.size(); i++)
+		{
+			MON_GEN_INFO sInfo = m_vecMonGenData[i];
+			CMonster* pObj = CMonFactory::CreateMonster(MON_TYPE::NORMAL
+								, sInfo.strName, sInfo.vPos, sInfo.vScale
+								, sInfo.bCollider, sInfo.vColOffset, sInfo.vColScale
+								, sInfo.bAnimaiton, sInfo.vecPath
+								, sInfo.bGravity, sInfo.bRigidBody);
+			AddObject(pObj, GROUP_TYPE::MONSTER);
+		}
+	}
+
 }

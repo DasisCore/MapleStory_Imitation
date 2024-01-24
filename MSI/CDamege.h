@@ -22,6 +22,8 @@ private:
 
     float m_fAlpha;
 
+    Graphics* m_pGraphics;
+
 public:
     void DrawWithAlpha(HDC hdc, Image* image, float alpha);
 

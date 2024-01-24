@@ -1,16 +1,26 @@
 #pragma once
 #include "CObject.h"
+
 class CEffect :
     public CObject
 {
 private:
+    wstring m_strFilePath;
+    Graphics* m_pGraphics;
     CObject* m_pOwner;
+
     int m_iCurFrame;
     int m_iEndFrame;
     float m_fFrameDuration;
     float m_fCurTime;
-    wstring m_strFilePath;
-    Image* m_pImage;
+
+    vector<Image*> m_vecImage;
+
+    float m_fWidth;
+    float m_fHeight;
+
+    int m_iDir;
+    Vec2 m_vOffset;
 
 public:
     virtual void update() override;
@@ -18,7 +28,7 @@ public:
     CEffect* Clone() { return new CEffect(*this); }
 
 public:
-    CEffect(CObject* _pObj, int _iEndFrame, float _fDuration);
+    CEffect(CObject* _pObj, wstring _strPath, int _iEndFrame, float _fDuration, int _iDir, Vec2 _vOffset = Vec2(0.f, 0.f));
     ~CEffect();
 
 };

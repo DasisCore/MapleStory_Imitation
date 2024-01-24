@@ -64,7 +64,7 @@ int CSoundMgr::init()
 	m_eResult = m_pSystem->getVersion(&m_iVersion);
 	if (m_eResult != FMOD_OK) return false;
 
-	m_eResult = m_pSystem->init(32, FMOD_INIT_NORMAL, extradriverdata);
+	m_eResult = m_pSystem->init(128, FMOD_INIT_NORMAL, extradriverdata);
 	if (m_eResult != FMOD_OK) return false;
 
 	for (int i = 0; i < (int)SOUND_TYPE::END; i++)

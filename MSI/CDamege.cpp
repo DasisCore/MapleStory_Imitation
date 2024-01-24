@@ -11,6 +11,7 @@ CDamege::CDamege(int _iDamege, DAMEGE_TYPE _eDamegeType)
 	, m_pImage(nullptr)
 	, m_fDisplay(0.4f)
 	, m_fAlpha(255.f)
+	, m_pGraphics(nullptr)
 {
 	CreateComponent();
 	CreateAnimator();
@@ -86,10 +87,13 @@ void CDamege::update()
 
 void CDamege::render(HDC _dc)
 {
+	if (m_pGraphics == nullptr)
+	{
+		m_pGraphics = new Graphics(_dc);
+	}
+
 	Vec2 vPos = GetPos();
 	Vec2 vScale = GetScale();
-
-	Graphics g(_dc);
 	
 	// 데미지 출력 테두리 (영역 확인용)
 	Pen pen(Color(100, 200, 255), 2.f);
@@ -118,8 +122,7 @@ void CDamege::DrawWithAlpha(HDC hdc, Image* image, float alpha)
 	float fHeight = m_pBitmap->GetHeight();
 
 	// Draw the image with alpha
-	Graphics graphics(hdc);
-	graphics.DrawImage(image
+	m_pGraphics->DrawImage(image
 		, Rect(vPos.x - (vScale.x / 2.f) - 10.f, vPos.y - (vScale.y / 2.f) - 20.f, fWidth, fHeight)
 		, 0, 0, fWidth, fHeight, UnitPixel, &imageAttributes);
 }

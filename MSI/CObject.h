@@ -68,7 +68,7 @@ public:
 	virtual void render(HDC _dc);
 
 	CComponent* GetComponent() { return m_pComponent; }
-	void component_render(HDC _dc);
+	void component_render(HDC _dc, float _fAlpha = 255);
 
 	// 자기 자신의 복제 버전을 리턴하는 함수
 	virtual CObject* Clone() = 0;

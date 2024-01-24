@@ -27,7 +27,7 @@ public:
 
 	void update();
 	void finalupdate();
-	void render(HDC _dc);
+	void render(HDC _dc, float _fAlpha = 255);
 
 
 public:

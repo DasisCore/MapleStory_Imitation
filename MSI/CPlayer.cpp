@@ -22,6 +22,7 @@
 #include "CDamegeFactory.h"
 #include "CDamege.h"
 #include "CSoundMgr.h"
+#include "CEffect.h"
 
 CPlayer::CPlayer()
 	: m_wCurChar(L"RAVEN")
@@ -32,6 +33,7 @@ CPlayer::CPlayer()
 	, m_bIsGround(0)
 	, m_bIsAir(0)
 	, m_tPlayerInfo{ 37, 1367, 857, 100, 20, 3300, 30 }
+	, m_bUseDoubleJump(false)
 {
 	CreateComponent();
 
@@ -40,13 +42,7 @@ CPlayer::CPlayer()
 	GetComponent()->GetCollider()->SetScale(Vec2(45.f, 70.f));
 	GetComponent()->GetCollider()->SetOffsetPos(Vec2(0.f, 0.f));
 
-
 	CreateRigidbody();
-	
-
-	//CTexture* pTex = CResMgr::GetInst()->LoadTexture(L"PlayerTex", L"Texture\\link_0.bmp");
-	//CTexture* pLeftTex = CResMgr::GetInst()->LoadTexture(L"PlayerLeft", L"Texture\\player01_L.bmp");
-	//CTexture* pRightTex = CResMgr::GetInst()->LoadTexture(L"PlayerRight", L"Texture\\player01_R.bmp");
 
 	CreateAnimator();
 
@@ -62,42 +58,13 @@ CPlayer::CPlayer()
 	GetComponent()->GetAnimator()->LoadAnimation(L"Animation\\RAVEN_LEFT_ATT.anim");
 	GetComponent()->GetAnimator()->LoadAnimation(L"Animation\\RAVEN_RIGHT_ATT.anim");
 
-	//////CTexture* m_pLeftTex = CResMgr::GetInst()->LoadTexture(L"RavenLeft", L"Texture\\Player\\Raven.png");
-	//////CTexture* m_pRightTex = CResMgr::GetInst()->LoadTexture(L"RavenRight", L"Texture\\Player\\Raven.png", 1);
-
-	//////// 기본 IDLE 상태는 rewind 필요
-	//////GetComponent()->GetAnimator()->CreateAnimation_rewind(L"RAVEN_LEFT_IDLE", m_pLeftTex, Vec2(645.f, 75.f), Vec2(73.f, 79.f), Vec2(73.f, 0.f), 0.5f, 3);
-	//////GetComponent()->GetAnimator()->CreateAnimation_rewind(L"RAVEN_RIGHT_IDLE", m_pRightTex, Vec2(375.f, 75.f), Vec2(73.f, 79.f), Vec2(73.f, 0.f), 0.5f, 3);
-
-	//////GetComponent()->GetAnimator()->CreateAnimation(L"RAVEN_LEFT_WALK", m_pLeftTex, Vec2(865.f, 76.f), Vec2(73.f, 78.f), Vec2(73.f, 0.f), 0.1f, 4);
-	//////GetComponent()->GetAnimator()->CreateAnimation(L"RAVEN_RIGHT_WALK", m_pRightTex, Vec2(85.f, 76.f), Vec2(73.f, 78.f), Vec2(73.f, 0.f), 0.1f, 4);
-
-	//////GetComponent()->GetAnimator()->CreateAnimation(L"RAVEN_LEFT_JUMP", m_pLeftTex, Vec2(62.f, 75.f), Vec2(73.f, 79.f), Vec2(0.f, 0.f), 0.1f, 1);
-	//////GetComponent()->GetAnimator()->CreateAnimation(L"RAVEN_RIGHT_JUMP", m_pRightTex, Vec2(1105.f, 75.f), Vec2(73.f, 79.f), Vec2(0.f, 0.f), 0.1f, 1);
-
-	//////GetComponent()->GetAnimator()->CreateAnimation(L"RAVEN_LEFT_PRONE", m_pLeftTex, Vec2(280.f, 75.f), Vec2(85.f, 75.f), Vec2(0.f, 0.f), 1.f, 1);
-	//////GetComponent()->GetAnimator()->CreateAnimation(L"RAVEN_RIGHT_PRONE", m_pRightTex, Vec2(730.f, 76.f), Vec2(73.f, 75.f), Vec2(0.f, 0.f), 1.f, 1);
-
-
-	////// Animation 저장해보기
-	////GetComponent()->GetAnimator()->FindAnimation(L"IDLE_LEFT")->Save(L"\\Animation\\player_idle_left.anim");
-	////GetComponent()->GetAnimator()->FindAnimation(L"IDLE_RIGHT")->Save(L"\\Animation\\player_idle_right.anim");
-
-	////GetComponent()->GetAnimator()->FindAnimation(L"WALK_LEFT")->Save(L"\\Animation\\player_walk_left.anim");
-	////GetComponent()->GetAnimator()->FindAnimation(L"WALK_RIGHT")->Save(L"\\Animation\\player_walk_right.anim");
-
-	////GetComponent()->GetAnimator()->FindAnimation(L"JUMP_LEFT")->Save(L"\\Animation\\player_jump_left.anim");
-	////GetComponent()->GetAnimator()->FindAnimation(L"JUMP_RIGHT")->Save(L"\\Animation\\player_jump_right.anim");
-
-	//CAnimation* pAnim = GetComponent()->GetAnimator()->FindAnimation(L"WALK_DOWN");
-	//pAnim->GetFrame(0).vOffset = Vec2(0.f, -20.f);
-
 	// =====================================
 	// 중력 추가
 	// =====================================
 	CreateGravity();
 
-	CSoundMgr::GetInst()->CreateSound(L"JUMP", "jump.mp3", false);
+	CSoundMgr::GetInst()->CreateSound(L"jump", "jump.mp3", false);
+	CSoundMgr::GetInst()->CreateSound(L"doublejump", "doublejump.mp3", false);
 }
 
 CPlayer::~CPlayer()
@@ -121,12 +88,6 @@ void CPlayer::update()
 
 	update_status();
 
-	//if (KEY_TAP(KEY::ENTER))
-	//{
-	//	SetPos(Vec2(640.f, 384.f));
-	//	GetComponent()->GetRigidbody()->SetVelocity(Vec2(0.f, 0.f));
-	//}
-
 	if (KEY_TAP(KEY::O))
 	{
 		CharHit(-1, 10);
@@ -137,6 +98,7 @@ void CPlayer::update()
 	}
 
 	if (m_fUnbeatableTime >= 0) m_fUnbeatableTime -= fDT;
+	if (m_bIsGround) m_bUseDoubleJump = false;
 
 	Delay();
 }
@@ -200,11 +162,27 @@ void CPlayer::update_state()
 
 	if (KEY_TAP(KEY::ALT))
 	{
-		m_eCurState = PLAYER_STATE::JUMP;
-		m_bIsAir = 1;
-		m_bIsGround = 0;
-		GetComponent()->GetRigidbody()->SetVelocity(Vec2(GetComponent()->GetRigidbody()->GetVelocity().x, -740.f));
-		CSoundMgr::GetInst()->Play(L"JUMP", SOUND_TYPE::EFFECT1);
+		// 땅에 붙어있었다면 일반 점프
+		if (m_bIsGround)
+		{
+			m_eCurState = PLAYER_STATE::JUMP;
+			m_bIsAir = 1;
+			m_bIsGround = 0;
+			GetComponent()->GetRigidbody()->SetVelocity(Vec2(GetComponent()->GetRigidbody()->GetVelocity().x, -640.f));
+			CSoundMgr::GetInst()->Play(L"jump", SOUND_TYPE::EFFECT1);
+		}
+		else if (m_bUseDoubleJump == false)
+		{
+			if (KEY_HOLD(KEY::RIGHT)) GetComponent()->GetRigidbody()->SetVelocity(Vec2(+500.f, -240.f));
+			else if (KEY_HOLD(KEY::LEFT)) GetComponent()->GetRigidbody()->SetVelocity(Vec2(-500.f, -240.f));
+			CSoundMgr::GetInst()->Play(L"doublejump", SOUND_TYPE::EFFECT1);
+			
+			CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
+			CEffect* pEffect = new CEffect(this, L"DoubleJump", 10, 0.05f, m_iDir * -1, Vec2(-40.f, -65.f));
+			pCurScene->AddObject(pEffect, GROUP_TYPE::EFFECT);
+			
+			m_bUseDoubleJump = true;
+		}
 	}
 }
 

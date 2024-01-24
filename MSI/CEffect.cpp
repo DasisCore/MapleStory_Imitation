@@ -5,37 +5,52 @@
 #include "CTimeMgr.h"
 #include "CCamera.h"
 
-
-CEffect::CEffect(CObject* _pObj, int _iEndFrame, float _fDuration)
+CEffect::CEffect(CObject* _pObj, wstring _strPath, int _iEndFrame, float _fDuration, int _iDir, Vec2 _vOffset)
 	: m_iCurFrame(0)
 	, m_iEndFrame(_iEndFrame)
 	, m_fFrameDuration(_fDuration)
 	, m_fCurTime(_fDuration)
+	, m_iDir(_iDir)
+	, m_vOffset(_vOffset)
 {
 	m_pOwner = _pObj;
 	m_strFilePath = CPathMgr::GetInst()->GetContentPath();
-	m_strFilePath += L"Texture\\Effect\\";
+	m_strFilePath += (L"Texture\\Effect\\" + _strPath + L"\\");
 
-	wstring strCurFramePath = m_strFilePath + std::to_wstring(m_iCurFrame) + L".png";
-	m_pImage = Image::FromFile(strCurFramePath.c_str());
+	for (int i = 0; i < _iEndFrame; i++)
+	{
+		wstring strCurFramePath = m_strFilePath + std::to_wstring(i) + L".png";
+		Image* pImage = Image::FromFile(strCurFramePath.c_str());
+		m_vecImage.push_back(pImage);
+	}
+
+	m_fWidth = m_vecImage[0]->GetWidth();
+	m_fHeight = m_vecImage[0]->GetHeight();
 }
 
 CEffect::~CEffect()
 {
-	if (m_pImage != nullptr) delete m_pImage;
+	if (m_vecImage.size() > 0)
+	{
+		for (int i = 0; i < m_vecImage.size(); i++)
+		{
+			if (m_vecImage[i] != nullptr) delete m_vecImage[i];
+		}
+	}
 }
 
 void CEffect::update()
 {
-	if (m_iCurFrame == m_iEndFrame + 1) DeleteObject(this);
+	if (m_iCurFrame >= m_iEndFrame - 1)
+	{
+		DeleteObject(this);
+		return;
+	}
 
-	else if (m_fCurTime < 0)
+	if (m_fCurTime < 0)
 	{
 		m_fCurTime = m_fFrameDuration;
 		m_iCurFrame++;
-		delete m_pImage;
-		wstring strCurFramePath = m_strFilePath + std::to_wstring(m_iCurFrame) + L".png";
-		m_pImage = Image::FromFile(strCurFramePath.c_str());
 	}
 	else
 	{
@@ -44,17 +59,18 @@ void CEffect::update()
 }
 
 void CEffect::render(HDC _dc)
-{
-	Graphics graphics(_dc);
-
-	float fWidth = m_pImage->GetWidth();
-	float fHeight = m_pImage->GetHeight();
+{ 
+	if (m_pGraphics == nullptr) m_pGraphics = new Graphics(_dc);
 
 	Vec2 vPos = m_pOwner->GetPos();
 	vPos = CCamera::GetInst()->GetRenderPos(vPos);
 	Vec2 vScale = m_pOwner->GetScale();
 
-	graphics.DrawImage(m_pImage, vPos.x - vScale.x, vPos.y - vScale.y, fWidth, fHeight);
+	float x = vPos.x - vScale.x;
+	float y = vPos.y - vScale.y;
+	if (m_iDir == -1) x += (m_fWidth / 2);
+
+	m_pGraphics->DrawImage(m_vecImage[m_iCurFrame], x + m_vOffset.x, y + m_vOffset.y, m_fWidth * m_iDir, m_fHeight);
 }
 
 

@@ -15,13 +15,14 @@
 #include "CState.h"
 #include "CDamege.h"
 #include "CDamegeFactory.h"
+#include "CTimeMgr.h"
 
 CMonster::CMonster()
 	: m_tInfo{}
 	, m_pAI(nullptr)
 	, m_fLeftDist(0.f)
 	, m_fRightDist(0.f)
-
+	, m_fAlpha(0.f)
 {
 	CreateComponent();
 	//CreateCollider();
@@ -59,8 +60,8 @@ void CMonster::TakeDamege(float _fDamege, int _iDir)
 {
 	if (!m_bDead)
 	{
-		//m_tInfo.fHP -= _fDamege;
-		m_tInfo.fHP -= 1.f;
+		m_tInfo.fHP -= _fDamege;
+		//m_tInfo.fHP -= 1.f;
 		m_fHitTime = 0.5f;
 		m_pAI->ChangeState(MON_STATE::HIT);
 		m_tInfo.iDir = _iDir * -1;
@@ -73,7 +74,7 @@ void CMonster::TakeDamege(float _fDamege, int _iDir)
 			DAMEGE_INFO tInfo;
 			tInfo.eType = DAMEGE_TYPE::NORED;
 			tInfo.fDamege = _fDamege;
-			tInfo.flatencyTime = 0.1f * i;
+			tInfo.fLatencyTime = 0.1f * i;
 			tInfo.pObj = this;
 			tInfo.fOffset = 27.f * i;
 			CDamegeMgr::GetInst()->AddDamege(tInfo);
@@ -96,11 +97,15 @@ void CMonster::update()
 	}
 
 	if (m_bDead) DeleteObject(this);
+
+	if (m_fAlpha < 253) m_fAlpha += (700.f * fDT);
+	if (m_fAlpha > 255) m_fAlpha = 255;
 }
 
 void CMonster::render(HDC _dc)
 {
-	CObject::render(_dc);
+	CObject::component_render(_dc, m_fAlpha);
+	//CObject::render(_dc);
 
 	if (m_pAI)
 	{
@@ -217,7 +222,6 @@ void CMonster::update_animation()
 	if (currentChar.substr(currentChar.size() - 5, 5) == L"_DEAD")
 	{
 		GetComponent()->GetAnimator()->Play(currentChar.c_str(), false);
-		//GetComponent()->GetAnimator()->FindAnimation(currentChar.c_str())->SetFrame(0);
 		return;
 	}
 

@@ -75,5 +75,35 @@ public:
 
 		return !!random_number;
 	}
+
+	// a ~ b의 범위에서 c 개수만큼 랜덤 값 가져오기
+	vector<int> GetBetweenIntCnt(int from, int to, int cnt)
+	{
+		// 시드를 현재 시간으로 설정
+		std::random_device rd;
+		std::default_random_engine generator(rd());
+
+		vector<int> vec;
+		while (vec.size() != cnt)
+		{
+			// 1부터 30 사이의 정수를 생성하는 분포 생성
+			std::uniform_int_distribution<int> distribution(from, to);
+
+			// 난수 생성
+			int random_number = distribution(generator);
+
+			bool flag = false;
+			for (int i = 0; i < vec.size(); i++)
+			{
+				if (vec[i] == random_number) flag = true;
+			}
+
+			// vector 내에 random_number와 같은 수가 있다면 다시 시도
+			if (flag == true) continue;
+			else vec.push_back(random_number);
+		}
+
+		return vec;
+	}
 };
 

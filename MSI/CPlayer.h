@@ -55,6 +55,7 @@ private:
 
     bool m_bIsGround;
     bool m_bIsAir;
+    bool m_bUseDoubleJump;
     bool m_bCanOtherAction;
 
     float m_fDelayTime;

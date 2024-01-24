@@ -34,11 +34,11 @@ void CAnimator::finalupdate()
 	}
 }
 
-void CAnimator::render(HDC _dc)
+void CAnimator::render(HDC _dc, float _fAlpha)
 {
 	if (m_pCurAnim != nullptr)
 	{
-		m_pCurAnim->render(_dc);
+		m_pCurAnim->render(_dc, _fAlpha);
 	}
 }
 

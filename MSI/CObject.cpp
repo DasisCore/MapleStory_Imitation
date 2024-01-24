@@ -67,27 +67,29 @@ void CObject::render(HDC _dc)
 	Vec2 vRenderPos = CCamera::GetInst()->GetRenderPos(m_vPos);
 
 	// 이름표 출력
-	Graphics graphics(_dc);
+	{
+		Graphics graphics(_dc);
 
-	Font font(L"Arial", 13, FontStyle::FontStyleBold);
+		Font font(L"Arial", 13, FontStyle::FontStyleBold);
 
-	SolidBrush brush(Color(255, 0, 0, 0));
+		SolidBrush brush(Color(255, 0, 0, 0));
 
-	Vec2 vPos = GetPos();
-	vPos = CCamera::GetInst()->GetRenderPos(vPos);
+		Vec2 vPos = GetPos();
+		vPos = CCamera::GetInst()->GetRenderPos(vPos);
 
-	PointF point((int)(vRenderPos.x - m_vScale.x / 2.f), vPos.y - 70.f);
+		PointF point((int)(vRenderPos.x - m_vScale.x / 2.f), vPos.y - 70.f);
 
-	graphics.DrawString(m_strName.c_str(), -1, &font, point, &brush);
-	
+		graphics.DrawString(m_strName.c_str(), -1, &font, point, &brush);
+	}
+
 	component_render(_dc);
 }
 
-void CObject::component_render(HDC _dc)
+void CObject::component_render(HDC _dc, float _fAlpha)
 {
 	if (m_pComponent)
 	{
-		if (m_pComponent->GetAnimator() != nullptr) m_pComponent->GetAnimator()->render(_dc);
+		if (m_pComponent->GetAnimator() != nullptr) m_pComponent->GetAnimator()->render(_dc, _fAlpha);
 
 		if (m_pComponent->GetCollider() != nullptr) m_pComponent->GetCollider()->render(_dc);
 	}

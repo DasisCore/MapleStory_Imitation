@@ -24,6 +24,7 @@
 #include "CEffect.h"
 
 #include "CSoundMgr.h"
+#include "CPathMgr.h"
 
 CScene_Test::CScene_Test()
 {
@@ -53,11 +54,37 @@ void CScene_Test::update()
 	//	AddObject(pObj, GROUP_TYPE::EFFECT);
 	//}
 
+
+	if (KEY_TAP(KEY::ENTER))
+	{
+
+		wstring contentPath = CPathMgr::GetInst()->GetContentPath();
+		vector<wstring> animationPath;
+
+		animationPath.push_back((L"Animation\\LESH_LEFT_IDLE.anim"));
+		animationPath.push_back((L"Animation\\LESH_LEFT_ATTACK.anim"));
+		animationPath.push_back((L"Animation\\LESH_LEFT_DEAD.anim"));
+		animationPath.push_back((L"Animation\\LESH_LEFT_HIT.anim"));
+		animationPath.push_back((L"Animation\\LESH_LEFT_WALK.anim"));
+
+		animationPath.push_back((L"Animation\\LESH_RIGHT_IDLE.anim"));
+		animationPath.push_back((L"Animation\\LESH_RIGHT_ATTACK.anim"));
+		animationPath.push_back((L"Animation\\LESH_RIGHT_DEAD.anim"));
+		animationPath.push_back((L"Animation\\LESH_RIGHT_HIT.anim"));
+		animationPath.push_back((L"Animation\\LESH_RIGHT_WALK.anim"));
+
+
+		CObject* pMon = (CObject*) CMonFactory::CreateMonster(MON_TYPE::NORMAL, L"LESH", Vec2(0.f, 0.f), Vec2(80.f, 80.f), true, Vec2(0.f, 0.f), Vec2(80.f, 100.f), true, animationPath, true, true);
+		AddObject(pMon, GROUP_TYPE::MONSTER);
+	}
+
+
 }
 
 void CScene_Test::Enter()
 {
 	LoadSceneData(L"TEST.scene");
+	MonsterGenCountCheck();
 
 	// 플레이어 삽입
 	CPlayer* pVoltarix = new CBark;
