@@ -25,12 +25,13 @@
 #include "CScene_Ani_Workshop.h"
 
 CCore::CCore()
-	: m_hWnd{0}
-	, m_ptResolution{0}
-	, m_hDC{0}
+	: m_hWnd{ 0 }
+	, m_ptResolution{ 0 }
+	, m_hDC{ 0 }
 	, m_arrBrush{}
 	, m_arrPen{}
 	, m_gdiplusToken(0)
+	, m_bRenderOption(false)
 {
 
 }

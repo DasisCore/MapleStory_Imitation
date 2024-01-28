@@ -24,6 +24,9 @@ private:
 	// GDI+ 
 	ULONG_PTR m_gdiplusToken;
 	GdiplusStartupInput m_gdiplusStartupInput;
+
+	// 콜라이더 렌더링
+	bool m_bRenderOption;
  
 public:
 	int init(HWND _hWnd, POINT _ptResolution, HINSTANCE _hInstance);
@@ -39,7 +42,6 @@ public:
 	void ChangeWindowSize(Vec2 _vResolution, bool bMenu);
 
 public:
-
 	HWND GetMainHwnd() { return m_hWnd; }
 	POINT GetResolution() { return m_ptResolution; }
 	void SetResolution(Vec2 _vResolution) 
@@ -54,6 +56,10 @@ public:
 
 	HBRUSH GetBrush(BRUSH_TYPE _eType) { return m_arrBrush[(UINT)_eType]; }
 	HPEN GetPen(PEN_TYPE _eType) { return m_arrPen[(UINT)_eType]; }
+
+	// 콜라이더와 같은 컴포넌트를 렌더링할지 안할지를 결정하는 함수
+	bool GetRenderOption() { return m_bRenderOption; }
+	void FlipRenderOption() { m_bRenderOption = !m_bRenderOption; }
 
 public:
 	void render();

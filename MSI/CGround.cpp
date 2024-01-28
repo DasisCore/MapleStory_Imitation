@@ -6,6 +6,7 @@
 #include "CGravity.h"
 #include "CMonster.h"
 #include "CAnimator.h"
+#include "CCore.h"
 
 CGround::CGround()
 {
@@ -63,33 +64,36 @@ void CGround::render(HDC _dc)
 {
 	CObject::render(_dc);
 
-	Graphics graphics(_dc);
+	if (CCore::GetInst()->GetRenderOption())
+	{
+		Graphics graphics(_dc);
 
-	Vec2 vPos = GetPos();
-	vPos = CCamera::GetInst()->GetRenderPos(vPos);
-	Vec2 vScale = GetScale();
+		Vec2 vPos = GetPos();
+		vPos = CCamera::GetInst()->GetRenderPos(vPos);
+		Vec2 vScale = GetScale();
 
-	Rect rectangle(vPos.x - (vScale.x / 2.f), vPos.y - (vScale.y / 2.f), vScale.x, vScale.y);
+		Rect rectangle(vPos.x - (vScale.x / 2.f), vPos.y - (vScale.y / 2.f), vScale.x, vScale.y);
 
-	PointF startPoint(rectangle.X, rectangle.Y);
-	PointF endPoint(rectangle.GetRight(), rectangle.Y);
+		PointF startPoint(rectangle.X, rectangle.Y);
+		PointF endPoint(rectangle.GetRight(), rectangle.Y);
 	
-	// 윗변 그리기
-	Pen pen1(Color(0, 0, 0), 3);
-	graphics.DrawLine(&pen1, startPoint, endPoint);
+		// 윗변 그리기
+		Pen pen1(Color(0, 0, 0), 3);
+		graphics.DrawLine(&pen1, startPoint, endPoint);
 
-	// 윗변 제외한 나머지 변 그리기
-	Pen pen2(Color(240, 240, 240));
-	PointF leftBottom(rectangle.X, rectangle.GetBottom());
-	PointF rightBottom(rectangle.GetRight(), rectangle.GetBottom());
-	PointF rightTop(rectangle.GetRight(), rectangle.Y + rectangle.Height);
-	graphics.DrawLine(&pen2, endPoint, rightBottom);
-	graphics.DrawLine(&pen2, rightBottom, leftBottom);
-	graphics.DrawLine(&pen2, leftBottom, startPoint);
+		// 윗변 제외한 나머지 변 그리기
+		Pen pen2(Color(240, 240, 240));
+		PointF leftBottom(rectangle.X, rectangle.GetBottom());
+		PointF rightBottom(rectangle.GetRight(), rectangle.GetBottom());
+		PointF rightTop(rectangle.GetRight(), rectangle.Y + rectangle.Height);
+		graphics.DrawLine(&pen2, endPoint, rightBottom);
+		graphics.DrawLine(&pen2, rightBottom, leftBottom);
+		graphics.DrawLine(&pen2, leftBottom, startPoint);
 
-	Font font(L"Arial", 8);
-	SolidBrush brush(Color(0, 0, 0));
-	graphics.DrawString(GetName().c_str(), -1, &font, PointF(vPos.x, vPos.y), &brush);
+		Font font(L"Arial", 8);
+		SolidBrush brush(Color(0, 0, 0));
+		graphics.DrawString(GetName().c_str(), -1, &font, PointF(vPos.x, vPos.y), &brush);
+	}
 }
 
 void CGround::OnCollisionEnter(CCollider* _pOther)

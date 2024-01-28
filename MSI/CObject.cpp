@@ -14,6 +14,7 @@
 #include "CGravity.h"
 
 #include "SelectGDI.h"
+#include "CCore.h"
 
 CObject::CObject()
 	: m_vPos{}
@@ -67,6 +68,7 @@ void CObject::render(HDC _dc)
 	Vec2 vRenderPos = CCamera::GetInst()->GetRenderPos(m_vPos);
 
 	// 이름표 출력
+	if(CCore::GetInst()->GetRenderOption())
 	{
 		Graphics graphics(_dc);
 

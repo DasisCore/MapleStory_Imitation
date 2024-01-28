@@ -97,6 +97,7 @@ public:
 
     // 체력 더해줌.
     void AddPlayerHP(int _i) { m_tPlayerInfo.iHP += _i; }
+    void MinusMP(int _i) { m_tPlayerInfo.iMP -= _i; }
 
     // 캐릭터 딜레이 계산
     void Delay();

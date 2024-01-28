@@ -83,20 +83,22 @@ void CCamera::update()
 
 void CCamera::render(HDC _dc)
 {
-	// 카메라의 추적 범위 그려보기
-	Graphics graphics(_dc);
-	Pen pen(Color(247, 206, 0), 4);
-	Vec2 vResolution = CCore::GetInst()->GetResolution();
-	vResolution = vResolution / 2.f;
-	graphics.DrawEllipse(&pen, vResolution.x - m_fTraceRange, vResolution.y - m_fTraceRange, m_fTraceRange * 2, m_fTraceRange * 2);
+	if (CCore::GetInst()->GetRenderOption())
+	{
+		// 카메라의 추적 범위 그려보기
+		Graphics graphics(_dc);
+		Pen pen(Color(247, 206, 0), 4);
+		Vec2 vResolution = CCore::GetInst()->GetResolution();
+		vResolution = vResolution / 2.f;
+		graphics.DrawEllipse(&pen, vResolution.x - m_fTraceRange, vResolution.y - m_fTraceRange, m_fTraceRange * 2, m_fTraceRange * 2);
 
-	// 카메라의 현재 위치 랜더링
-	Font font(L"Arial", 12);
-	SolidBrush brush(Color(0, 0, 0));
-	string temp = "Camera Positon : " + std::to_string((int)m_vCurLookAt.x) + " / " + std::to_string((int)m_vCurLookAt.y);
-	wstring t = wstring(temp.begin(), temp.end());
-	graphics.DrawString(t.c_str(), -1, &font, PointF(10.f, 100.f), &brush);
-
+		// 카메라의 현재 위치 랜더링
+		Font font(L"Arial", 12);
+		SolidBrush brush(Color(0, 0, 0));
+		string temp = "Camera Positon : " + std::to_string((int)m_vCurLookAt.x) + " / " + std::to_string((int)m_vCurLookAt.y);
+		wstring t = wstring(temp.begin(), temp.end());
+		graphics.DrawString(t.c_str(), -1, &font, PointF(10.f, 100.f), &brush);
+	}
 
 
 	if (m_listEffect.empty()) return;
@@ -151,44 +153,14 @@ void CCamera::CalDiff()
 	Vec2 vResolution = CCore::GetInst()->GetResolution();
 	Vec2 vCenter = vResolution / 2.f;
 
-	// Map의 사이즈가 있다면, 카메라는 사이즈 밖을 보여줘서는 안된다.
-	CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
-	Vec2 vMapSize = pCurScene->GetMapSize();
-
-	//// 맵의 사이즈가 정해져있다면.
-	//if (vMapSize != Vec2(0.f, 0.f))
-	//{
-	//	vMapSize -= vResolution;
-	//	vMapSize = vMapSize / 2.f;
-
-	//	// 맵사이즈 내만 카메라가 보여준다.
-	//	m_vCurLookAt.ClampX(-vMapSize.x, vMapSize.x);
-	//	m_vCurLookAt.ClampY(-vMapSize.y, vMapSize.y);
-	//	m_vLookAt.ClampX(-vMapSize.x, vMapSize.x);
-	//	m_vLookAt.ClampY(-vMapSize.y, vMapSize.y);
-	//	m_vPrevLookAt.ClampX(-vMapSize.x, vMapSize.x);
-	//	m_vPrevLookAt.ClampY(-vMapSize.y, vMapSize.y);
-
-
-	//	// 만약 카메라가 상하좌우의 끝에 붙어있다면.
-	//	// 카메라의 이동속도를 500.f로 고정한다.
-	//	if (m_vCurLookAt.x == -vMapSize.x
-	//		|| m_vCurLookAt.x == vMapSize.x
-	//		|| m_vCurLookAt.y == -vMapSize.y
-	//		|| m_vCurLookAt.y == vMapSize.y)
-	//	{
-	//		m_fSpeed = 500.f;
-	//	}
-	//}
-
-
 	if (m_pTargetObj != nullptr)
 	{
 		// 타겟의 위치
 		Vec2 vPos = m_pTargetObj->GetPos();
 		vPos = GetRenderPos(vPos);
-		
+
 		float fLength = (vCenter - vPos).Length();
+
 		if (fLength < m_fTraceRange)
 		{
 			m_fSpeed = 300.f;
@@ -200,16 +172,48 @@ void CCamera::CalDiff()
 			if (!vLookDir.IsZero())
 			{
 				m_vCurLookAt = m_vPrevLookAt + vLookDir.Normalize() * m_fSpeed * fDT;
-				
+
 				// 맵의 내부에서는 카메라는 가속운동을 한다.
 				m_fSpeed *= (1.006f);
 			}
 		}
 	}
 
+	// Map의 사이즈가 있다면, 카메라는 사이즈 밖을 보여줘서는 안된다.
+	CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
+	Vec2 vMapSize = pCurScene->GetMapSize();
+
+	// 맵의 사이즈가 정해져있다면.
+	if (vMapSize != Vec2(0.f, 0.f))
+	{
+		vMapSize -= vResolution;
+		vMapSize = vMapSize / 2.f;
+
+		// 맵사이즈 내만 카메라가 보여준다.
+		m_vCurLookAt.ClampX(-vMapSize.x, vMapSize.x);
+		m_vCurLookAt.ClampY(-vMapSize.y, vMapSize.y);
+		m_vLookAt.ClampX(-vMapSize.x, vMapSize.x);
+		m_vLookAt.ClampY(-vMapSize.y, vMapSize.y);
+		m_vPrevLookAt.ClampX(-vMapSize.x, vMapSize.x);
+		m_vPrevLookAt.ClampY(-vMapSize.y, vMapSize.y);
+
+
+		// 만약 카메라가 상하좌우의 끝에 붙어있다면.
+		// 카메라의 이동속도를 500.f로 고정한다.
+		if (m_vCurLookAt.x == -vMapSize.x
+			|| m_vCurLookAt.x == vMapSize.x
+			|| m_vCurLookAt.y == -vMapSize.y
+			|| m_vCurLookAt.y == vMapSize.y)
+		{
+			m_fSpeed = 500.f;
+		}
+	}
+
+
 	// 이전 LookAt과 현재 Look의 차이값을 보정해서 현재의 LookAt을 구한다.
 	m_fAccTime += fDT;
 
 	m_vDiff = m_vCurLookAt - vCenter;
+
 	m_vPrevLookAt = m_vCurLookAt;
 }

@@ -9,6 +9,7 @@
 #include "CAnimator.h"
 
 #include "CRigidBody.h"
+#include "CCore.h"
 
 
 
@@ -74,36 +75,39 @@ void CFoothold::update()
 
 void CFoothold::render(HDC _dc)
 {
-	Graphics graphics(_dc);
+	if (CCore::GetInst()->GetRenderOption())
+	{
+		Graphics graphics(_dc);
 
-	Vec2 vPos = GetPos();
-	vPos = CCamera::GetInst()->GetRenderPos(vPos);
-	Vec2 vScale = GetScale();
+		Vec2 vPos = GetPos();
+		vPos = CCamera::GetInst()->GetRenderPos(vPos);
+		Vec2 vScale = GetScale();
 
-	Rect rectangle(vPos.x - (vScale.x / 2.f), vPos.y - (vScale.y / 2.f), vScale.x, vScale.y);
+		Rect rectangle(vPos.x - (vScale.x / 2.f), vPos.y - (vScale.y / 2.f), vScale.x, vScale.y);
 
-	Pen pen1(Color(0, 0, 0), 3);
-	Pen pen2(Color(240, 240, 240), 3);
-	if (GetTarget()) pen1.SetColor(Color(80, 140, 239));
+		Pen pen1(Color(0, 0, 0), 3);
+		Pen pen2(Color(240, 240, 240), 3);
+		if (GetTarget()) pen1.SetColor(Color(80, 140, 239));
 
-	PointF leftTop(rectangle.X, rectangle.Y);
-	PointF rightTop(rectangle.GetRight(), rectangle.Y);
-	PointF leftBottom(rectangle.X, rectangle.GetBottom());
-	PointF rightBottom(rectangle.GetRight(), rectangle.GetBottom());
+		PointF leftTop(rectangle.X, rectangle.Y);
+		PointF rightTop(rectangle.GetRight(), rectangle.Y);
+		PointF leftBottom(rectangle.X, rectangle.GetBottom());
+		PointF rightBottom(rectangle.GetRight(), rectangle.GetBottom());
 	
-	graphics.DrawLine(&pen2, leftTop, rightTop);
-	graphics.DrawLine(&pen2, rightTop, rightBottom);
-	graphics.DrawLine(&pen2, rightBottom, leftBottom);
-	graphics.DrawLine(&pen2, leftTop, leftBottom);
+		graphics.DrawLine(&pen2, leftTop, rightTop);
+		graphics.DrawLine(&pen2, rightTop, rightBottom);
+		graphics.DrawLine(&pen2, rightBottom, leftBottom);
+		graphics.DrawLine(&pen2, leftTop, leftBottom);
 
-	if (m_bLeft) graphics.DrawLine(&pen1, leftTop, leftBottom);
-	if (m_bTop) graphics.DrawLine(&pen1, leftTop, rightTop);
-	if (m_bRight) graphics.DrawLine(&pen1, rightTop, rightBottom);
-	if (m_bBottom) graphics.DrawLine(&pen1, rightBottom, leftBottom);
+		if (m_bLeft) graphics.DrawLine(&pen1, leftTop, leftBottom);
+		if (m_bTop) graphics.DrawLine(&pen1, leftTop, rightTop);
+		if (m_bRight) graphics.DrawLine(&pen1, rightTop, rightBottom);
+		if (m_bBottom) graphics.DrawLine(&pen1, rightBottom, leftBottom);
 
-	Font font(L"Arial", 8);
-	SolidBrush brush(Color(0, 0, 0));
-	graphics.DrawString(GetName().c_str(), -1, &font, PointF(vPos.x, vPos.y), &brush);
+		Font font(L"Arial", 8);
+		SolidBrush brush(Color(0, 0, 0));
+		graphics.DrawString(GetName().c_str(), -1, &font, PointF(vPos.x, vPos.y), &brush);
+	}
 }
 
 void CFoothold::OnCollisionEnter(CCollider* _pOther)
@@ -173,8 +177,8 @@ void CFoothold::Blocking(CCollider* _pOther)
 	if (pRigid->GetVelocity().y < 0.f) return;
 
 	// »ó´Ü
-	if (int(vPos.y - (vScale.y / 2.f)) >= int(vObjPos.y + (vObjScale.y / 2.f)) - 10.f
-		&& vPos.y - (vScale.y / 2.f) >= vObjPos.y - (vObjScale.y / 2.f)
+	if (int(vPos.y - (vScale.y / 2.f)) >= int(vObjPos.y + (vObjScale.y / 2.f)) - 20.f
+		&& int(vPos.y - (vScale.y / 2.f)) >= int(vObjPos.y - (vObjScale.y / 2.f))
 		&& vPos.x - (vScale.x / 2.f) < vObjPos.x + (vObjScale.x / 2.f)
 		&& vPos.x + (vScale.x / 2.f) > vObjPos.x - (vObjScale.x / 2.f)
 		&& m_bTop)

@@ -8,6 +8,7 @@
 #include "CTimeMgr.h"
 #include "CMonster.h"
 #include "CSoundMgr.h"
+#include "CRandom.h"
 
 CNatureGrab::CNatureGrab(CObject* _pObj)
 	: m_pOwner(_pObj)
@@ -62,7 +63,8 @@ void CNatureGrab::OnCollisionEnter(CCollider* _pOther)
 	CMonster* pMon = dynamic_cast<CMonster*>(_pOther->GetObj());
 	if (pMon != nullptr && pMon->GetInfo().fHP > 0)
 	{
-		pMon->TakeDamege(60.f, m_iDir);
+		int temp_damege = CRandom::GetInst()->GetBetweenInt(30, 60);
+		pMon->TakeDamege(temp_damege, m_iDir);
 	}
 }
 

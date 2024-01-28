@@ -23,12 +23,13 @@
 #include "CComponent.h"
 #include "CAnimator.h"
 #include "CCollider.h"
+#include "CKeyMgr.h"
 
 
 CScene::CScene()
 	: m_pPlayer(nullptr)
 	, m_iMonGen(0)
-	, m_GenCycle(7.f)
+	, m_GenCycle(5.f)
 {
 }
 
@@ -73,6 +74,11 @@ void CScene::update()
 		m_GenCycle = 7.f;
 	}
 	m_GenCycle -= fDT;
+
+	if (KEY_TAP(KEY::F1))
+	{
+		CCore::GetInst()->FlipRenderOption();
+	}
 }
 
 void CScene::finalupdate()
@@ -149,16 +155,16 @@ void CScene::render(HDC _dc)
 	graphics.DrawString(m_strName.c_str(), -1, &font, PointF(10, 10), &brush);
 
 
-	// 맵 크기 관련해서 그리기
-	Pen pen(Color(240, 240, 240), 2);
-	Vec2 vCenter = m_vMapSize / 2.f;
-	vCenter = CCamera::GetInst()->GetRenderPos(-vCenter);
-	graphics.DrawRectangle(&pen, Rect(vCenter.x, vCenter.y, m_vMapSize.x, m_vMapSize.y));
+	//// 맵 크기 관련해서 그리기
+	//Pen pen(Color(240, 240, 240), 2);
+	//Vec2 vCenter = m_vMapSize / 2.f;
+	//vCenter = CCamera::GetInst()->GetRenderPos(-vCenter);
+	//graphics.DrawRectangle(&pen, Rect(vCenter.x, vCenter.y, m_vMapSize.x, m_vMapSize.y));
 
-	Vec2 vCenter2 = Vec2(0.f, 0.f);
-	vCenter2 = CCamera::GetInst()->GetRenderPos(vCenter2);
-	Pen pen2(Color(0, 0, 0), 3.f);
-	graphics.DrawRectangle(&pen2, vCenter2.x - 2.5f, vCenter2.y - 2.5f, 5.f, 5.f);
+	//Vec2 vCenter2 = Vec2(0.f, 0.f);
+	//vCenter2 = CCamera::GetInst()->GetRenderPos(vCenter2);
+	//Pen pen2(Color(0, 0, 0), 3.f);
+	//graphics.DrawRectangle(&pen2, vCenter2.x - 2.5f, vCenter2.y - 2.5f, 5.f, 5.f);
 }
 
 

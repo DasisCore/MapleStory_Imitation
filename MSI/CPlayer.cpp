@@ -23,6 +23,8 @@
 #include "CDamege.h"
 #include "CSoundMgr.h"
 #include "CEffect.h"
+#include "CCore.h"
+#include "CRandom.h"
 
 CPlayer::CPlayer()
 	: m_wCurChar(L"RAVEN")
@@ -32,7 +34,7 @@ CPlayer::CPlayer()
 	, m_iPrevDir(1)
 	, m_bIsGround(0)
 	, m_bIsAir(0)
-	, m_tPlayerInfo{ 37, 1367, 857, 100, 20, 3300, 30 }
+	, m_tPlayerInfo{ 37, 1500, 1500, 100, 100, 1000, 30 }
 	, m_bUseDoubleJump(false)
 {
 	CreateComponent();
@@ -175,13 +177,29 @@ void CPlayer::update_state()
 		{
 			if (KEY_HOLD(KEY::RIGHT)) GetComponent()->GetRigidbody()->SetVelocity(Vec2(+500.f, -240.f));
 			else if (KEY_HOLD(KEY::LEFT)) GetComponent()->GetRigidbody()->SetVelocity(Vec2(-500.f, -240.f));
-			CSoundMgr::GetInst()->Play(L"doublejump", SOUND_TYPE::EFFECT1);
+			else if (KEY_HOLD(KEY::UP)) GetComponent()->GetRigidbody()->SetVelocity(Vec2(GetComponent()->GetRigidbody()->GetVelocity().x, -840.f));
+
 			
-			CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
-			CEffect* pEffect = new CEffect(this, L"DoubleJump", 10, 0.05f, m_iDir * -1, Vec2(-40.f, -65.f));
-			pCurScene->AddObject(pEffect, GROUP_TYPE::EFFECT);
+			if (KEY_HOLD(KEY::RIGHT) || KEY_HOLD(KEY::LEFT))
+			{
+				CSoundMgr::GetInst()->Play(L"doublejump", SOUND_TYPE::EFFECT1);
 			
-			m_bUseDoubleJump = true;
+				CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
+				CEffect* pEffect = new CEffect(this, L"DoubleJump", 10, 0.05f, m_iDir * -1, Vec2(-40.f, -65.f));
+				pCurScene->AddObject(pEffect, GROUP_TYPE::EFFECT);
+			
+				m_bUseDoubleJump = true;
+			}
+			else if (KEY_HOLD(KEY::UP))
+			{
+				CSoundMgr::GetInst()->Play(L"doublejump", SOUND_TYPE::EFFECT1);
+
+				CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
+				CEffect* pEffect = new CEffect(this, L"UpJump", 11, 0.05f, -1, Vec2(45.f, 0.f));
+				pCurScene->AddObject(pEffect, GROUP_TYPE::EFFECT);
+
+				m_bUseDoubleJump = true;
+			}
 		}
 	}
 }
@@ -351,69 +369,67 @@ void CPlayer::render(HDC _dc)
 	// 컴포넌트 충돌체, 애니메이션등 렌더링
 	component_render(_dc);
 	show_state(_dc);
-
-	Graphics g(_dc);
-	Pen pen(Color(0, 0, 255));
-	g.DrawLine(&pen, Point(-1000, GetPos().y + GetScale().y / 2.f), Point(+3000, GetPos().y + GetScale().y / 2.f));
-	g.DrawLine(&pen, Point(GetPos().x - GetScale().x / 2.f, -1000), Point(GetPos().x - GetScale().x / 2.f, 3000));
 }
 
 void CPlayer::show_state(HDC _dc)
 {
-	Graphics graphics(_dc);
+	if (CCore::GetInst()->GetRenderOption())
+	{
+		Graphics graphics(_dc);
 
-	Font font(L"Arial", 13, FontStyle::FontStyleBold);
-	SolidBrush brush(Color(255, 0, 0, 0));
+		Font font(L"Arial", 13, FontStyle::FontStyleBold);
+		SolidBrush brush(Color(255, 0, 0, 0));
 
-	Vec2 vPos = GetPos();
-	vPos = CCamera::GetInst()->GetRenderPos(vPos);
+		Vec2 vPos = GetPos();
+		vPos = CCamera::GetInst()->GetRenderPos(vPos);
 
-	wstring current_state = L"";
+		wstring current_state = L"";
 
-	if (m_eCurState == PLAYER_STATE::IDLE)
-	{
-		current_state = L"IDLE";
-	}
-	else if (m_eCurState == PLAYER_STATE::ATTACK)
-	{
-		current_state = L"ATT";
-	}
-	else if (m_eCurState == PLAYER_STATE::DEAD)
-	{
-		current_state = L"DEAD";
-	}
-	else if (m_eCurState == PLAYER_STATE::JUMP)
-	{
-		current_state = L"JUMP";
-	}
-	else if (m_eCurState == PLAYER_STATE::PRONE)
-	{
-		current_state = L"PRONE";
-	}
-	else if (m_eCurState == PLAYER_STATE::PRONE_ATT)
-	{
-		current_state = L"PRONE_ATT";
-	}
-	else if (m_eCurState == PLAYER_STATE::WALK)
-	{
-		current_state = L"WALK";
-	}
+		if (m_eCurState == PLAYER_STATE::IDLE)
+		{
+			current_state = L"IDLE";
+		}
+		else if (m_eCurState == PLAYER_STATE::ATTACK)
+		{
+			current_state = L"ATT";
+		}
+		else if (m_eCurState == PLAYER_STATE::DEAD)
+		{
+			current_state = L"DEAD";
+		}
+		else if (m_eCurState == PLAYER_STATE::JUMP)
+		{
+			current_state = L"JUMP";
+		}
+		else if (m_eCurState == PLAYER_STATE::PRONE)
+		{
+			current_state = L"PRONE";
+		}
+		else if (m_eCurState == PLAYER_STATE::PRONE_ATT)
+		{
+			current_state = L"PRONE_ATT";
+		}
+		else if (m_eCurState == PLAYER_STATE::WALK)
+		{
+			current_state = L"WALK";
+		}
 
-	if (m_iDir == -1)
-	{
-		current_state += L"_LEFT";
+		if (m_iDir == -1)
+		{
+			current_state += L"_LEFT";
+		}
+		else if (m_iDir == 1)
+		{
+			current_state += L"_RIGHT";
+		}
+
+		PointF point(vPos.x + 30.f, vPos.y);
+
+		graphics.DrawString(GetName().c_str(), -1, &font, PointF(vPos.x - 22.f, vPos.y - 55.f), &brush);
+
+		Font font2(L"Arial", 10);
+		graphics.DrawString(current_state.c_str(), -1, &font2, point, &brush);
 	}
-	else if (m_iDir == 1)
-	{
-		current_state += L"_RIGHT";
-	}
-
-	PointF point(vPos.x + 30.f, vPos.y);
-
-	graphics.DrawString(GetName().c_str(), -1, &font, PointF(vPos.x - 22.f, vPos.y - 55.f), &brush);
-
-	Font font2(L"Arial", 10);
-	graphics.DrawString(current_state.c_str(), -1, &font2, point, &brush);
 }
 
 void CPlayer::CharHit(int _iDir, int _iDamege)
@@ -433,6 +449,7 @@ void CPlayer::CharHit(int _iDir, int _iDamege)
 			pRigid->SetVelocity(Vec2(+250.f, -250.f));
 		}
 
+		_iDamege = CRandom::GetInst()->GetBetweenInt(int(_iDamege * 0.8), int(_iDamege * 1.2));
 		m_tPlayerInfo.iHP -= _iDamege;
 
 		CDamegeFactory::CreateSingleDamege(this, _iDamege, 0, DAMEGE_TYPE::VIOLET);

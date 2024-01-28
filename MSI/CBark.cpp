@@ -36,6 +36,7 @@ void CBark::update()
 		CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
 		pCurScene->AddObject(pObj, GROUP_TYPE::SKILL);
 		SetDelay(0.53f);
+		MinusMP(1);
 	}
 
 	// ¿ä»õ
@@ -61,6 +62,7 @@ void CBark::update()
 				CObject* pObj = (CObject*) new CFortress(this);
 				CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
 				pCurScene->AddObject(pObj, GROUP_TYPE::SKILL);
+				MinusMP(5);
 			}
 		}
 	}
@@ -89,7 +91,8 @@ void CBark::update()
 				CObject* pObj = (CObject*) new CBlessingSeed(this);
 				CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
 				pCurScene->AddObject(pObj, GROUP_TYPE::SKILL);
-				SetDelay(0.4f);
+				SetDelay(0.7f);
+				MinusMP(5);
 			}
 		}
 	}

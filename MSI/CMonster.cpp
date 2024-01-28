@@ -16,6 +16,8 @@
 #include "CDamege.h"
 #include "CDamegeFactory.h"
 #include "CTimeMgr.h"
+#include "CCore.h"
+#include "CRandom.h"
 
 CMonster::CMonster()
 	: m_tInfo{}
@@ -23,6 +25,7 @@ CMonster::CMonster()
 	, m_fLeftDist(0.f)
 	, m_fRightDist(0.f)
 	, m_fAlpha(0.f)
+	, m_fUnbeatableTime(0.3f)
 {
 	CreateComponent();
 	//CreateCollider();
@@ -58,7 +61,7 @@ void CMonster::SetRandomDir()
 
 void CMonster::TakeDamege(float _fDamege, int _iDir)
 {
-	if (!m_bDead)
+	if (!m_bDead && m_fUnbeatableTime < 0)
 	{
 		m_tInfo.fHP -= _fDamege;
 		//m_tInfo.fHP -= 1.f;
@@ -73,6 +76,8 @@ void CMonster::TakeDamege(float _fDamege, int _iDir)
 		{
 			DAMEGE_INFO tInfo;
 			tInfo.eType = DAMEGE_TYPE::NORED;
+
+			_fDamege = CRandom::GetInst()->GetBetweenInt(int(_fDamege * 0.8f), int(_fDamege * 1.2f));
 			tInfo.fDamege = _fDamege;
 			tInfo.fLatencyTime = 0.1f * i;
 			tInfo.pObj = this;
@@ -100,6 +105,8 @@ void CMonster::update()
 
 	if (m_fAlpha < 253) m_fAlpha += (700.f * fDT);
 	if (m_fAlpha > 255) m_fAlpha = 255;
+
+	if (m_fUnbeatableTime > 0) m_fUnbeatableTime -= fDT;
 }
 
 void CMonster::render(HDC _dc)
@@ -107,7 +114,7 @@ void CMonster::render(HDC _dc)
 	CObject::component_render(_dc, m_fAlpha);
 	//CObject::render(_dc);
 
-	if (m_pAI)
+	if (m_pAI && CCore::GetInst()->GetRenderOption())
 	{
 		wstring tempStr;
 
@@ -235,7 +242,7 @@ void CMonster::OnCollision(CCollider* _pOther)
 	if (pObj->GetName() == L"PLAYER")
 	{
 		CPlayer* pPlayer = (CPlayer*) pObj;
-		if (!pPlayer->IsUnbeatable())
+		if (!pPlayer->IsUnbeatable() && !m_bDead)
 		{
 			pPlayer->CharHit(m_tInfo.iDir, m_tInfo.fAtt);
 		}

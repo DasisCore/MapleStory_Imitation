@@ -31,6 +31,8 @@ private:
 
     float m_fAlpha;
 
+    float m_fUnbeatableTime;
+
 
 public:
     float GetSpeed() { return m_tInfo.fSpeed; }

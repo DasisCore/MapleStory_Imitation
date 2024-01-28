@@ -83,7 +83,8 @@ void CScene_Test::update()
 
 void CScene_Test::Enter()
 {
-	LoadSceneData(L"TEST.scene");
+	//LoadSceneData(L"TEST.scene");
+	LoadSceneData(L"STAGE01.scene");
 	MonsterGenCountCheck();
 
 	// 플레이어 삽입
@@ -117,7 +118,6 @@ void CScene_Test::Enter()
 	CCollisionMgr::GetInst()->CheckGroup(GROUP_TYPE::PLAYER, GROUP_TYPE::SKILL);
 
 
-	//CCamera::GetInst()->SetLookAt(pVoltarix->GetPos());
 	CCamera::GetInst()->SetTarget(pVoltarix);
 
 	CSoundMgr::GetInst()->CreateSound(L"MysteriousJourney", "MysteriousJourney.mp3", true);
