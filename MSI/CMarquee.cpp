@@ -26,19 +26,19 @@ void CMarquee::update()
 
 		Vec2 vCurPos = GetPos();
 
-		if (bMouseOn && KEY_TAP(KEY::LBTN))
-		{
-			m_vDragStart = CCamera::GetInst()->GetRealPos(MOUSE_POS);
-		}
+		//if (bMouseOn && KEY_TAP(KEY::LBTN))
+		//{
+		//	m_vDragStart = CCamera::GetInst()->GetRealPos(MOUSE_POS);
+		//}
 
-		if (bMouseOn && KEY_HOLD(KEY::LBTN))
-		{
-			Vec2 vDiff = CCamera::GetInst()->GetRealPos(MOUSE_POS) - m_vDragStart;
+		//if (bMouseOn && KEY_HOLD(KEY::LBTN))
+		//{
+		//	Vec2 vDiff = CCamera::GetInst()->GetRealPos(MOUSE_POS) - m_vDragStart;
 
-			vCurPos += vDiff;
-			SetPos(vCurPos);
-			m_vDragStart = CCamera::GetInst()->GetRealPos(MOUSE_POS);
-		}
+		//	vCurPos += vDiff;
+		//	SetPos(vCurPos);
+		//	m_vDragStart = CCamera::GetInst()->GetRealPos(MOUSE_POS);
+		//}
 
 		if (KEY_TAP(KEY::UP))
 		{

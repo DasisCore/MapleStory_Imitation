@@ -3,29 +3,45 @@ test
 [Texture Key]
 test
 [Relative Path]
-Texture\bg.png
+Texture\Player\Bark.png
 [reversed]
 0
 [Frame Count]
-4
+6
 [Frame Data]
 Frame-0
-Duration 0.300000
-LeftTop 0.000000 0.000000
+Duration 0.135000
+LeftTop 219.767151 0.000000
 Offset 0.000000 0.000000
-Slice 394.000000 537.000000
+Slice 62.000000 79.119629
+
 Frame-1
-Duration 0.300000
-LeftTop 409.000000 9.500000
+Duration 0.135000
+LeftTop 292.767151 0.000000
 Offset 0.000000 0.000000
-Slice 379.000000 527.500000
+Slice 57.000000 79.119629
+
 Frame-2
-Duration 0.300000
-LeftTop 808.000000 230.500000
+Duration 0.135000
+LeftTop 363.767151 0.000000
 Offset 0.000000 0.000000
-Slice 383.000000 306.500000
+Slice 68.000000 79.119629
+
 Frame-3
-Duration 0.300000
-LeftTop 1232.000000 0.000000
+Duration 0.135000
+LeftTop 431.767151 0.000000
 Offset 0.000000 0.000000
-Slice 364.000000 536.500000
+Slice 80.000000 75.119629
+
+Frame-4
+Duration 0.135000
+LeftTop 513.767151 0.000000
+Offset 0.000000 0.000000
+Slice 67.000000 74.119629
+
+Frame-5
+Duration 0.135000
+LeftTop 585.767151 0.000000
+Offset 0.000000 0.000000
+Slice 59.000000 75.119629
+

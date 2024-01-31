@@ -5,6 +5,7 @@
 #include "CSceneMgr.h"
 #include "CScene.h"
 #include "CCamera.h"
+#include "CScene_Ani_Workshop.h"
 
 // KEY와 같은 순서로 만들어진 배열
 int g_arrVK[int(KEY::LAST)] =
@@ -161,10 +162,13 @@ void CKeyMgr::CheckObjectTarget()
 {
 	CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
 
-	// 타겟은 항상 하나
 
-	if (pCurScene->GetName() == L"Tool scene")
-	{
+	CScene_Ani_Workshop* pAniScene = dynamic_cast<CScene_Ani_Workshop*>(pCurScene);
+	if (pAniScene != nullptr && pAniScene->isMarquee()) return;
+
+	// 타겟은 항상 하나
+	//if (pCurScene->GetName() == L"Tool Scene" || pCurScene->GetName() == L"Animation Workshop Scene")
+	//{
 		for (int i = (int)GROUP_TYPE::END - 1; i >= (int)GROUP_TYPE::DEFAULT; i--)
 		{
 			vector<CObject*> vecObj = pCurScene->GetGroupObject((GROUP_TYPE)i);
@@ -174,6 +178,7 @@ void CKeyMgr::CheckObjectTarget()
 				if (IsMouseInObj(vecObj[j]) && KEY_TAP(KEY::LBTN) && !vecObj[j]->GetTarget())
 				{
 					vecObj[j]->SetTarget(true);
+					m_vDragStart = CCamera::GetInst()->GetRealPos(MOUSE_POS);
 					m_bIgnore = false;
 				}
 				else if (IsMouseInObj(vecObj[j]) && KEY_HOLD(KEY::LBTN) && vecObj[j]->GetTarget() == true)
@@ -194,5 +199,5 @@ void CKeyMgr::CheckObjectTarget()
 				else vecObj[j]->SetTarget(false);
 			}
 		}
-	}
+	//}
 }

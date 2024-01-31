@@ -92,6 +92,7 @@ public:
     void SetTargetMarquee(UINT _i);
     // _i번째 Marquee를 준다. (0번 인덱스 포함)
     CMarquee* GetMarquee(int _i);
+    bool isMarquee() { return m_eState == TOOL_TYPE::MARQUEE ? true : false; }
 
 
 public:

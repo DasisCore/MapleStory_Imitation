@@ -28,15 +28,6 @@ CMonster::CMonster()
 	, m_fUnbeatableTime(0.3f)
 {
 	CreateComponent();
-	//CreateCollider();
-	//GetComponent()->GetCollider()->SetScale(Vec2(60.f, 60.f));
-
-	//CreateAnimation();
-	//CreateRigidbody();
-	
-	// 공중 몹은 중력이 필요 없으므로, 
-	// 기본으로 넣어주지 않는다.
-	//CreateGravity();
 }
 
 CMonster::~CMonster()
@@ -64,7 +55,6 @@ void CMonster::TakeDamege(float _fDamege, int _iDir)
 	if (!m_bDead && m_fUnbeatableTime < 0)
 	{
 		m_tInfo.fHP -= _fDamege;
-		//m_tInfo.fHP -= 1.f;
 		m_fHitTime = 0.5f;
 		m_pAI->ChangeState(MON_STATE::HIT);
 		m_tInfo.iDir = _iDir * -1;
@@ -83,7 +73,6 @@ void CMonster::TakeDamege(float _fDamege, int _iDir)
 			tInfo.pObj = this;
 			tInfo.fOffset = 27.f * i;
 			CDamegeMgr::GetInst()->AddDamege(tInfo);
-			//CDamegeFactory::CreateSingleDamege(this, _fDamege, 27.f * i, DAMEGE_TYPE::NORED);
 		}
 	}
 }
@@ -148,9 +137,6 @@ void CMonster::render(HDC _dc)
 		{
 			tempStr = L"HIT";
 		}
-
-		//Vec2 vV = GetComponent()->GetRigidbody()->GetVelocity();
-		//tempStr = std::to_wstring(m_fLeftDist) + L" / " + std::to_wstring(m_fRightDist);
 
 		Graphics graphics(_dc);
 

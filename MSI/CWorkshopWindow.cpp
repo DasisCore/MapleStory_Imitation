@@ -528,6 +528,7 @@ void CWorkshopWindow::LoadAnimation()
 	CScene_Ani_Workshop* pAniWorkshop = (CScene_Ani_Workshop*)CSceneMgr::GetInst()->GetCurScene();
 	if (pAniWorkshop->GetSprite() != nullptr)
 	{
+		ListView_DeleteAllItems(m_hWndList);
 		pAniWorkshop->reset();
 		return;
 	}

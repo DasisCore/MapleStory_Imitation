@@ -57,24 +57,27 @@ void CCamera::update()
 		}
 	}
 
-	if (KEY_HOLD(KEY::W))
+	if (CCore::GetInst()->GetMainHwnd() == GetFocus())
 	{
-		m_vLookAt.y -= 500.f * fDT;
-	}
+		if (KEY_HOLD(KEY::W))
+		{
+			m_vCurLookAt.y -= 500.f * fDT;
+		}
 
-	if (KEY_HOLD(KEY::S))
-	{
-		m_vLookAt.y += 500.f * fDT;
-	}
+		if (KEY_HOLD(KEY::S))
+		{
+			m_vCurLookAt.y += 500.f * fDT;
+		}
 
-	if (KEY_HOLD(KEY::D))
-	{
-		m_vLookAt.x += 500.f * fDT;
-	}
+		if (KEY_HOLD(KEY::D))
+		{
+			m_vCurLookAt.x += 500.f * fDT;
+		}
 
-	if (KEY_HOLD(KEY::A))
-	{
-		m_vLookAt.x -= 500.f * fDT;
+		if (KEY_HOLD(KEY::A))
+		{
+			m_vCurLookAt.x -= 500.f * fDT;
+		}
 	}
 
 	// 화면 중앙좌표와 카메라 LookAt 좌표간의 차이값 계산
@@ -150,6 +153,10 @@ void CCamera::render(HDC _dc)
 
 void CCamera::CalDiff()
 {
+	CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
+
+	//if (pCurScene->GetName() == L"Tool Scene") return;
+
 	Vec2 vResolution = CCore::GetInst()->GetResolution();
 	Vec2 vCenter = vResolution / 2.f;
 
@@ -180,7 +187,6 @@ void CCamera::CalDiff()
 	}
 
 	// Map의 사이즈가 있다면, 카메라는 사이즈 밖을 보여줘서는 안된다.
-	CScene* pCurScene = CSceneMgr::GetInst()->GetCurScene();
 	Vec2 vMapSize = pCurScene->GetMapSize();
 
 	// 맵의 사이즈가 정해져있다면.

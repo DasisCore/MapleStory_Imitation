@@ -127,7 +127,7 @@ void CScene_Tool::Enter()
 
 
 	// 카메라 LookAt 지정
-	CCamera::GetInst()->SetLookAt(vResolution / 2.f);
+	//CCamera::GetInst()->SetLookAt(vResolution / 2.f);
 
 	CToolWindow::GetInst()->init();
 	CToolWindow::GetInst()->showWindow();
@@ -267,18 +267,18 @@ void CScene_Tool::render(HDC _dc)
 	{
 		case MOUSE_TOOL_TYPE::DEFAULT:
 		{
-			graphics.DrawString(L"Default", -1, &font, PointF(30.f, 100.f), &brush);
+			graphics.DrawString(L"Default", -1, &font, PointF(30.f, 150.f), &brush);
 		}
 	break;
 		case MOUSE_TOOL_TYPE::FOOTHOLD:
 		{
-			graphics.DrawString(L"Create FootHold", -1, &font, PointF(30.f, 100.f), &brush);
+			graphics.DrawString(L"Create FootHold", -1, &font, PointF(30.f, 150.f), &brush);
 		}
 	break;
 	}
 
-	if(m_bGizmo) graphics.DrawString(L"Gizmo True", -1, &font, PointF(30.f, 150.f), &brush);
-	else graphics.DrawString(L"Gizmo False", -1, &font, PointF(30.f, 150.f), &brush);
+	if(m_bGizmo) graphics.DrawString(L"Gizmo True", -1, &font, PointF(30.f, 200.f), &brush);
+	else graphics.DrawString(L"Gizmo False", -1, &font, PointF(30.f, 200.f), &brush);
 
 	renderDrag(_dc);
 }
@@ -424,17 +424,17 @@ void CScene_Tool::DrawGizmo(HDC _dc)
 		Pen pen(Color(240, 240, 240), 1);
 
 		int gridSize = 10; // 각 셀의 크기
-		for (int x = 0; x <= m_vMap.x; x += gridSize) {
-			Vec2 v1 = Vec2(x, 0);
-			Vec2 v2 = Vec2((float)x, m_vMap.y);
+		for (int x = -(m_vMap.x / 2.f); x <= m_vMap.x / 2.f; x += gridSize) {
+			Vec2 v1 = Vec2((float)x, -(m_vMap.y / 2.f));
+			Vec2 v2 = Vec2((float)x, m_vMap.y / 2.f);
 			v1 = CCamera::GetInst()->GetRenderPos(v1);
 			v2 = CCamera::GetInst()->GetRenderPos(v2);
 			graphics.DrawLine(&pen, v1.x, v1.y, v2.x, v2.y); // 세로선 그리기
 		}
 
-		for (int y = 0; y <= m_vMap.y; y += gridSize) {
-			Vec2 y1 = Vec2(0, y);
-			Vec2 y2 = Vec2(m_vMap.x, (float)y);
+		for (int y = -(m_vMap.y / 2.f); y <= m_vMap.y / 2.f; y += gridSize) {
+			Vec2 y1 = Vec2(-(m_vMap.x / 2.f), (float)y);
+			Vec2 y2 = Vec2(m_vMap.x / 2.f, (float)y);
 			y1 = CCamera::GetInst()->GetRenderPos(y1);
 			y2 = CCamera::GetInst()->GetRenderPos(y2);
 			graphics.DrawLine(&pen, y1.x, y1.y, y2.x, y2.y); // 가로선 그리기
@@ -444,9 +444,7 @@ void CScene_Tool::DrawGizmo(HDC _dc)
 
 void CScene_Tool::renderMapBase(HDC _dc)
 {
-	Graphics graphics(_dc);
-
-
+		Graphics graphics(_dc);
 
 	if (m_vMap != Vec2(0.f, 0.f))
 	{
