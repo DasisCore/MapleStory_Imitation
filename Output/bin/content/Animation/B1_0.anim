@@ -1,0 +1,17 @@
+[Animation Name]
+B1_0
+[Texture Key]
+B1_0
+[Relative Path]
+Texture\Ground\B1_0.png
+[reversed]
+0
+[Frame Count]
+1
+[Frame Data]
+Frame-0
+Duration 0.300000
+LeftTop 0.000000 0.000000
+Offset 0.000000 0.000000
+Slice 182.910889 226.000000
+
