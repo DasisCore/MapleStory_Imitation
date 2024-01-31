@@ -1,0 +1,17 @@
+[Animation Name]
+BG_20
+[Texture Key]
+BG_20
+[Relative Path]
+Texture\BackGround\back_19.png
+[reversed]
+0
+[Frame Count]
+1
+[Frame Data]
+Frame-0
+Duration 0.300000
+LeftTop 0.000000 0.000000
+Offset 0.000000 0.000000
+Slice 729.000000 171.500000
+
